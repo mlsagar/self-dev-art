@@ -1,0 +1,25 @@
+{
+  "name": "self-dev-art",
+  "version": "1.0.0",
+  "description": "Web Application build in MEAN stack showing self development article",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mlsagar/self-dev-art.git"
+  },
+  "keywords": [
+    "\"MongoDB",
+    "Express",
+    "Angular",
+    "NodeJS\""
+  ],
+  "author": "Sagar Maharjan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mlsagar/self-dev-art/issues"
+  },
+  "homepage": "https://github.com/mlsagar/self-dev-art#readme"
+}
