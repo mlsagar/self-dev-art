@@ -1,3 +1,4 @@
+require("./articles-model");
 const mongoose = require("mongoose");
 mongoose.connect(process.env.DATABASE_URL);
 const callbackify = require("util").callbackify;
@@ -29,7 +30,7 @@ mongoose.connection.on("error", handleError);
 const handleMongooseConnectionClose = function(processSignalType) {
     console.log(process.env[processSignalType + "_MESSAGE"]);
     if (processSignalType === "SIGUSR2") {
-        process.kill(process.pid, "SIGUSR2");
+        process.kill(process.pid, processSignalType);
         return;
     }
     process.exit(0);
