@@ -24,7 +24,6 @@ const articleSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    publishDate: String,
     comments: [commentSchema]
 })
 

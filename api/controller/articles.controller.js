@@ -155,8 +155,8 @@ const handleArticleFindByIdAndDeleteExecCallbackify = function(articleId) {
 const articleFindByIdAndDeleteExecWithCallbackify = callbackify(handleArticleFindByIdAndDeleteExecCallbackify);
 const handleArticle = function(response, error, deletedArticle) {
     const responseCollection = {
-        status: 204,
-        message: deletedArticle
+        status: 200,
+        message: {message: "Deleted article successfully!!!"}
     }
     if (error) {
         responseCollection.status = 500;
@@ -165,7 +165,6 @@ const handleArticle = function(response, error, deletedArticle) {
         responseCollection.status = 404;
         responseCollection.message = {message: "Article ID not found"}
     }
-
     response.status(responseCollection.status).json(responseCollection.message);
 }
 const article = function(request, response) {

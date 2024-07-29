@@ -18,7 +18,10 @@ const handleAllComments = function (response, error, article) {
     }
     if (error) {
         responseCollection.status = 500,
-            responseCollection.message = error
+        responseCollection.message = error
+    } else if(!article) {
+        responseCollection.status = 404,
+        responseCollection.message = {message: "Not found resource"}
     }
 
     response.status(responseCollection.status).json(responseCollection.message);
