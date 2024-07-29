@@ -55,10 +55,10 @@ const allComments = function (request, response) {
 }
 
 
-const handleCommentCreateWithCallbackify = function (articleId) {
+const handleArticleFindByIdSelectExecCallbackify = function (articleId) {
     return _Comment(articleId).exec();
 }
-const commentCreateWithCallbackify = callbackify(handleCommentCreateWithCallbackify);
+const articleFindByIdSelectExecWithCallbackify = callbackify(handleArticleFindByIdSelectExecCallbackify);
 const handleAddArticle = function (request, response, error, article) {
     const responseCollection = {
         status: 200,
@@ -85,7 +85,88 @@ const addComment = function (request, response) {
         response.status(400).json({ message: "Invalid article id" });
     }
 
-    commentCreateWithCallbackify(articleId, handleAddArticle.bind(null, request, response));
+    articleFindByIdSelectExecWithCallbackify(articleId, handleAddArticle.bind(null, request, response));
+
+}
+
+
+const handleOneComment = function(response, commentId, error, article) {
+    const responseCollection = {
+        status: 200,
+        message: article
+    }
+    if (error) {
+        responseCollection.status = 500;
+        responseCollection.message = error;
+    } else if (!article) {
+        responseCollection.status = 404;
+        responseCollection.message = { message: "Article ID not found" };
+    }
+
+    if (article) {
+        response.status(200).json(article.comments.id(commentId));
+    } else {
+        response.status(responseCollection.status).json(responseCollection.message);
+    }
+}
+const oneComment = function (request, response) {
+    const articleId = request.params.articleId;
+    const commentId = request.params.commentId;
+    if (!mongoose.isValidObjectId(articleId)) {
+        response.status(400).json({ message: "Invalid article id" });
+    }
+    if (!mongoose.isValidObjectId(commentId)) {
+        response.status(400).json({ message: "Invalid comment id" });
+    }
+
+    articleFindByIdSelectExecWithCallbackify(articleId, handleOneComment.bind(null, response, commentId));
+}
+
+const handleUpdateComment = function(request, response, error, article) {
+    const responseCollection = {
+        status: 200,
+        message: article
+    }
+    if (error) {
+        responseCollection.status = 500;
+        responseCollection.message = error;
+    } else if (!article) {
+        responseCollection.status = 404;
+        responseCollection.message = { message: "Article ID not found" };
+    }
+
+    if (article) {
+        const selectedComment = article.comments.id(request.params.commentId);
+
+        if (!selectedComment) {
+            response.status(404).json({ message: "Comment not found" });
+        }
+
+        selectedComment.name = request.body.name;
+        selectedComment.comment = request.body.comment;
+
+        articleSaveWithCallbackify(article, handle_AddComment.bind(null, "Updated", response))
+    } else {
+        response.status(responseCollection.status).json(responseCollection.message);
+    }
+}
+const fullUpdateOneComment = function (request, response) {
+    const articleId = request.params.articleId;
+    const commentId = request.params.commentId;
+    if (!mongoose.isValidObjectId(articleId)) {
+        response.status(400).json({ message: "Invalid article id" });
+    }
+    if (!mongoose.isValidObjectId(commentId)) {
+        response.status(400).json({ message: "Invalid comment id" });
+    }
+    articleFindByIdSelectExecWithCallbackify(articleId, handleUpdateComment.bind(null, request, response));
+}
+
+const partialUpdateOneComment = function (request, response) {
+
+}
+
+const comment = function (request, response) {
 
 }
 
@@ -94,10 +175,10 @@ const handleArticleSaveCallbackify = function (article) {
     return article.save();
 }
 const articleSaveWithCallbackify = callbackify(handleArticleSaveCallbackify);
-const handle_AddComment = function (response, error) {
+const handle_AddComment = function (action, response, error) {
     const responseCollection = {
         status: 200,
-        message: { message: "Posted comment successfully!!!" }
+        message: { message: `${action} comment successfully!!!` }
     }
 
     if (error) {
@@ -107,18 +188,22 @@ const handle_AddComment = function (response, error) {
 
     response.status(responseCollection.status).json(responseCollection.message);
 }
-const _addComment = function(request, response, article) {
+const _addComment = function (request, response, article) {
     const newComment = {
         comment: request.body.comment,
         name: request.body.name
-    }    
+    }
 
     article.comments.push(newComment);
 
-    articleSaveWithCallbackify(article, handle_AddComment.bind(null, response));
+    articleSaveWithCallbackify(article, handle_AddComment.bind(null, "Posted", response));
 }
 
 module.exports = {
     allComments,
     addComment,
+    oneComment,
+    fullUpdateOneComment,
+    partialUpdateOneComment,
+    comment
 }

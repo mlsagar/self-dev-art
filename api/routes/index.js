@@ -1,6 +1,6 @@
 const express = require("express");
 const { allArticles, addArticle, oneArticle, fullUpdateOneArticle, partialUpdateOneArticle, article } = require("../controller/articles.controller");
-const { allComments, addComment } = require("../controller/comments.controller");
+const { allComments, addComment, oneComment, fullUpdateOneComment, partialUpdateOneComment, comment } = require("../controller/comments.controller");
 
 const router = express.Router();
 
@@ -19,8 +19,11 @@ router.route("/articles/:articleId/comments")
     .post(addComment)
 
 
-// router.route("/articles/:id/comments/:id")
-//     .get(oneComment);
+router.route("/articles/:articleId/comments/:commentId")
+    .get(oneComment)
+    .put(fullUpdateOneComment)
+    .patch(partialUpdateOneComment)
+    .delete(comment);
 
 
 module.exports = router;
