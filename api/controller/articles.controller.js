@@ -153,14 +153,17 @@ const handleArticleFindByIdAndDeleteExecCallbackify = function(articleId) {
     return Article.findByIdAndDelete(articleId).exec();
 }
 const articleFindByIdAndDeleteExecWithCallbackify = callbackify(handleArticleFindByIdAndDeleteExecCallbackify);
-const handleArticle = function(response, error) {
+const handleArticle = function(response, error, deletedArticle) {
     const responseCollection = {
-        status: 200,
-        message: {message: "Deleted successfully"}
+        status: 204,
+        message: deletedArticle
     }
     if (error) {
         responseCollection.status = 500;
         responseCollection.message = error;
+    } else if(!deletedArticle) {
+        responseCollection.status = 404;
+        responseCollection.message = {message: "Article ID not found"}
     }
 
     response.status(responseCollection.status).json(responseCollection.message);

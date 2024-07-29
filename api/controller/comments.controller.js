@@ -104,6 +104,10 @@ const handleOneComment = function(response, commentId, error, article) {
     }
 
     if (article) {
+        if (!article.comments.id(commentId)) {
+            response.status(404).json({ message: "Comment ID not found" });
+            return;
+        }
         response.status(200).json(article.comments.id(commentId));
     } else {
         response.status(responseCollection.status).json(responseCollection.message);
@@ -121,6 +125,7 @@ const oneComment = function (request, response) {
 
     articleFindByIdSelectExecWithCallbackify(articleId, handleOneComment.bind(null, response, commentId));
 }
+
 
 const handleUpdateComment = function(request, response, error, article) {
     const responseCollection = {
@@ -145,7 +150,7 @@ const handleUpdateComment = function(request, response, error, article) {
         selectedComment.name = request.body.name;
         selectedComment.comment = request.body.comment;
 
-        articleSaveWithCallbackify(article, handle_AddComment.bind(null, "Updated", response))
+        articleSaveWithCallbackify(article, handleAddDeleteAndUpdateComment.bind(null, "Updated", response))
     } else {
         response.status(responseCollection.status).json(responseCollection.message);
     }
@@ -162,12 +167,50 @@ const fullUpdateOneComment = function (request, response) {
     articleFindByIdSelectExecWithCallbackify(articleId, handleUpdateComment.bind(null, request, response));
 }
 
-const partialUpdateOneComment = function (request, response) {
 
+const partialUpdateOneComment = function (request, response) {
+    fullUpdateOneComment(request,response);
 }
 
-const comment = function (request, response) {
 
+const handleDeleteComment = function(request, response, error, article) {
+    const responseCollection = {
+        status: 200,
+        message: article
+    }
+    if (error) {
+        responseCollection.status = 500;
+        responseCollection.message = error;
+    } else if (!article) {
+        responseCollection.status = 404;
+        responseCollection.message = { message: "Article ID not found" };
+    }
+
+    if (article) {
+        let selectedComment = article.comments.id(request.params.commentId);
+
+        if (!selectedComment) {
+            response.status(404).json({ message: "Comment not found" });
+        }
+
+        selectedComment.deleteOne();
+
+        articleSaveWithCallbackify(article, handleAddDeleteAndUpdateComment.bind(null, "Deleted", response))
+    } else {
+        response.status(responseCollection.status).json(responseCollection.message);
+    }
+}
+const comment = function (request, response) {
+    const articleId = request.params.articleId;
+    const commentId = request.params.commentId;
+    if (!mongoose.isValidObjectId(articleId)) {
+        response.status(400).json({ message: "Invalid article id" });
+    }
+    if (!mongoose.isValidObjectId(commentId)) {
+        response.status(400).json({ message: "Invalid comment id" });
+    }
+
+    articleFindByIdSelectExecWithCallbackify(articleId, handleDeleteComment.bind(null, request, response));
 }
 
 
@@ -175,7 +218,7 @@ const handleArticleSaveCallbackify = function (article) {
     return article.save();
 }
 const articleSaveWithCallbackify = callbackify(handleArticleSaveCallbackify);
-const handle_AddComment = function (action, response, error) {
+const handleAddDeleteAndUpdateComment = function (action, response, error) {
     const responseCollection = {
         status: 200,
         message: { message: `${action} comment successfully!!!` }
@@ -196,7 +239,7 @@ const _addComment = function (request, response, article) {
 
     article.comments.push(newComment);
 
-    articleSaveWithCallbackify(article, handle_AddComment.bind(null, "Posted", response));
+    articleSaveWithCallbackify(article, handleAddDeleteAndUpdateComment.bind(null, "Posted", response));
 }
 
 module.exports = {
