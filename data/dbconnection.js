@@ -3,11 +3,11 @@ const mongoose = require("mongoose");
 mongoose.connect(process.env.DATABASE_URL);
 const callbackify = require("util").callbackify;
 
-const handleMongooseConnectionCloseCallbackify = function() {
+const mongooseConnectionClose = function() {
     return mongoose.connection.close();
 }
 
-const mongooseConnectionCloseWithCallbackify = callbackify(handleMongooseConnectionCloseCallbackify);
+const mongooseConnectionCloseWithCallbackify = callbackify(mongooseConnectionClose);
 
 const handleConnected = function() {
     console.log("Mongoose connected to " + process.env.DATABASE_NAME);
@@ -27,7 +27,7 @@ mongoose.connection.on("disconnected", handleDisconnected);
 
 mongoose.connection.on("error", handleError);
 
-const handleMongooseConnectionClose = function(processSignalType) {
+const handleProcessSignal = function(processSignalType) {
     console.log(process.env[processSignalType + "_MESSAGE"]);
     if (processSignalType === "SIGUSR2") {
         process.kill(process.pid, processSignalType);
@@ -37,13 +37,13 @@ const handleMongooseConnectionClose = function(processSignalType) {
 }
 
 const handleSIGINT = function() {
-    mongooseConnectionCloseWithCallbackify(handleMongooseConnectionClose.bind(null, "SIGINT"));
+    mongooseConnectionCloseWithCallbackify(handleProcessSignal.bind(null, "SIGINT"));
 }
 const handleSIGTERM = function() {
-    mongooseConnectionCloseWithCallbackify(handleMongooseConnectionClose.bind(null, "SIGTERM"));
+    mongooseConnectionCloseWithCallbackify(handleProcessSignal.bind(null, "SIGTERM"));
 }
 const handleSIGUSR2 = function() {
-    mongooseConnectionCloseWithCallbackify(handleMongooseConnectionClose.bind(null, "SIGUSR2"));
+    mongooseConnectionCloseWithCallbackify(handleProcessSignal.bind(null, "SIGUSR2"));
 }
 
 process.on("SIGINT", handleSIGINT);

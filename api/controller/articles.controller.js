@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { compileFunction } = require("vm");
 const Article = mongoose.model(process.env.ARTICLE_MODEL);
 const callbackify = require("util").callbackify;
 
@@ -13,7 +12,7 @@ const handleAllArticles = function(response, error, articles) {
         status: 200,
         message: articles
     }
-    if (error) {
+    if (error) { 
         responseCollection.status = 500,
         responseCollection.message = error
     }
