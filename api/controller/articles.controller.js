@@ -3,17 +3,17 @@ const Article = mongoose.model(process.env.ARTICLE_MODEL);
 const callbackify = require("util").callbackify;
 
 
-const handleArticleFindSkipLimitExecCallbackify = function(offset, count){
+const articleFindSkipLimitExec = function(offset, count){
     return Article.find().skip(offset).limit(count).exec();
 }
-const articleFindSkipLimitExecWithCallbackify = callbackify(handleArticleFindSkipLimitExecCallbackify);
+const articleFindSkipLimitExecWithCallbackify = callbackify(articleFindSkipLimitExec);
 const handleAllArticles = function(response, error, articles) {
     const responseCollection = {
-        status: 200,
+        status: Number(process.env.SUCCESS_STATUS_CODE),
         message: articles
     }
     if (error) { 
-        responseCollection.status = 500,
+        responseCollection.status = Number(process.env.SERVER_ERROR_STATUS_CODE),
         responseCollection.message = error
     }
 
@@ -33,12 +33,12 @@ const allArticles = function(request, response) {
     }
 
     if (isNaN(offset) || isNaN(count)) {
-        response.status(400).json({ message: "Invalid offset or count" });
+        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: "Invalid offset or count" });
         return;
     }
 
     if (count > maxCount) {
-        response.status(400).json({message: "Cannot exceed count of " + maxCount});
+        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({message: "Cannot exceed count of " + maxCount});
         return;
     }
 
@@ -46,19 +46,19 @@ const allArticles = function(request, response) {
 }
 
 
-const handleArticleCreateWithCallbackify = function(article) {
+const articleCreate = function(article) {
     return Article.create(article);
 }
-const articleCreateWithCallbackify = callbackify(handleArticleCreateWithCallbackify);
+const articleCreateWithCallbackify = callbackify(articleCreate);
 const handleAddArticle = function(response, error) {
     const responseCollection = {
-        status: 200,
-        message: {message: "Post article successfully!!!"}
+       status: Number(process.env.SUCCESS_STATUS_CODE),
+       message: {message: "Posted article successfully"}
     }
     if (error) {
-        responseCollection.status = 500;
+        responseCollection.status = Number(process.env.SERVER_ERROR_STATUS_CODE);
         responseCollection.message = error;
-    }
+    } 
 
     response.status(responseCollection.status).json(responseCollection.message);
 }
@@ -69,25 +69,30 @@ const addArticle = function(request, response) {
         link: request.body.link,
         comments: []
     }
+
     articleCreateWithCallbackify(newArticle, handleAddArticle.bind(null, response));
 }
 
 
-const handleArticleFindByIdExecCallbackify = function(articleId) {
+const articleFinbByIdExec = function(articleId) {
     return Article.findById(articleId).exec();
 }
-const articleFindByIdExecWithCallbackify = callbackify(handleArticleFindByIdExecCallbackify);
+const articleFindByIdExecWithCallbackify = callbackify(articleFinbByIdExec);
+
 const handleOneArticle = function(response, error, article) {
     const responseCollection = {
-        status: 200,
-        message: article
+        status: Number(process.env.CREATE_STATUS_CODE),
+        message: ""
     }
     if (error) {
-        responseCollection.status = 500;
+        responseCollection.status = Number(process.env.SERVER_ERROR_STATUS_CODE);
         responseCollection.message = error;
     } else if(!article) {
-        responseCollection.status = 404;
+        responseCollection.status = Number(process.env.NOT_FOUND_STATUS_CODE);
         responseCollection.message = {message: "Article ID not found"}
+    } else if (responseCollection.status === Number(process.env.CREATE_STATUS_CODE)) {
+        responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE),
+        responseCollection.message = article
     }
 
     response.status(responseCollection.status).json(responseCollection.message);
@@ -96,73 +101,127 @@ const oneArticle = function(request, response) {
     const articleId = request.params.articleId;
 
     if (!mongoose.isValidObjectId(articleId)) {
-        response.status(400).json({ message: "Invalid article id" });
+        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: "Invalid article id" });
+        return;
     }
 
     articleFindByIdExecWithCallbackify(articleId, handleOneArticle.bind(null, response));    
 }
 
-
-const handleArticleFindByIdAndUpdateExecCallbackify = function(articleId, article) {
-    return Article.findByIdAndUpdate(articleId, article).exec();
+const articleSave = function(article) {
+    return article.save();
 }
-const articleFindByIdAndUpdateExecWithCallbackify = callbackify(handleArticleFindByIdAndUpdateExecCallbackify);
-const handleFullUpdateOneArticle = function(response, error) {
+const articleSaveWithCallbackify = callbackify(articleSave);
+
+const handleFullUpdateOneArticle = function(request, response, error, article) {     
     const responseCollection = {
-        status: 200,
-        message: {message: "Updated successfully"}
+        status: Number(process.env.CREATE_STATUS_CODE),
+        message: ""
     }
     if (error) {
-        responseCollection.status = 500;
+        responseCollection.status = Number(process.env.SERVER_ERROR_STATUS_CODE);
         responseCollection.message = error;
+    } else if(!article) {
+        responseCollection.status = Number(process.env.NOT_FOUND_STATUS_CODE);
+        responseCollection.message = {message: process.env.INVALID_ARTICLE_ID_MESSAGE}
     }
 
-    response.status(responseCollection.status).json(responseCollection.message);
+    if (responseCollection.status === Number(process.env.CREATE_STATUS_CODE)) {
+        article.title = request.body.title;
+        article.author = request.body.author;
+        article.link = request.body.link;
+
+        articleSaveWithCallbackify(article, function(error) {
+            if(error) {
+                responseCollection.status = Number(process.env.SERVER_ERROR_STATUS_CODE);
+                responseCollection.message = error;
+            } else {
+                responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
+                responseCollection.message = {message: "Updated Article Fully!!!"}
+            }
+            response.status(responseCollection.status).json(responseCollection.message);
+        })
+    } else {
+        response.status(responseCollection.status).json(responseCollection.message);
+    }
+
 }
 const fullUpdateOneArticle = function(request, response) {
     const articleId = request.params.articleId;
 
     if (!mongoose.isValidObjectId(articleId)) {
-        response.status(400).json({ message: "Invalid article id" });
-    }
-    
-    const updatedArticle = {
-        title: request.body.title,
-        author: request.body.author,
-        link: request.body.link,
-        comments: request.body.comments
-    }
+        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_ARTICLE_ID_MESSAGE });
+        return;
+    }    
 
-    articleFindByIdAndUpdateExecWithCallbackify(articleId, updatedArticle, handleFullUpdateOneArticle.bind(null, response));
+    articleFindByIdExecWithCallbackify(articleId, handleFullUpdateOneArticle.bind(null, request, response));
 }
 
 
+const handlePartialUpdateOneArticle = function(request, response, error, article) {     
+    const responseCollection = {
+        status: Number(process.env.CREATE_STATUS_CODE),
+        message: ""
+    }
+    if (error) {
+        responseCollection.status = Number(process.env.SERVER_ERROR_STATUS_CODE);
+        responseCollection.message = error;
+    } else if(!article) {
+        responseCollection.status = Number(process.env.NOT_FOUND_STATUS_CODE);
+        responseCollection.message = {message: process.env.INVALID_ARTICLE_ID_MESSAGE}
+    }
+
+    if (responseCollection.status === Number(process.env.CREATE_STATUS_CODE)) {
+        if (request.body && request.body.title) {article.title = request.body.title}
+        if (request.body && request.body.link) {article.link = request.body.link}
+        if (request.body && request.body.author) {article.author = request.body.author}
+        if (request.body && request.body.comments) {article.title = request.body.comments}
+        
+
+        articleSaveWithCallbackify(article, function(error) {
+            if(error) {
+                responseCollection.status = Number(process.env.SERVER_ERROR_STATUS_CODE);
+                responseCollection.message = error;
+            } else {
+                responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
+                responseCollection.message = {message: "Updated Article Partially!!!"}
+            }
+            response.status(responseCollection.status).json(responseCollection.message);
+        })
+    } else {
+        response.status(responseCollection.status).json(responseCollection.message);
+    }
+}
 const partialUpdateOneArticle = function(request, response) {
     const articleId = request.params.articleId;
 
     if (!mongoose.isValidObjectId(articleId)) {
-        response.status(400).json({ message: "Invalid article id" });
+        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_ARTICLE_ID_MESSAGE });
+        return;
     } 
 
-    articleFindByIdAndUpdateExecWithCallbackify(articleId, request.body, handleFullUpdateOneArticle.bind(null, response));
+    articleFindByIdExecWithCallbackify(articleId,  handlePartialUpdateOneArticle.bind(null, request, response));
 }
 
 
-const handleArticleFindByIdAndDeleteExecCallbackify = function(articleId) {
+const articleFindByIdAndDeleteExec = function(articleId) {
     return Article.findByIdAndDelete(articleId).exec();
 }
-const articleFindByIdAndDeleteExecWithCallbackify = callbackify(handleArticleFindByIdAndDeleteExecCallbackify);
-const handleArticle = function(response, error, deletedArticle) {
+const articleFindByIdAndDeleteExecWithCallbackify = callbackify(articleFindByIdAndDeleteExec);
+const handleRemoveArticle = function(response, error, deletedArticle) {
     const responseCollection = {
-        status: 200,
-        message: {message: "Deleted article successfully!!!"}
+        status: Number(process.env.CREATE_STATUS_CODE),
+        message: ""
     }
     if (error) {
-        responseCollection.status = 500;
+        responseCollection.status = Number(process.env.SERVER_ERROR_STATUS_CODE);
         responseCollection.message = error;
     } else if(!deletedArticle) {
-        responseCollection.status = 404;
-        responseCollection.message = {message: "Article ID not found"}
+        responseCollection.status = Number(process.env.NOT_FOUND_STATUS_CODE);
+        responseCollection.message = {message: "Article ID not found"};
+    } else if (responseCollection.status === Number(process.env.CREATE_STATUS_CODE)) {
+        responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
+        responseCollection.message = {message: "Deleted Article Successfully"};
     }
     response.status(responseCollection.status).json(responseCollection.message);
 }
@@ -170,10 +229,11 @@ const article = function(request, response) {
     const articleId = request.params.articleId;
 
     if (!mongoose.isValidObjectId(articleId)) {
-        response.status(400).json({ message: "Invalid article id" });
+        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_ARTICLE_ID_MESSAGE });
+        return;
     }
 
-    articleFindByIdAndDeleteExecWithCallbackify(articleId, handleArticle.bind(null, response));
+    articleFindByIdAndDeleteExecWithCallbackify(articleId, handleRemoveArticle.bind(null, response));
 }
 
 
