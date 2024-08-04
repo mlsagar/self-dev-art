@@ -6,7 +6,7 @@ router.route("/")
     .get(allArticles)
     .post(addArticle);
 
-router.route("/:articleId")
+router.route(process.env.ROUTE_WITH_ARTICLE_ID)
     .get(oneArticle)
     .put(fullUpdateOneArticle)
     .patch(partialUpdateOneArticle)

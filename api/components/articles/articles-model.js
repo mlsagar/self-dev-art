@@ -27,4 +27,4 @@ const articleSchema = mongoose.Schema({
     comments: [commentSchema]
 })
 
-mongoose.model("Article", articleSchema, "articles");
+mongoose.model(process.env.MODEL_NAME, articleSchema, process.env.COLLECTION_NAME);

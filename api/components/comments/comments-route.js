@@ -8,7 +8,7 @@ router.route("/")
     .post(addComment)
 
 
-router.route("/:commentId")
+router.route(process.env.ROUTE_WITH_COMMENT_ID)
     .get(oneComment)
     .put(fullUpdateOneComment)
     .patch(partialUpdateOneComment)
