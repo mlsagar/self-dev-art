@@ -1,24 +1,17 @@
 require("../components/articles/articles-model");
 const mongoose = require("mongoose");
 mongoose.connect(process.env.DATABASE_URL);
-const callbackify = require("util").callbackify;
-
-const mongooseConnectionClose = function() {
-    return mongoose.connection.close();
-}
-
-const mongooseConnectionCloseWithCallbackify = callbackify(mongooseConnectionClose);
 
 const handleConnected = function() {
-    console.log("Mongoose connected to " + process.env.DATABASE_NAME);
+    console.log( `${process.env.MONGOOSE_CONNECTED_MESSAGE} ${process.env.DATABASE_NAME}`);
 }
 
 const handleDisconnected = function(){
-    console.log("Mongoose disconnected");
+    console.log(process.env.MONGOOSE_DISCONNECTED_MESSAGE);
 }
 
 const handleError = function(error) {
-    console.log("Mongoose error: " + error);
+    console.log(`${process.env.MONGOOSE_ERROR_MESSAGE} ${error}`);
 }
 
 mongoose.connection.on("connected", handleConnected);
@@ -27,25 +20,26 @@ mongoose.connection.on("disconnected", handleDisconnected);
 
 mongoose.connection.on("error", handleError);
 
-const handleProcessSignal = function(processSignalType) {
+
+const handleSIGINT = function() {
+    mongoose.connection.close().then(_handleProcessSignal.bind(null, process.env.SIGNAL_INTERRUPTION));
+}
+const handleSIGTERM = function() {    
+    mongoose.connection.close().then(_handleProcessSignal.bind(null, process.env.SIGNAL_TERMINATION));
+}
+const handleSIGUSR2 = function() {
+    mongoose.connection.close().then(_handleProcessSignal.bind(null, process.env.SIGNAL_RESTART));
+}
+
+process.on(process.env.SIGNAL_INTERRUPTION, handleSIGINT);
+process.on(process.env.SIGNAL_TERMINATION, handleSIGTERM);
+process.on(process.env.SIGNAL_RESTART, handleSIGUSR2);
+
+const _handleProcessSignal = function(processSignalType) {
     console.log(process.env[processSignalType + "_MESSAGE"]);
-    if (processSignalType === "SIGUSR2") {
+    if (processSignalType === process.env.SIGNAL_RESTART) {
         process.kill(process.pid, processSignalType);
         return;
     }
     process.exit(0);
 }
-
-const handleSIGINT = function() {
-    mongooseConnectionCloseWithCallbackify(handleProcessSignal.bind(null, "SIGINT"));
-}
-const handleSIGTERM = function() {
-    mongooseConnectionCloseWithCallbackify(handleProcessSignal.bind(null, "SIGTERM"));
-}
-const handleSIGUSR2 = function() {
-    mongooseConnectionCloseWithCallbackify(handleProcessSignal.bind(null, "SIGUSR2"));
-}
-
-process.on("SIGINT", handleSIGINT);
-process.on("SIGTERM", handleSIGTERM);
-process.on("SIGUSR2", handleSIGUSR2);

@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Article = mongoose.model(process.env.ARTICLE_MODEL)
+const Article = mongoose.model(process.env.MODEL_NAME)
 const callbackify = require("util").callbackify;
 
 const _Comment = function (artilceId) {
