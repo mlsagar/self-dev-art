@@ -31,6 +31,7 @@ const allComments = function (request, response) {
 
     if (!mongoose.isValidObjectId(articleId)) {
         response.status(400).json({ message: "Invalid article id" });
+        return;
     }
     let offset = parseInt(process.env.INITIAL_FIND_OFFSET, process.env.RADIX_VALUE);
     let count = parseInt(process.env.INITIAL_FIND_COUNT, process.env.RADIX_VALUE);

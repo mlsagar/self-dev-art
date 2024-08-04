@@ -1,4 +1,4 @@
-require("./articles-model");
+require("../components/articles/articles-model");
 const mongoose = require("mongoose");
 mongoose.connect(process.env.DATABASE_URL);
 const callbackify = require("util").callbackify;
