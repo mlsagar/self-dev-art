@@ -2,23 +2,6 @@ const mongoose = require("mongoose");
 const Article = mongoose.model(process.env.MODEL_NAME);
 const callbackify = require("util").callbackify;
 
-
-const articleFindSkipLimitExec = function (offset, count) {
-    return Article.find().skip(offset).limit(count).exec();
-}
-const articleFindSkipLimitExecWithCallbackify = callbackify(articleFindSkipLimitExec);
-const handleAllArticles = function (response, error, articles) {
-    const responseCollection = {
-        status: Number(process.env.SUCCESS_STATUS_CODE),
-        message: articles
-    }
-    if (error) {
-        responseCollection.status = Number(process.env.SERVER_ERROR_STATUS_CODE),
-            responseCollection.message = error
-    }
-
-    response.status(responseCollection.status).json(responseCollection.message);
-}
 const allArticles = function (request, response) {
     let offset = parseInt(process.env.INITIAL_FIND_OFFSET, process.env.RADIX_VALUE);
     let count = parseInt(process.env.INITIAL_FIND_COUNT, process.env.RADIX_VALUE);
@@ -38,30 +21,18 @@ const allArticles = function (request, response) {
     }
 
     if (count > maxCount) {
-        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: "Cannot exceed count of " + maxCount });
+        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: `${process.env.MAX_LIMIT_MESSAGE} ${maxCount}` });
         return;
     }
 
-    articleFindSkipLimitExecWithCallbackify(offset, count, handleAllArticles.bind(null, response));
+    const responseCollection = _createResponseCollection();
+
+    Article.find().skip(offset).limit(count).exec()
+        .then(_handleAllArticles.bind(null, responseCollection))
+        .catch(_setInternalError.bind(null, responseCollection))
+        .finally(_sendResponse.bind(null, response, responseCollection));
 }
 
-
-const articleCreate = function (article) {
-    return Article.create(article);
-}
-const articleCreateWithCallbackify = callbackify(articleCreate);
-const handleAddArticle = function (response, error) {
-    const responseCollection = {
-        status: Number(process.env.SUCCESS_STATUS_CODE),
-        message: { message: process.env.ARTICLE_POST_SUCCESS_MESSAGE }
-    }
-    if (error) {
-        responseCollection.status = Number(process.env.SERVER_ERROR_STATUS_CODE);
-        responseCollection.message = error;
-    }
-
-    response.status(responseCollection.status).json(responseCollection.message);
-}
 const addArticle = function (request, response) {
     const newArticle = {
         title: request.body.title,
@@ -70,7 +41,12 @@ const addArticle = function (request, response) {
         comments: []
     }
 
-    articleCreateWithCallbackify(newArticle, handleAddArticle.bind(null, response));
+    const responseCollection = _createResponseCollection();
+
+    Article.create(newArticle)
+        .then(_handleAddArticle.bind(null, responseCollection))
+        .catch(_setInternalError.bind(null, responseCollection))
+        .finally(_sendResponse.bind(null, response, responseCollection));
 }
 
 
@@ -223,6 +199,44 @@ const article = function (request, response) {
     }
 
     articleFindByIdAndDeleteExecWithCallbackify(articleId, handleRemoveArticle.bind(null, response));
+}
+
+const _handleAllArticles = function (responseCollection, articles) {
+    if (!articles) {
+        responseCollection.status = process.env.BAD_REQUEST_STATUS_CODE;
+        responseCollection.message = {message: process.env.BAD_REQUEST_MESSAGE};
+        return;
+    }
+
+    responseCollection.status = process.env.SUCCESS_STATUS_CODE;
+    responseCollection.message = articles;
+}
+
+const _handleAddArticle = function(responseCollection, response) {
+    if (!response) {
+        responseCollection.status = Number(process.env.SERVER_ERROR_STATUS_CODE);
+        responseCollection.message = {message: process.env.BAD_REQUEST_MESSAGE};
+        return;
+    }
+
+    responseCollection.status = process.env.SUCCESS_STATUS_CODE;
+    responseCollection.message = {message: process.env.ARTICLE_POST_SUCCESS_MESSAGE};
+}
+
+const _createResponseCollection = function() {
+    return {
+        status: process.env.CREATE_STATUS_CODE,
+        message: ""
+    }
+}
+
+const _setInternalError = function(responseCollection, error) {
+    responseCollection.status = process.env.SERVER_ERROR_STATUS_CODE;
+    responseCollection.message = error;
+}
+
+const _sendResponse = function(response, responseCollection) {
+    response.status(responseCollection.status).json(responseCollection.message)
 }
 
 
