@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const Article = mongoose.model(process.env.MODEL_NAME);
-const callbackify = require("util").callbackify;
 
 const allArticles = function (request, response) {
     let offset = parseInt(process.env.INITIAL_FIND_OFFSET, process.env.RADIX_VALUE);
@@ -49,30 +48,6 @@ const addArticle = function (request, response) {
         .finally(_sendResponse.bind(null, response, responseCollection));
 }
 
-
-const articleFinbByIdExec = function (articleId) {
-    return Article.findById(articleId).exec();
-}
-const articleFindByIdExecWithCallbackify = callbackify(articleFinbByIdExec);
-
-const handleOneArticle = function (response, error, article) {
-    const responseCollection = {
-        status: Number(process.env.CREATE_STATUS_CODE),
-        message: ""
-    }
-    if (error) {
-        responseCollection.status = Number(process.env.SERVER_ERROR_STATUS_CODE);
-        responseCollection.message = error;
-    } else if (!article) {
-        responseCollection.status = Number(process.env.NOT_FOUND_STATUS_CODE);
-        responseCollection.message = { message: process.env.ARTICLE_ID_NOT_FOUND_MESSAGE }
-    } else if (responseCollection.status === Number(process.env.CREATE_STATUS_CODE)) {
-        responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE),
-            responseCollection.message = article
-    }
-
-    response.status(responseCollection.status).json(responseCollection.message);
-}
 const oneArticle = function (request, response) {
     const articleId = request.params.articleId;
 
@@ -81,69 +56,12 @@ const oneArticle = function (request, response) {
         return;
     }
 
-    articleFindByIdExecWithCallbackify(articleId, handleOneArticle.bind(null, response));
-}
+    const responseCollection = _createResponseCollection();
 
-const articleSave = function (article) {
-    return article.save();
-}
-const articleSaveWithCallbackify = callbackify(articleSave);
-
-const _fullUpdateArticle = function (request, response, article, responseCollection) {
-    article.title = request.body.title;
-    article.author = request.body.author;
-    article.link = request.body.link;
-
-    articleSaveWithCallbackify(article, function (error) {
-        if (error) {
-            responseCollection.status = Number(process.env.SERVER_ERROR_STATUS_CODE);
-            responseCollection.message = error;
-        } else {
-            responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
-            responseCollection.message = { message: process.env.FULL_UPDATE_ARTICLE_SUCCESS_MESSAGE }
-        }
-        response.status(responseCollection.status).json(responseCollection.message);
-    })
-}
-
-const _partialUpdateArticle = function(request, response, article, responseCollection) {
-    if (request.body && request.body.title) { article.title = request.body.title }
-        if (request.body && request.body.link) { article.link = request.body.link }
-        if (request.body && request.body.author) { article.author = request.body.author }
-        if (request.body && request.body.comments) { article.title = request.body.comments }
-
-
-        articleSaveWithCallbackify(article, function (error) {
-            if (error) {
-                responseCollection.status = Number(process.env.SERVER_ERROR_STATUS_CODE);
-                responseCollection.message = error;
-            } else {
-                responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
-                responseCollection.message = { message: process.env.PARTIAL_UPDATE_ARTICLE_SUCCESS_MESSAGE }
-            }
-            response.status(responseCollection.status).json(responseCollection.message);
-        })
-}
-
-const _updateArticle = function (request, response, updateArticleCallback, error, article) {
-    const responseCollection = {
-        status: Number(process.env.CREATE_STATUS_CODE),
-        message: ""
-    }
-    if (error) {
-        responseCollection.status = Number(process.env.SERVER_ERROR_STATUS_CODE);
-        responseCollection.message = error;
-    } else if (!article) {
-        responseCollection.status = Number(process.env.NOT_FOUND_STATUS_CODE);
-        responseCollection.message = { message: process.env.INVALID_ARTICLE_ID_MESSAGE }
-    }
-
-    if (responseCollection.status !== Number(process.env.CREATE_STATUS_CODE)) {
-        response.status(responseCollection.status).json(responseCollection.message);
-    } else {
-        updateArticleCallback(request, response, article, responseCollection);
-    }
-
+    Article.findById(articleId).exec()
+        .then(_handleOneArticle.bind(null, responseCollection))
+        .catch(_setInternalError.bind(null, responseCollection))
+        .finally(_sendResponse.bind(null, response, responseCollection));
 }
 
 const fullUpdateOneArticle = function (request, response) {
@@ -154,7 +72,14 @@ const fullUpdateOneArticle = function (request, response) {
         return;
     }
 
-    articleFindByIdExecWithCallbackify(articleId, _updateArticle.bind(null, request, response, _fullUpdateArticle));
+    const responseCollection = _createResponseCollection();
+
+    Article.findById(articleId).exec()
+        .then(_updateArticle.bind(null, request, responseCollection, _fullUpdateArticle))
+        .then(_handleUpdateResponse.bind(null, process.env.FULL_UPDATE_ARTICLE_SUCCESS_MESSAGE, responseCollection))
+        .catch(_setInternalError.bind(null, responseCollection))
+        .finally(_sendResponse.bind(null, response, responseCollection));
+
 }
 
 const partialUpdateOneArticle = function (request, response) {
@@ -165,32 +90,26 @@ const partialUpdateOneArticle = function (request, response) {
         return;
     }
 
-    articleFindByIdExecWithCallbackify(articleId, _updateArticle.bind(null, request, response, _partialUpdateArticle));
+    const responseCollection = _createResponseCollection();
+
+    Article.findById(articleId).exec()
+        .then(_updateArticle.bind(null, request, responseCollection, _partialUpdateArticle))
+        .then(_handleUpdateResponse.bind(null, process.env.PARTIAL_UPDATE_ARTICLE_SUCCESS_MESSAGE, responseCollection))
+        .catch(_setInternalError.bind(null, responseCollection))
+        .finally(_sendResponse.bind(null, response, responseCollection));
 }
 
-
-const articleFindByIdAndDeleteExec = function (articleId) {
-    return Article.findByIdAndDelete(articleId).exec();
-}
-const articleFindByIdAndDeleteExecWithCallbackify = callbackify(articleFindByIdAndDeleteExec);
-const handleRemoveArticle = function (response, error, deletedArticle) {
-    const responseCollection = {
-        status: Number(process.env.CREATE_STATUS_CODE),
-        message: ""
-    }
-    if (error) {
-        responseCollection.status = Number(process.env.SERVER_ERROR_STATUS_CODE);
-        responseCollection.message = error;
-    } else if (!deletedArticle) {
+const handleRemoveArticle = function (responseCollection, deletedArticle) {
+    if (!deletedArticle) {
         responseCollection.status = Number(process.env.NOT_FOUND_STATUS_CODE);
         responseCollection.message = { message: process.env.ARTICLE_ID_NOT_FOUND_MESSAGE };
-    } else if (responseCollection.status === Number(process.env.CREATE_STATUS_CODE)) {
-        responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
-        responseCollection.message = { message: process.env.DELETE_ARTICLE_MESSAGE};
+        return;
     }
-    response.status(responseCollection.status).json(responseCollection.message);
+    responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
+    responseCollection.message = { message: process.env.DELETE_ARTICLE_MESSAGE };
+
 }
-const article = function (request, response) {
+const removeArticle = function (request, response) {
     const articleId = request.params.articleId;
 
     if (!mongoose.isValidObjectId(articleId)) {
@@ -198,44 +117,91 @@ const article = function (request, response) {
         return;
     }
 
-    articleFindByIdAndDeleteExecWithCallbackify(articleId, handleRemoveArticle.bind(null, response));
+    const responseCollection = _createResponseCollection();
+
+    Article.findByIdAndDelete(articleId).exec()
+        .then(handleRemoveArticle.bind(null, responseCollection))
+        .catch(_setInternalError.bind(null, responseCollection))
+        .finally(_sendResponse.bind(null, response, responseCollection));
 }
 
 const _handleAllArticles = function (responseCollection, articles) {
     if (!articles) {
-        responseCollection.status = process.env.BAD_REQUEST_STATUS_CODE;
-        responseCollection.message = {message: process.env.BAD_REQUEST_MESSAGE};
+        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
+        responseCollection.message = { message: process.env.BAD_REQUEST_MESSAGE };
         return;
     }
 
-    responseCollection.status = process.env.SUCCESS_STATUS_CODE;
+    responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
     responseCollection.message = articles;
 }
 
-const _handleAddArticle = function(responseCollection, response) {
+const _handleAddArticle = function (responseCollection, response) {
     if (!response) {
         responseCollection.status = Number(process.env.SERVER_ERROR_STATUS_CODE);
-        responseCollection.message = {message: process.env.BAD_REQUEST_MESSAGE};
+        responseCollection.message = { message: process.env.BAD_REQUEST_MESSAGE };
         return;
     }
 
-    responseCollection.status = process.env.SUCCESS_STATUS_CODE;
-    responseCollection.message = {message: process.env.ARTICLE_POST_SUCCESS_MESSAGE};
+    responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
+    responseCollection.message = { message: process.env.ARTICLE_POST_SUCCESS_MESSAGE };
 }
 
-const _createResponseCollection = function() {
+const _handleOneArticle = function (responseCollection, article) {
+    if (!article) {
+        responseCollection.status = Number(process.env.NOT_FOUND_STATUS_CODE);
+        responseCollection.message = { message: process.env.ARTICLE_ID_NOT_FOUND_MESSAGE }
+        return;
+    }
+    responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE),
+        responseCollection.message = article;
+}
+
+const _updateArticle = function (request, responseCollection, updateArticleCallback, article) {
+    if (!article) {
+        responseCollection.status = Number(process.env.NOT_FOUND_STATUS_CODE);
+        responseCollection.message = { message: process.env.INVALID_ARTICLE_ID_MESSAGE }
+        return;
+    }
+
+    updateArticleCallback(request, article);
+    return article.save()
+
+}
+
+const _handleUpdateResponse = function (message, responseCollection, saveResponse) {
+    if (saveResponse) {
+        responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
+        responseCollection.message = { message };
+    }
+}
+
+const _fullUpdateArticle = function (request, article) {
+    article.title = request.body.title;
+    article.author = request.body.author;
+    article.link = request.body.link;
+}
+
+const _partialUpdateArticle = function (request, article) {
+    if (request.body && request.body.title) { article.title = request.body.title }
+    if (request.body && request.body.link) { article.link = request.body.link }
+    if (request.body && request.body.author) { article.author = request.body.author }
+    if (request.body && request.body.comments) { article.title = request.body.comments }
+}
+
+const _createResponseCollection = function () {
     return {
-        status: process.env.CREATE_STATUS_CODE,
+        status: Number(process.env.CREATE_STATUS_CODE),
         message: ""
     }
 }
 
-const _setInternalError = function(responseCollection, error) {
-    responseCollection.status = process.env.SERVER_ERROR_STATUS_CODE;
+const _setInternalError = function (responseCollection, error) {
+    responseCollection.status = Number(process.env.SERVER_ERROR_STATUS_CODE);
     responseCollection.message = error;
 }
 
-const _sendResponse = function(response, responseCollection) {
+const _sendResponse = function (response, responseCollection) {
     response.status(responseCollection.status).json(responseCollection.message)
 }
 
@@ -246,5 +212,5 @@ module.exports = {
     oneArticle,
     fullUpdateOneArticle,
     partialUpdateOneArticle,
-    article
+    removeArticle
 }
