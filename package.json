@@ -5,8 +5,9 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app",
-    "dev": "nodemon --inspect"
+    "start": "npm run startBackend | npm run startFrontend",
+    "startFrontend": "cd public/frontend && npm start",
+    "startBackend": "nodemon --inspect"
   },
   "repository": {
     "type": "git",

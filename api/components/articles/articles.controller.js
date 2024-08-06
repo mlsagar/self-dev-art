@@ -156,8 +156,6 @@ const _handleOneArticle = function (responseCollection, article) {
     responseCollection.message = process.env.SUCCESS_FETCHING_MESSAGE;
 }
 
-
-
 const _updateArticle = function (request, responseCollection, updateArticleCallback, article) {
     if (!article) {
         _setResponseCollectionForAbsenceOfArticle(responseCollection);
@@ -223,7 +221,6 @@ const _sendResponse = function (response, responseCollection) {
         ...responseCollection
     })
 }
-
 
 module.exports = {
     allArticles,
