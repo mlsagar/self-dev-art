@@ -1,4 +1,5 @@
 require("../components/articles/articles-model");
+require("../components/users/users-model");
 const mongoose = require("mongoose");
 mongoose.connect(process.env.DATABASE_URL);
 

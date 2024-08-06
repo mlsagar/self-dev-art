@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Article = mongoose.model(process.env.MODEL_NAME);
+const Article = mongoose.model(process.env.ARTICLE_MODEL_NAME);
 
 const allArticles = function (request, response) {
     let offset = parseInt(process.env.INITIAL_FIND_OFFSET, process.env.RADIX_VALUE);

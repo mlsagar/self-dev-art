@@ -1,6 +1,6 @@
 const { response } = require("express");
 const mongoose = require("mongoose");
-const Article = mongoose.model(process.env.MODEL_NAME)
+const Article = mongoose.model(process.env.ARTICLE_MODEL_NAME)
 
 const allComments = function (request, response) {
     const articleId = request.params.articleId;
