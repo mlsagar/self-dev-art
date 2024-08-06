@@ -1,4 +1,3 @@
-const { response } = require("express");
 const mongoose = require("mongoose");
 const Article = mongoose.model(process.env.MODEL_NAME)
 
@@ -39,7 +38,6 @@ const allComments = function (request, response) {
         .finally(_sendResponse.bind(null, response, responseCollection));
 }
 
-
 const addComment = function (request, response) {
     const articleId = request.params.articleId;
 
@@ -67,6 +65,7 @@ const oneComment = function (request, response) {
     }
     if (!mongoose.isValidObjectId(commentId)) {
         response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_COMMENT_ID_MESSAGE });
+        return;
     }
 
     const responseCollection = _createResponseCollection();
@@ -87,6 +86,7 @@ const fullUpdateOneComment = function (request, response) {
     }
     if (!mongoose.isValidObjectId(commentId)) {
         response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_COMMENT_ID_MESSAGE });
+        return;
     }
 
     const responseCollection = _createResponseCollection();
@@ -108,6 +108,7 @@ const partialUpdateOneComment = function (request, response) {
     }
     if (!mongoose.isValidObjectId(commentId)) {
         response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_COMMENT_ID_MESSAGE });
+        return;
     }
 
     const responseCollection = _createResponseCollection();
@@ -129,6 +130,7 @@ const removeComment = function (request, response) {
     }
     if (!mongoose.isValidObjectId(commentId)) {
         response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_COMMENT_ID_MESSAGE });
+        return;
     }
 
     const responseCollection = _createResponseCollection();
@@ -142,76 +144,49 @@ const removeComment = function (request, response) {
 
 const _handleAllComments = function (responseCollection, article) {
     if (!article) {
-        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
-        responseCollection.message = { message: process.env.BAD_REQUEST_MESSAGE };
+        _setResponseCollectionForAbsenceOfArticle(responseCollection);
         return;
     }
-
     responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
     responseCollection.message = article.comments;
 }
 
 const _handleAddComment = function (request, responseCollection, article) {
     if (!article) {
-        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
-        responseCollection.message = { message: process.env.BAD_REQUEST_MESSAGE };
+        _setResponseCollectionForAbsenceOfArticle(responseCollection);
         return;
     }
-
-    const newComment = {
-        comment: request.body.comment,
-        name: request.body.name
-    }
-
-    article.comments.push(newComment);
+    article.comments.push(_createNewComment(request));
     return article.save();
 
-}
-const _setSuccessResponseCollectionAfterArticleSave = function(responseCollection, message, saveComment) {
-    if (saveComment) {
-        responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
-        responseCollection.message = { message };
-    }
 }
 
 const _handleOneComment = function (responseCollection, commentId, article) {
     if (!article) {
-        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
-        responseCollection.message = { message: process.env.BAD_REQUEST_MESSAGE };
+        _setResponseCollectionForAbsenceOfArticle(responseCollection);
         return;
     }
+    const selectedComment = article.comments.id(commentId);
 
-    
-    if (!article.comments.id(commentId)) {
-        responseCollection.status = Number(process.env.NOT_FOUND_STATUS_CODE);
-        responseCollection.message = {message: process.env.COMMENT_ID_NOT_FOUND_MESSAGE}
+    if (!selectedComment) {
+        _setResponseCollectionForAbsenceOfCommentID(responseCollection);
         return;
     }
-
     responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
-    responseCollection.message = article.comments.id(commentId);
-    
+    responseCollection.message = article.comments.id(commentId);    
 }
 
 const _handleUpdateComment = function (request, responseCollection, updateCallback, article) {
     if (!article) {
-        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
-        responseCollection.message = { message: process.env.BAD_REQUEST_MESSAGE };
+        _setResponseCollectionForAbsenceOfArticle(responseCollection);    
         return;
     }
-    
     const selectedComment = article.comments.id(request.params.commentId);
-
     if (!selectedComment) {
-        responseCollection.status = Number(process.env.NOT_FOUND_STATUS_CODE);
-        responseCollection.message = {message: process.env.COMMENT_ID_NOT_FOUND_MESSAGE}
+        _setResponseCollectionForAbsenceOfCommentID(responseCollection);
         return;
     }
-
     updateCallback(selectedComment, request);
-
-    
-
     return article.save();    
 }
 
@@ -227,23 +202,40 @@ const _partialUpdateComment = function(selectedComment, request) {
 
 const _handleRemoveComment = function (request, responseCollection, article) {
     if (!article) {
-        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
-        responseCollection.message = { message: process.env.BAD_REQUEST_MESSAGE };
+        _setResponseCollectionForAbsenceOfArticle(responseCollection);    
         return;
     }
-    
     const selectedComment = article.comments.id(request.params.commentId);
-
     if (!selectedComment) {
+        _setResponseCollectionForAbsenceOfCommentID(responseCollection);
+        return;
+    }
+    selectedComment.deleteOne();
+    return article.save();
+}
+
+const _setResponseCollectionForAbsenceOfArticle = function(responseCollection) {
+        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
+        responseCollection.message = { message: process.env.BAD_REQUEST_MESSAGE };    
+}
+
+const _setResponseCollectionForAbsenceOfCommentID = function( responseCollection) {
         responseCollection.status = Number(process.env.NOT_FOUND_STATUS_CODE);
         responseCollection.message = {message: process.env.COMMENT_ID_NOT_FOUND_MESSAGE}
-        return;
+}
+
+const _setSuccessResponseCollectionAfterArticleSave = function(responseCollection, message, saveComment) {
+    if (saveComment) {
+        responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
+        responseCollection.message = { message };
     }
+}
 
-    selectedComment.deleteOne();
-
-    return article.save();
-
+const _createNewComment = function(request) {
+    return {
+        comment: request.body.comment,
+        name: request.body.name
+    }
 }
 
 const _createResponseCollection = function () {
