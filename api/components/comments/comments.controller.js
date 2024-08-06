@@ -1,11 +1,6 @@
 const { response } = require("express");
 const mongoose = require("mongoose");
 const Article = mongoose.model(process.env.MODEL_NAME)
-const callbackify = require("util").callbackify;
-
-const _Comment = function (artilceId) {
-    return Article.findById(artilceId).select("comments");
-}
 
 const allComments = function (request, response) {
     const articleId = request.params.articleId;
@@ -44,10 +39,6 @@ const allComments = function (request, response) {
         .finally(_sendResponse.bind(null, response, responseCollection));
 }
 
-const handleArticleFindByIdSelectExecCallbackify = function (articleId) {
-    return _Comment(articleId).exec();
-}
-const articleFindByIdSelectExecWithCallbackify = callbackify(handleArticleFindByIdSelectExecCallbackify);
 
 const addComment = function (request, response) {
     const articleId = request.params.articleId;
@@ -86,35 +77,6 @@ const oneComment = function (request, response) {
         .finally(_sendResponse.bind(null, response, responseCollection));
 }
 
-
-const handleUpdateComment = function (request, response, error, article) {
-    const responseCollection = {
-        status: 200,
-        message: article
-    }
-    if (error) {
-        responseCollection.status = 500;
-        responseCollection.message = error;
-    } else if (!article) {
-        responseCollection.status = 404;
-        responseCollection.message = { message: "Article ID not found" };
-    }
-
-    if (article) {
-        const selectedComment = article.comments.id(request.params.commentId);
-
-        if (!selectedComment) {
-            response.status(404).json({ message: "Comment not found" });
-        }
-
-        selectedComment.name = request.body.name;
-        selectedComment.comment = request.body.comment;
-
-        articleSaveWithCallbackify(article, handleAddDeleteAndUpdateComment.bind(null, "Updated", response))
-    } else {
-        response.status(responseCollection.status).json(responseCollection.message);
-    }
-}
 const fullUpdateOneComment = function (request, response) {
     const commentId = request.params.commentId;
     const articleId = request.params.articleId;
@@ -126,45 +88,20 @@ const fullUpdateOneComment = function (request, response) {
     if (!mongoose.isValidObjectId(commentId)) {
         response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_COMMENT_ID_MESSAGE });
     }
-    articleFindByIdSelectExecWithCallbackify(articleId, handleUpdateComment.bind(null, request, response));
-}
 
+    const responseCollection = _createResponseCollection();
+
+    Article.findById(articleId).select("comments").exec()
+        .then(_handleUpdateComment.bind(null, request, responseCollection, _fullUpdateComment))
+        .then(_setSuccessResponseCollectionAfterArticleSave.bind(null, responseCollection, process.env.FULL_UPDATE_COMMENT_SUCCESS_MESSAGE))
+        .catch(_setInternalError.bind(null, responseCollection))
+        .finally(_sendResponse.bind(null, response, responseCollection));
+}
 
 const partialUpdateOneComment = function (request, response) {
-    fullUpdateOneComment(request, response);
-}
-
-
-const handleDeleteComment = function (request, response, error, article) {
-    const responseCollection = {
-        status: 200,
-        message: article
-    }
-    if (error) {
-        responseCollection.status = 500;
-        responseCollection.message = error;
-    } else if (!article) {
-        responseCollection.status = 404;
-        responseCollection.message = { message: "Article ID not found" };
-    }
-
-    if (article) {
-        let selectedComment = article.comments.id(request.params.commentId);
-
-        if (!selectedComment) {
-            response.status(404).json({ message: "Comment not found" });
-        }
-
-        selectedComment.deleteOne();
-
-        articleSaveWithCallbackify(article, handleAddDeleteAndUpdateComment.bind(null, "Deleted", response))
-    } else {
-        response.status(responseCollection.status).json(responseCollection.message);
-    }
-}
-const comment = function (request, response) {
     const commentId = request.params.commentId;
     const articleId = request.params.articleId;
+
     if (!mongoose.isValidObjectId(articleId)) {
         response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_ARTICLE_ID_MESSAGE });
         return;
@@ -172,26 +109,35 @@ const comment = function (request, response) {
     if (!mongoose.isValidObjectId(commentId)) {
         response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_COMMENT_ID_MESSAGE });
     }
-    articleFindByIdSelectExecWithCallbackify(articleId, handleDeleteComment.bind(null, request, response));
-}
 
+    const responseCollection = _createResponseCollection();
 
-const handleArticleSaveCallbackify = function (article) {
-    return article.save();
+    Article.findById(articleId).select("comments").exec()
+        .then(_handleUpdateComment.bind(null, request, responseCollection, _partialUpdateComment))
+        .then(_setSuccessResponseCollectionAfterArticleSave.bind(null, responseCollection, process.env.PARTIAL_UPDATE_COMMENT_SUCCESS_MESSAGE))
+        .catch(_setInternalError.bind(null, responseCollection))
+        .finally(_sendResponse.bind(null, response, responseCollection));
 }
-const articleSaveWithCallbackify = callbackify(handleArticleSaveCallbackify);
-const handleAddDeleteAndUpdateComment = function (action, response, error) {
-    const responseCollection = {
-        status: 200,
-        message: { message: `${action} comment successfully!!!` }
+    
+const removeComment = function (request, response) {
+    const commentId = request.params.commentId;
+    const articleId = request.params.articleId;
+
+    if (!mongoose.isValidObjectId(articleId)) {
+        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_ARTICLE_ID_MESSAGE });
+        return;
+    }
+    if (!mongoose.isValidObjectId(commentId)) {
+        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_COMMENT_ID_MESSAGE });
     }
 
-    if (error) {
-        responseCollection.status = 500;
-        responseCollection.message = error;
-    }
+    const responseCollection = _createResponseCollection();
 
-    response.status(responseCollection.status).json(responseCollection.message);
+    Article.findById(articleId).select("comments").exec()
+        .then(_handleRemoveComment.bind(null, request, responseCollection))
+        .then(_setSuccessResponseCollectionAfterArticleSave.bind(null, responseCollection, process.env.DELETE_COMMENT_MESSAGE))
+        .catch(_setInternalError.bind(null, responseCollection))
+        .finally(_sendResponse.bind(null, response, responseCollection));
 }
 
 const _handleAllComments = function (responseCollection, article) {
@@ -237,7 +183,7 @@ const _handleOneComment = function (responseCollection, commentId, article) {
 
     
     if (!article.comments.id(commentId)) {
-        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
+        responseCollection.status = Number(process.env.NOT_FOUND_STATUS_CODE);
         responseCollection.message = {message: process.env.COMMENT_ID_NOT_FOUND_MESSAGE}
         return;
     }
@@ -245,6 +191,59 @@ const _handleOneComment = function (responseCollection, commentId, article) {
     responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
     responseCollection.message = article.comments.id(commentId);
     
+}
+
+const _handleUpdateComment = function (request, responseCollection, updateCallback, article) {
+    if (!article) {
+        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
+        responseCollection.message = { message: process.env.BAD_REQUEST_MESSAGE };
+        return;
+    }
+    
+    const selectedComment = article.comments.id(request.params.commentId);
+
+    if (!selectedComment) {
+        responseCollection.status = Number(process.env.NOT_FOUND_STATUS_CODE);
+        responseCollection.message = {message: process.env.COMMENT_ID_NOT_FOUND_MESSAGE}
+        return;
+    }
+
+    updateCallback(selectedComment, request);
+
+    
+
+    return article.save();    
+}
+
+const _fullUpdateComment = function(selectedComment, request) {
+    selectedComment.name = request.body.name;
+    selectedComment.comment = request.body.comment;
+}
+
+const _partialUpdateComment = function(selectedComment, request) {
+    if (request.body && request.body.name) {selectedComment.name = request.body.name}
+    if (request.body && request.body.comment) {selectedComment.comment = request.body.comment}
+}
+
+const _handleRemoveComment = function (request, responseCollection, article) {
+    if (!article) {
+        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
+        responseCollection.message = { message: process.env.BAD_REQUEST_MESSAGE };
+        return;
+    }
+    
+    const selectedComment = article.comments.id(request.params.commentId);
+
+    if (!selectedComment) {
+        responseCollection.status = Number(process.env.NOT_FOUND_STATUS_CODE);
+        responseCollection.message = {message: process.env.COMMENT_ID_NOT_FOUND_MESSAGE}
+        return;
+    }
+
+    selectedComment.deleteOne();
+
+    return article.save();
+
 }
 
 const _createResponseCollection = function () {
@@ -270,5 +269,5 @@ module.exports = {
     oneComment,
     fullUpdateOneComment,
     partialUpdateOneComment,
-    comment
+    removeComment
 }
