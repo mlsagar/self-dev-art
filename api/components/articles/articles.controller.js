@@ -5,7 +5,7 @@ const allArticles = function (request, response) {
     let offset = parseInt(process.env.INITIAL_FIND_OFFSET, process.env.RADIX_VALUE);
     let count = parseInt(process.env.INITIAL_FIND_COUNT, process.env.RADIX_VALUE);
     const maxCount = parseInt(process.env.INITIAL_MAX_FIND_LIMIT, process.env.RADIX_VALUE);
-
+    const responseCollection = _createResponseCollection();
     if (request.query && request.query.offset) {
         offset = parseInt(request.query.offset, process.env.RADIX_VALUE);
     }
@@ -15,16 +15,18 @@ const allArticles = function (request, response) {
     }
 
     if (isNaN(offset) || isNaN(count)) {
-        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_OFFSET_COUNT_MESSAGE });
+        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
+        responseCollection.message = process.env.INVALID_OFFSET_COUNT_MESSAGE;
+        _sendResponse(response, responseCollection);
         return;
     }
 
     if (count > maxCount) {
-        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: `${process.env.MAX_LIMIT_MESSAGE} ${maxCount}` });
+        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
+        responseCollection.message = `${process.env.MAX_LIMIT_MESSAGE} ${maxCount}`;
+        _sendResponse(response, responseCollection);
         return;
-    }
-
-    const responseCollection = _createResponseCollection();
+    }    
 
     Article.find().skip(offset).limit(count).exec()
         .then(_handleAllArticles.bind(null, responseCollection))
@@ -52,7 +54,9 @@ const oneArticle = function (request, response) {
     const articleId = request.params.articleId;
 
     if (!mongoose.isValidObjectId(articleId)) {
-        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_ARTICLE_ID_MESSAGE });
+        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
+        responseCollection.message =  process.env.INVALID_ARTICLE_ID_MESSAGE;
+        _sendResponse(response, responseCollection);
         return;
     }
 
@@ -68,7 +72,9 @@ const fullUpdateOneArticle = function (request, response) {
     const articleId = request.params.articleId;
 
     if (!mongoose.isValidObjectId(articleId)) {
-        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_ARTICLE_ID_MESSAGE });
+        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
+        responseCollection.message =  process.env.INVALID_ARTICLE_ID_MESSAGE;
+        _sendResponse(response, responseCollection);
         return;
     }
 
@@ -86,7 +92,9 @@ const partialUpdateOneArticle = function (request, response) {
     const articleId = request.params.articleId;
 
     if (!mongoose.isValidObjectId(articleId)) {
-        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_ARTICLE_ID_MESSAGE });
+        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
+        responseCollection.message =  process.env.INVALID_ARTICLE_ID_MESSAGE;
+        _sendResponse(response, responseCollection);
         return;
     }
 
@@ -103,7 +111,9 @@ const removeArticle = function (request, response) {
     const articleId = request.params.articleId;
 
     if (!mongoose.isValidObjectId(articleId)) {
-        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_ARTICLE_ID_MESSAGE });
+        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
+        responseCollection.message =  process.env.INVALID_ARTICLE_ID_MESSAGE;
+        _sendResponse(response, responseCollection);
         return;
     }
 
@@ -118,23 +128,24 @@ const removeArticle = function (request, response) {
 const _handleAllArticles = function (responseCollection, articles) {
     if (!articles) {
         responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
-        responseCollection.message = { message: process.env.BAD_REQUEST_MESSAGE };
+        responseCollection.message = process.env.BAD_REQUEST_MESSAGE;
         return;
     }
 
     responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
-    responseCollection.message = articles;
+    responseCollection.data = articles;
+    responseCollection.message = process.env.SUCCESS_FETCHING_MESSAGE;
 }
 
 const _handleAddArticle = function (responseCollection, response) {
     if (!response) {
         responseCollection.status = Number(process.env.SERVER_ERROR_STATUS_CODE);
-        responseCollection.message = { message: process.env.BAD_REQUEST_MESSAGE };
+        responseCollection.message = process.env.BAD_REQUEST_MESSAGE;
         return;
     }
 
     responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
-    responseCollection.message = { message: process.env.ARTICLE_POST_SUCCESS_MESSAGE };
+    responseCollection.message = process.env.ARTICLE_POST_SUCCESS_MESSAGE;
 }
 
 const _handleOneArticle = function (responseCollection, article) {
@@ -143,7 +154,8 @@ const _handleOneArticle = function (responseCollection, article) {
         return;
     }
     responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE),
-        responseCollection.message = article;
+    responseCollection.data = article;
+    responseCollection.message = process.env.SUCCESS_FETCHING_MESSAGE;
 }
 
 
@@ -162,7 +174,7 @@ const _updateArticle = function (request, responseCollection, updateArticleCallb
 const _handleUpdateResponse = function (message, responseCollection, saveResponse) {
     if (saveResponse) {
         responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
-        responseCollection.message = { message };
+        responseCollection.message = message;
     }
 }
 
@@ -182,23 +194,24 @@ const _partialUpdateArticle = function (request, article) {
 const _handleRemoveArticle = function (responseCollection, deletedArticle) {
     if (!deletedArticle) {
         responseCollection.status = Number(process.env.NOT_FOUND_STATUS_CODE);
-        responseCollection.message = { message: process.env.ARTICLE_ID_NOT_FOUND_MESSAGE };
+        responseCollection.message = process.env.ARTICLE_ID_NOT_FOUND_MESSAGE;
         return;
     }
     responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
-    responseCollection.message = { message: process.env.DELETE_ARTICLE_MESSAGE };
+    responseCollection.message = process.env.DELETE_ARTICLE_MESSAGE;
 
 }
 
 const _setResponseCollectionForAbsenceOfArticle = function (responseCollection) {
     responseCollection.status = Number(process.env.NOT_FOUND_STATUS_CODE);
-    responseCollection.message = { message: process.env.INVALID_ARTICLE_ID_MESSAGE }
+    responseCollection.message = process.env.INVALID_ARTICLE_ID_MESSAGE;
 }
 
 const _createResponseCollection = function () {
     return {
         status: Number(process.env.CREATE_STATUS_CODE),
-        message: ""
+        message: "",
+        data: []
     }
 }
 
@@ -208,7 +221,9 @@ const _setInternalError = function (responseCollection, error) {
 }
 
 const _sendResponse = function (response, responseCollection) {
-    response.status(responseCollection.status).json(responseCollection.message)
+    response.status(responseCollection.status).json({
+        ...responseCollection
+    })
 }
 
 
