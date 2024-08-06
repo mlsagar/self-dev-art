@@ -99,16 +99,6 @@ const partialUpdateOneArticle = function (request, response) {
         .finally(_sendResponse.bind(null, response, responseCollection));
 }
 
-const handleRemoveArticle = function (responseCollection, deletedArticle) {
-    if (!deletedArticle) {
-        responseCollection.status = Number(process.env.NOT_FOUND_STATUS_CODE);
-        responseCollection.message = { message: process.env.ARTICLE_ID_NOT_FOUND_MESSAGE };
-        return;
-    }
-    responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
-    responseCollection.message = { message: process.env.DELETE_ARTICLE_MESSAGE };
-
-}
 const removeArticle = function (request, response) {
     const articleId = request.params.articleId;
 
@@ -120,7 +110,7 @@ const removeArticle = function (request, response) {
     const responseCollection = _createResponseCollection();
 
     Article.findByIdAndDelete(articleId).exec()
-        .then(handleRemoveArticle.bind(null, responseCollection))
+        .then(_handleRemoveArticle.bind(null, responseCollection))
         .catch(_setInternalError.bind(null, responseCollection))
         .finally(_sendResponse.bind(null, response, responseCollection));
 }
@@ -149,18 +139,18 @@ const _handleAddArticle = function (responseCollection, response) {
 
 const _handleOneArticle = function (responseCollection, article) {
     if (!article) {
-        responseCollection.status = Number(process.env.NOT_FOUND_STATUS_CODE);
-        responseCollection.message = { message: process.env.ARTICLE_ID_NOT_FOUND_MESSAGE }
+        _setResponseCollectionForAbsenceOfArticle(responseCollection);
         return;
     }
     responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE),
         responseCollection.message = article;
 }
 
+
+
 const _updateArticle = function (request, responseCollection, updateArticleCallback, article) {
     if (!article) {
-        responseCollection.status = Number(process.env.NOT_FOUND_STATUS_CODE);
-        responseCollection.message = { message: process.env.INVALID_ARTICLE_ID_MESSAGE }
+        _setResponseCollectionForAbsenceOfArticle(responseCollection);
         return;
     }
 
@@ -187,6 +177,22 @@ const _partialUpdateArticle = function (request, article) {
     if (request.body && request.body.link) { article.link = request.body.link }
     if (request.body && request.body.author) { article.author = request.body.author }
     if (request.body && request.body.comments) { article.title = request.body.comments }
+}
+
+const _handleRemoveArticle = function (responseCollection, deletedArticle) {
+    if (!deletedArticle) {
+        responseCollection.status = Number(process.env.NOT_FOUND_STATUS_CODE);
+        responseCollection.message = { message: process.env.ARTICLE_ID_NOT_FOUND_MESSAGE };
+        return;
+    }
+    responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
+    responseCollection.message = { message: process.env.DELETE_ARTICLE_MESSAGE };
+
+}
+
+const _setResponseCollectionForAbsenceOfArticle = function (responseCollection) {
+    responseCollection.status = Number(process.env.NOT_FOUND_STATUS_CODE);
+    responseCollection.message = { message: process.env.INVALID_ARTICLE_ID_MESSAGE }
 }
 
 const _createResponseCollection = function () {
