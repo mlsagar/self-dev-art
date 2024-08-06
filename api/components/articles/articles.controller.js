@@ -52,15 +52,13 @@ const addArticle = function (request, response) {
 
 const oneArticle = function (request, response) {
     const articleId = request.params.articleId;
-
+    const responseCollection = _createResponseCollection();
     if (!mongoose.isValidObjectId(articleId)) {
         responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
         responseCollection.message =  process.env.INVALID_ARTICLE_ID_MESSAGE;
         _sendResponse(response, responseCollection);
         return;
-    }
-
-    const responseCollection = _createResponseCollection();
+    }    
 
     Article.findById(articleId).exec()
         .then(_handleOneArticle.bind(null, responseCollection))
@@ -154,7 +152,7 @@ const _handleOneArticle = function (responseCollection, article) {
         return;
     }
     responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE),
-    responseCollection.data = article;
+    responseCollection.data = [article];
     responseCollection.message = process.env.SUCCESS_FETCHING_MESSAGE;
 }
 

@@ -1,11 +1,14 @@
+const { response } = require("express");
 const mongoose = require("mongoose");
 const Article = mongoose.model(process.env.MODEL_NAME)
 
 const allComments = function (request, response) {
     const articleId = request.params.articleId;
-
+    const responseCollection = _createResponseCollection();
     if (!mongoose.isValidObjectId(articleId)) {
-        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_ARTICLE_ID_MESSAGE });
+        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
+        responseCollection.message =  process.env.INVALID_ARTICLE_ID_MESSAGE;
+        _sendResponse(response, responseCollection);
         return;
     }
     let offset = parseInt(process.env.INITIAL_FIND_OFFSET, process.env.RADIX_VALUE);
@@ -21,16 +24,20 @@ const allComments = function (request, response) {
     }
 
     if (isNaN(offset) || isNaN(count)) {
-        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_OFFSET_COUNT_MESSAGE });
+        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
+        responseCollection.message = process.env.INVALID_OFFSET_COUNT_MESSAGE;
+        _sendResponse(response, responseCollection);
         return;
     }
 
     if (count > maxCount) {
-        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: `${process.env.MAX_LIMIT_MESSAGE} ${maxCount}` });
+        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
+        responseCollection.message = `${process.env.MAX_LIMIT_MESSAGE} ${maxCount}`;
+        _sendResponse(response, responseCollection);
         return;
     }
 
-    const responseCollection = _createResponseCollection();
+    
 
     Article.findById(articleId).select("comments").skip(offset).limit(count).exec()
         .then(_handleAllComments.bind(null, responseCollection))
@@ -40,13 +47,13 @@ const allComments = function (request, response) {
 
 const addComment = function (request, response) {
     const articleId = request.params.articleId;
-
-    if (!mongoose.isValidObjectId(articleId)) {
-        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_ARTICLE_ID_MESSAGE });
-        return;
-    }
-
     const responseCollection = _createResponseCollection();
+    if (!mongoose.isValidObjectId(articleId)) {
+        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
+        responseCollection.message =  process.env.INVALID_ARTICLE_ID_MESSAGE;
+        _sendResponse(response, responseCollection);
+        return;
+    }   
 
     Article.findById(articleId).select("comments").exec()
         .then(_handleAddComment.bind(null, request, responseCollection))
@@ -58,17 +65,19 @@ const addComment = function (request, response) {
 const oneComment = function (request, response) {
     const commentId = request.params.commentId;
     const articleId = request.params.articleId;
-
+    const responseCollection = _createResponseCollection();
     if (!mongoose.isValidObjectId(articleId)) {
-        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_ARTICLE_ID_MESSAGE });
+        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
+        responseCollection.message =  process.env.INVALID_ARTICLE_ID_MESSAGE;
+        _sendResponse(response, responseCollection);
         return;
     }
     if (!mongoose.isValidObjectId(commentId)) {
-        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_COMMENT_ID_MESSAGE });
+        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
+        responseCollection.message =  process.env.INVALID_COMMENT_ID_MESSAGE;
+        _sendResponse(response, responseCollection);
         return;
     }
-
-    const responseCollection = _createResponseCollection();
 
     Article.findById(articleId).select("comments").exec()
         .then(_handleOneComment.bind(null, responseCollection, commentId))
@@ -79,17 +88,19 @@ const oneComment = function (request, response) {
 const fullUpdateOneComment = function (request, response) {
     const commentId = request.params.commentId;
     const articleId = request.params.articleId;
-
+    const responseCollection = _createResponseCollection();
     if (!mongoose.isValidObjectId(articleId)) {
-        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_ARTICLE_ID_MESSAGE });
+        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
+        responseCollection.message =  process.env.INVALID_ARTICLE_ID_MESSAGE;
+        _sendResponse(response, responseCollection);
         return;
     }
     if (!mongoose.isValidObjectId(commentId)) {
-        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_COMMENT_ID_MESSAGE });
+        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
+        responseCollection.message =  process.env.INVALID_COMMENT_ID_MESSAGE;
+        _sendResponse(response, responseCollection);
         return;
     }
-
-    const responseCollection = _createResponseCollection();
 
     Article.findById(articleId).select("comments").exec()
         .then(_handleUpdateComment.bind(null, request, responseCollection, _fullUpdateComment))
@@ -101,17 +112,19 @@ const fullUpdateOneComment = function (request, response) {
 const partialUpdateOneComment = function (request, response) {
     const commentId = request.params.commentId;
     const articleId = request.params.articleId;
-
+    const responseCollection = _createResponseCollection();
     if (!mongoose.isValidObjectId(articleId)) {
-        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_ARTICLE_ID_MESSAGE });
+        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
+        responseCollection.message =  process.env.INVALID_ARTICLE_ID_MESSAGE;
+        _sendResponse(response, responseCollection);
         return;
     }
     if (!mongoose.isValidObjectId(commentId)) {
-        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_COMMENT_ID_MESSAGE });
+        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
+        responseCollection.message =  process.env.INVALID_COMMENT_ID_MESSAGE;
+        _sendResponse(response, responseCollection);
         return;
     }
-
-    const responseCollection = _createResponseCollection();
 
     Article.findById(articleId).select("comments").exec()
         .then(_handleUpdateComment.bind(null, request, responseCollection, _partialUpdateComment))
@@ -123,17 +136,19 @@ const partialUpdateOneComment = function (request, response) {
 const removeComment = function (request, response) {
     const commentId = request.params.commentId;
     const articleId = request.params.articleId;
-
+    const responseCollection = _createResponseCollection();
     if (!mongoose.isValidObjectId(articleId)) {
-        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_ARTICLE_ID_MESSAGE });
+        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
+        responseCollection.message =  process.env.INVALID_ARTICLE_ID_MESSAGE;
+        _sendResponse(response, responseCollection);
         return;
     }
     if (!mongoose.isValidObjectId(commentId)) {
-        response.status(Number(process.env.BAD_REQUEST_STATUS_CODE)).json({ message: process.env.INVALID_COMMENT_ID_MESSAGE });
+        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
+        responseCollection.message =  process.env.INVALID_COMMENT_ID_MESSAGE;
+        _sendResponse(response, responseCollection);
         return;
     }
-
-    const responseCollection = _createResponseCollection();
 
     Article.findById(articleId).select("comments").exec()
         .then(_handleRemoveComment.bind(null, request, responseCollection))
@@ -148,7 +163,8 @@ const _handleAllComments = function (responseCollection, article) {
         return;
     }
     responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
-    responseCollection.message = article.comments;
+    responseCollection.data = article.comments;
+    responseCollection.message = process.env.SUCCESS_FETCHING_MESSAGE;
 }
 
 const _handleAddComment = function (request, responseCollection, article) {
@@ -173,7 +189,8 @@ const _handleOneComment = function (responseCollection, commentId, article) {
         return;
     }
     responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
-    responseCollection.message = article.comments.id(commentId);    
+    responseCollection.data = [article.comments.id(commentId)];
+    responseCollection.message = process.env.SUCCESS_FETCHING_MESSAGE    
 }
 
 const _handleUpdateComment = function (request, responseCollection, updateCallback, article) {
@@ -216,18 +233,18 @@ const _handleRemoveComment = function (request, responseCollection, article) {
 
 const _setResponseCollectionForAbsenceOfArticle = function(responseCollection) {
         responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
-        responseCollection.message = { message: process.env.BAD_REQUEST_MESSAGE };    
+        responseCollection.message =  process.env.BAD_REQUEST_MESSAGE;    
 }
 
 const _setResponseCollectionForAbsenceOfCommentID = function( responseCollection) {
         responseCollection.status = Number(process.env.NOT_FOUND_STATUS_CODE);
-        responseCollection.message = {message: process.env.COMMENT_ID_NOT_FOUND_MESSAGE}
+        responseCollection.message = process.env.COMMENT_ID_NOT_FOUND_MESSAGE;
 }
 
 const _setSuccessResponseCollectionAfterArticleSave = function(responseCollection, message, saveComment) {
     if (saveComment) {
         responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
-        responseCollection.message = { message };
+        responseCollection.message = message;
     }
 }
 
@@ -241,19 +258,22 @@ const _createNewComment = function(request) {
 const _createResponseCollection = function () {
     return {
         status: Number(process.env.CREATE_STATUS_CODE),
+        data: [],
         message: ""
     }
 }
 
 const _setInternalError = function (responseCollection, error) {
     responseCollection.status = Number(process.env.SERVER_ERROR_STATUS_CODE);
+    responseCollection.data = [];
     responseCollection.message = error;
 }
 
 const _sendResponse = function (response, responseCollection) {
-    response.status(responseCollection.status).json(responseCollection.message)
+    response.status(responseCollection.status).json({
+        ...responseCollection
+    })
 }
-
 
 module.exports = {
     allComments,
