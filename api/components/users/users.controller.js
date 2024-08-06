@@ -35,7 +35,18 @@ const allUsers = function(request, response) {
 }
 
 const addUser = function(request, response) {
-    
+    const newUser = {
+        name: request.body.name,
+        username: request.body.username,
+        password: request.body.password
+    }
+
+    const responseCollection = _createResponseCollection();
+
+    User.create(newUser)
+        .then(_handleAddUser.bind(null, responseCollection))
+        .catch(_setInternalError.bind(null, responseCollection))
+        .finally(_sendResponse.bind(null, response, responseCollection));
 }
 
 const _handleAllUsers = function(responseCollection, users) {
@@ -48,6 +59,17 @@ const _handleAllUsers = function(responseCollection, users) {
     responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
     responseCollection.data = users;
     responseCollection.message = process.env.SUCCESS_FETCHING_MESSAGE;
+}
+
+const _handleAddUser = function (responseCollection, response) {
+    if (!response) {
+        responseCollection.status = Number(process.env.SERVER_ERROR_STATUS_CODE);
+        responseCollection.message = process.env.BAD_REQUEST_MESSAGE;
+        return;
+    }
+
+    responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
+    responseCollection.message = process.env.USER_POST_SUCCESS_MESSAGE;
 }
 
 const _createResponseCollection = function () {
