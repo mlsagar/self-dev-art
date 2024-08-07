@@ -68,22 +68,18 @@ const oneArticle = function (request, response) {
 
 const fullUpdateOneArticle = function (request, response) {
     const articleId = request.params.articleId;
-
+    const responseCollection = _createResponseCollection();
     if (!mongoose.isValidObjectId(articleId)) {
         responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
         responseCollection.message =  process.env.INVALID_ARTICLE_ID_MESSAGE;
         _sendResponse(response, responseCollection);
         return;
     }
-
-    const responseCollection = _createResponseCollection();
-
     Article.findById(articleId).exec()
         .then(_updateArticle.bind(null, request, responseCollection, _fullUpdateArticle))
         .then(_handleUpdateResponse.bind(null, process.env.FULL_UPDATE_ARTICLE_SUCCESS_MESSAGE, responseCollection))
         .catch(_setInternalError.bind(null, responseCollection))
         .finally(_sendResponse.bind(null, response, responseCollection));
-
 }
 
 const partialUpdateOneArticle = function (request, response) {
