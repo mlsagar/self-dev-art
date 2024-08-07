@@ -101,15 +101,13 @@ const partialUpdateOneArticle = function (request, response) {
 
 const removeArticle = function (request, response) {
     const articleId = request.params.articleId;
-
+    const responseCollection = _createResponseCollection();
     if (!mongoose.isValidObjectId(articleId)) {
         responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
         responseCollection.message =  process.env.INVALID_ARTICLE_ID_MESSAGE;
         _sendResponse(response, responseCollection);
         return;
-    }
-
-    const responseCollection = _createResponseCollection();
+    }    
 
     Article.findByIdAndDelete(articleId).exec()
         .then(_handleRemoveArticle.bind(null, responseCollection))
@@ -194,7 +192,7 @@ const _handleRemoveArticle = function (responseCollection, deletedArticle) {
 
 const _setResponseCollectionForAbsenceOfArticle = function (responseCollection) {
     responseCollection.status = Number(process.env.NOT_FOUND_STATUS_CODE);
-    responseCollection.message = process.env.INVALID_ARTICLE_ID_MESSAGE;
+    responseCollection.message = process.env.ARTICLE_ID_NOT_FOUND_MESSAGE;
 }
 
 const _createResponseCollection = function () {

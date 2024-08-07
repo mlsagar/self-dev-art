@@ -97,7 +97,21 @@ const partialUpdateOneUser = function(request, response) {
     .finally(_sendResponse.bind(null, response, responseCollection));
 }
 
-const removeUser = function(request, response) {}
+const removeUser = function(request, response) {
+    const userId = request.params.userId;
+    const responseCollection = _createResponseCollection();
+    if (!mongoose.isValidObjectId(userId)) {
+        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
+        responseCollection.message =  process.env.INVALID_USER_ID_MESSAGE;
+        _sendResponse(response, responseCollection);
+        return;
+    }
+
+    User.findByIdAndDelete(userId).exec()
+        .then(_handleRemoveUser.bind(null, responseCollection))
+        .catch(_setInternalError.bind(null, responseCollection))
+        .finally(_sendResponse.bind(null, response, responseCollection));
+}
 
 const _handleAllUsers = function(responseCollection, users) {
     if (!users) {
@@ -162,20 +176,20 @@ const _partialUpdateUser = function (request, user) {
     if (request.body && request.body.password) { user.password = request.body.password }
 }
 
-const _handleRemoveUser = function (responseCollection, deletedArticle) {
-    if (!deletedArticle) {
+const _handleRemoveUser = function (responseCollection, deletedUser) {
+    if (!deletedUser) {
         responseCollection.status = Number(process.env.NOT_FOUND_STATUS_CODE);
-        responseCollection.message = process.env.ARTICLE_ID_NOT_FOUND_MESSAGE;
+        responseCollection.message = process.env.USER_ID_NOT_FOUND_MESSAGE;
         return;
     }
     responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
-    responseCollection.message = process.env.DELETE_ARTICLE_MESSAGE;
+    responseCollection.message = process.env.DELETE_USER_MESSAGE;
 
 }
 
 const _setResponseCollectionForAbsenceOfUser = function (responseCollection) {
     responseCollection.status = Number(process.env.NOT_FOUND_STATUS_CODE);
-    responseCollection.message = process.env.INVALID_USER_ID_MESSAGE;
+    responseCollection.message = process.env.USER_ID_NOT_FOUND_MESSAGE;
 }
 
 const _createResponseCollection = function () {
