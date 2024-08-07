@@ -80,7 +80,23 @@ const fullUpdateOneUser = function(request, response) {
     .catch(_setInternalError.bind(null, responseCollection))
     .finally(_sendResponse.bind(null, response, responseCollection));
 }
-const partialUpdateOneUser = function(request, response) {}
+
+const partialUpdateOneUser = function(request, response) {
+    const userId = request.params.userId;
+    const responseCollection = _createResponseCollection();
+    if (!mongoose.isValidObjectId(userId)) {
+        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
+        responseCollection.message =  process.env.INVALID_USER_ID_MESSAGE;
+        _sendResponse(response, responseCollection);
+        return;
+    }
+    User.findById(userId).exec()
+    .then(_updateUser.bind(null, request, responseCollection, _partialUpdateUser))
+    .then(_handleUpdateResponse.bind(null, process.env.PARTIAL_UPDATE_USER_SUCCESS_MESSAGE, responseCollection))
+    .catch(_setInternalError.bind(null, responseCollection))
+    .finally(_sendResponse.bind(null, response, responseCollection));
+}
+
 const removeUser = function(request, response) {}
 
 const _handleAllUsers = function(responseCollection, users) {

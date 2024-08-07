@@ -84,15 +84,13 @@ const fullUpdateOneArticle = function (request, response) {
 
 const partialUpdateOneArticle = function (request, response) {
     const articleId = request.params.articleId;
-
+    const responseCollection = _createResponseCollection();
     if (!mongoose.isValidObjectId(articleId)) {
         responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
         responseCollection.message =  process.env.INVALID_ARTICLE_ID_MESSAGE;
         _sendResponse(response, responseCollection);
         return;
-    }
-
-    const responseCollection = _createResponseCollection();
+    }    
 
     Article.findById(articleId).exec()
         .then(_updateArticle.bind(null, request, responseCollection, _partialUpdateArticle))
