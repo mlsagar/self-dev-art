@@ -1,5 +1,5 @@
 const express = require("express");
-const { allUsers, addUser, oneUser, fullUpdateOneUser, partialUpdateOneUser, removeUser } = require("./users.controller");
+const { allUsers, addUser, oneUser, fullUpdateOneUser, partialUpdateOneUser, removeUser, login } = require("./users.controller");
 
 const router = express.Router();
 
@@ -11,6 +11,9 @@ router.route(process.env.ROUTE_WITH_USER_ID)
     .get(oneUser)
     .put(fullUpdateOneUser)
     .patch(partialUpdateOneUser)
-    .delete(removeUser)
+    .delete(removeUser);
+
+router.route(process.env.ROUTE_LOGIN)
+    .post(login)
 
 module.exports = router;

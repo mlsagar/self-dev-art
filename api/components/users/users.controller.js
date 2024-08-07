@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 const User = mongoose.model(process.env.USER_MODEL_NAME);
+const bcrypt = require("bcryptjs");
 
-const allUsers = function(request, response) {
+const allUsers = function (request, response) {
     let offset = parseInt(process.env.INITIAL_FIND_OFFSET, process.env.RADIX_VALUE);
     let count = parseInt(process.env.INITIAL_FIND_COUNT, process.env.RADIX_VALUE);
     const maxCount = parseInt(process.env.INITIAL_MAX_FIND_LIMIT, process.env.RADIX_VALUE);
@@ -26,7 +27,7 @@ const allUsers = function(request, response) {
         responseCollection.message = `${process.env.MAX_LIMIT_MESSAGE} ${maxCount}`;
         _sendResponse(response, responseCollection);
         return;
-    }    
+    }
 
     User.find().skip(offset).limit(count).exec()
         .then(_handleAllUsers.bind(null, responseCollection))
@@ -34,30 +35,46 @@ const allUsers = function(request, response) {
         .finally(_sendResponse.bind(null, response, responseCollection));
 }
 
-const addUser = function(request, response) {
-    const newUser = {
-        name: request.body.name,
-        username: request.body.username,
-        password: request.body.password
-    }
-
+const addUser = function (request, response) {
     const responseCollection = _createResponseCollection();
-
-    User.create(newUser)
+    bcrypt.genSalt(Number(process.env.PASSWORD_SALT_ROUND))
+        .then(_generateHashPassword.bind(null, request))
+        .then(_createNewUser.bind(null, request))
+        .then(_userCreate)
         .then(_handleAddUser.bind(null, responseCollection))
         .catch(_setInternalError.bind(null, responseCollection))
         .finally(_sendResponse.bind(null, response, responseCollection));
 }
 
-const oneUser = function(request, response) {
+// const login = function (request, reponse) {
+//     if (request.body) {
+//         const responseCollection = _createResponseCollection();
+
+//         User.find({username: request.body.user})
+//             .then(user => {
+//                 if (!user) {
+//                     responseCollection.status = process.env.UNAUTHORIZE_STATUS_CODE;
+//                     responseC
+//                 }
+//                 console.log(user)
+//             })
+//             .catch(_setInternalError.bind(null, responseCollection))
+//             .finally(_sendResponse.bind(null, response, responseCollection));
+
+//     }
+// }
+
+const login = function(request, response) {}
+
+const oneUser = function (request, response) {
     const userId = request.params.userId;
     const responseCollection = _createResponseCollection();
     if (!mongoose.isValidObjectId(userId)) {
         responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
-        responseCollection.message =  process.env.INVALID_USER_ID_MESSAGE;
+        responseCollection.message = process.env.INVALID_USER_ID_MESSAGE;
         _sendResponse(response, responseCollection);
         return;
-    }    
+    }
 
     User.findById(userId).exec()
         .then(_handleOneUser.bind(null, responseCollection))
@@ -65,44 +82,44 @@ const oneUser = function(request, response) {
         .finally(_sendResponse.bind(null, response, responseCollection));
 }
 
-const fullUpdateOneUser = function(request, response) {
+const fullUpdateOneUser = function (request, response) {
     const userId = request.params.userId;
     const responseCollection = _createResponseCollection();
     if (!mongoose.isValidObjectId(userId)) {
         responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
-        responseCollection.message =  process.env.INVALID_USER_ID_MESSAGE;
+        responseCollection.message = process.env.INVALID_USER_ID_MESSAGE;
         _sendResponse(response, responseCollection);
         return;
     }
     User.findById(userId).exec()
-    .then(_updateUser.bind(null, request, responseCollection, _fullUpdateUser))
-    .then(_handleUpdateResponse.bind(null, process.env.FULL_UPDATE_USER_SUCCESS_MESSAGE, responseCollection))
-    .catch(_setInternalError.bind(null, responseCollection))
-    .finally(_sendResponse.bind(null, response, responseCollection));
+        .then(_updateUser.bind(null, request, responseCollection, _fullUpdateUser))
+        .then(_handleUpdateResponse.bind(null, process.env.FULL_UPDATE_USER_SUCCESS_MESSAGE, responseCollection))
+        .catch(_setInternalError.bind(null, responseCollection))
+        .finally(_sendResponse.bind(null, response, responseCollection));
 }
 
-const partialUpdateOneUser = function(request, response) {
+const partialUpdateOneUser = function (request, response) {
     const userId = request.params.userId;
     const responseCollection = _createResponseCollection();
     if (!mongoose.isValidObjectId(userId)) {
         responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
-        responseCollection.message =  process.env.INVALID_USER_ID_MESSAGE;
+        responseCollection.message = process.env.INVALID_USER_ID_MESSAGE;
         _sendResponse(response, responseCollection);
         return;
     }
     User.findById(userId).exec()
-    .then(_updateUser.bind(null, request, responseCollection, _partialUpdateUser))
-    .then(_handleUpdateResponse.bind(null, process.env.PARTIAL_UPDATE_USER_SUCCESS_MESSAGE, responseCollection))
-    .catch(_setInternalError.bind(null, responseCollection))
-    .finally(_sendResponse.bind(null, response, responseCollection));
+        .then(_updateUser.bind(null, request, responseCollection, _partialUpdateUser))
+        .then(_handleUpdateResponse.bind(null, process.env.PARTIAL_UPDATE_USER_SUCCESS_MESSAGE, responseCollection))
+        .catch(_setInternalError.bind(null, responseCollection))
+        .finally(_sendResponse.bind(null, response, responseCollection));
 }
 
-const removeUser = function(request, response) {
+const removeUser = function (request, response) {
     const userId = request.params.userId;
     const responseCollection = _createResponseCollection();
     if (!mongoose.isValidObjectId(userId)) {
         responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
-        responseCollection.message =  process.env.INVALID_USER_ID_MESSAGE;
+        responseCollection.message = process.env.INVALID_USER_ID_MESSAGE;
         _sendResponse(response, responseCollection);
         return;
     }
@@ -113,7 +130,7 @@ const removeUser = function(request, response) {
         .finally(_sendResponse.bind(null, response, responseCollection));
 }
 
-const _handleAllUsers = function(responseCollection, users) {
+const _handleAllUsers = function (responseCollection, users) {
     if (!users) {
         responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
         responseCollection.message = process.env.BAD_REQUEST_MESSAGE;
@@ -136,13 +153,38 @@ const _handleAddUser = function (responseCollection, response) {
     responseCollection.message = process.env.USER_POST_SUCCESS_MESSAGE;
 }
 
-const _handleOneUser = function(responseCollection, user) {
+const _generateHashPassword = function (request, salt) {
+    return bcrypt.hash(request.body.password, salt);
+}
+
+const _createNewUser = function(request, hashPassword) {
+    return new Promise((resolve, reject) => {
+        if (hashPassword) {
+            const newUser = {
+                name: request.body.name,
+                username: request.body.username,
+                password: hashPassword
+            }
+            resolve(newUser);
+            return;
+        }
+        
+        reject("Not able to create new user");
+
+    }) 
+}
+
+const _userCreate = function(newUser) {
+    return User.create(newUser)
+}
+
+const _handleOneUser = function (responseCollection, user) {
     if (!user) {
         _setResponseCollectionForAbsenceOfUser(responseCollection);
         return;
     }
     responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE),
-    responseCollection.data = [user];
+        responseCollection.data = [user];
     responseCollection.message = process.env.SUCCESS_FETCHING_MESSAGE;
 }
 
@@ -201,6 +243,7 @@ const _createResponseCollection = function () {
 }
 
 const _setInternalError = function (responseCollection, error) {
+    console.log("error", error);
     responseCollection.status = Number(process.env.SERVER_ERROR_STATUS_CODE);
     responseCollection.message = error;
 }
@@ -217,5 +260,6 @@ module.exports = {
     oneUser,
     fullUpdateOneUser,
     partialUpdateOneUser,
-    removeUser
+    removeUser,
+    login
 }
