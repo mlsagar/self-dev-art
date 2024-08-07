@@ -46,25 +46,43 @@ const addUser = function (request, response) {
         .finally(_sendResponse.bind(null, response, responseCollection));
 }
 
-// const login = function (request, reponse) {
-//     if (request.body) {
-//         const responseCollection = _createResponseCollection();
+const _verifyPassword = function(request, responseCollection, databaseUser) {
+    if (!databaseUser) {
+        responseCollection.status = Number(process.env.UNAUTHORIZE_STATUS_CODE);
+        responseCollection.message = process.env.UNAUTHORIZE_USER_MESSAGE;
+        return;
+    }
+    return bcrypt.compare(request.body.password, databaseUser[0].password)
 
-//         User.find({username: request.body.user})
-//             .then(user => {
-//                 if (!user) {
-//                     responseCollection.status = process.env.UNAUTHORIZE_STATUS_CODE;
-//                     responseC
-//                 }
-//                 console.log(user)
-//             })
-//             .catch(_setInternalError.bind(null, responseCollection))
-//             .finally(_sendResponse.bind(null, response, responseCollection));
+}
 
-//     }
-// }
+const _handleVerifyPassword = function(responseCollection, isVerified) {
+        if (!isVerified) {
+            console.log("Not Verified");
+            responseCollection.status = Number(process.env.UNAUTHORIZE_STATUS_CODE);
+            responseCollection.message = process.env.UNAUTHORIZE_USER_MESSAGE;
+            return;
+        }
 
-const login = function(request, response) {}
+        responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
+        responseCollection.message = process.env.LOGIN_SUCCESS_MESSAGE;
+}
+
+const login = function (request, response) {
+    const responseCollection = _createResponseCollection();
+    if (request.body && request.body.username && request.body.password) {
+        User.find({ username: request.body.username })
+            .then(_verifyPassword.bind(null, request, responseCollection))
+            .then(_handleVerifyPassword.bind(null, responseCollection))
+            .catch(_setInternalError.bind(null, responseCollection))
+            .finally(_sendResponse.bind(null, response, responseCollection));
+        return;
+    }
+
+    responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
+    responseCollection.message = process.env.BAD_REQUEST_MESSAGE;
+    _sendResponse(response, responseCollection);
+}
 
 const oneUser = function (request, response) {
     const userId = request.params.userId;
@@ -157,7 +175,7 @@ const _generateHashPassword = function (request, salt) {
     return bcrypt.hash(request.body.password, salt);
 }
 
-const _createNewUser = function(request, hashPassword) {
+const _createNewUser = function (request, hashPassword) {
     return new Promise((resolve, reject) => {
         if (hashPassword) {
             const newUser = {
@@ -168,13 +186,13 @@ const _createNewUser = function(request, hashPassword) {
             resolve(newUser);
             return;
         }
-        
+
         reject("Not able to create new user");
 
-    }) 
+    })
 }
 
-const _userCreate = function(newUser) {
+const _userCreate = function (newUser) {
     return User.create(newUser)
 }
 
@@ -249,6 +267,7 @@ const _setInternalError = function (responseCollection, error) {
 }
 
 const _sendResponse = function (response, responseCollection) {
+    console.log("I am call from here");
     response.status(responseCollection.status).json({
         ...responseCollection
     })
