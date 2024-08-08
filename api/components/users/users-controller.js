@@ -47,34 +47,6 @@ const addUser = function (request, response) {
         .finally(_sendResponse.bind(null, response, responseCollection));
 }
 
-const _verifyPassword = function(request, databaseUser) {
-    return new Promise((resolve, reject) => {
-        if (!databaseUser.length) {
-            reject(process.env.UNAUTHORIZE_USER_MESSAGE)
-            return;
-        }
-        resolve(bcrypt.compare(request.body.password, databaseUser[0].password));
-    })
-
-}
-
-const _setVerifyPasswordErrorStatusCode = function(responseCollection, error) {
-    responseCollection.status = Number(process.env.UNAUTHORIZE_STATUS_CODE);
-    throw error;
-}
-
-const _handleVerifyPassword = function(responseCollection, isVerified) {
-        if (!isVerified) {
-            responseCollection.status = Number(process.env.UNAUTHORIZE_STATUS_CODE);
-            responseCollection.message = process.env.UNAUTHORIZE_USER_MESSAGE;
-            return;
-        }
-
-        responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
-        responseCollection.message = process.env.LOGIN_SUCCESS_MESSAGE;
-        responseCollection.token = jwt.sign("You are welcome", "Self-Dev-Art");
-}
-
 const login = function (request, response) {
     const responseCollection = _createResponseCollection();
     if (request.body && request.body.username && request.body.password) {
@@ -260,6 +232,34 @@ const _setResponseCollectionForAbsenceOfUser = function (responseCollection) {
     responseCollection.message = process.env.USER_ID_NOT_FOUND_MESSAGE;
 }
 
+const _verifyPassword = function(request, databaseUser) {
+    return new Promise((resolve, reject) => {
+        if (!databaseUser.length) {
+            reject(process.env.UNAUTHORIZE_USER_MESSAGE)
+            return;
+        }
+        resolve(bcrypt.compare(request.body.password, databaseUser[0].password));
+    })
+
+}
+
+const _setVerifyPasswordErrorStatusCode = function(responseCollection, error) {
+    responseCollection.status = Number(process.env.UNAUTHORIZE_STATUS_CODE);
+    throw error;
+}
+
+const _handleVerifyPassword = function(responseCollection, isVerified) {
+        if (!isVerified) {
+            responseCollection.status = Number(process.env.UNAUTHORIZE_STATUS_CODE);
+            responseCollection.message = process.env.UNAUTHORIZE_USER_MESSAGE;
+            return;
+        }
+
+        responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
+        responseCollection.message = process.env.LOGIN_SUCCESS_MESSAGE;
+        responseCollection.token = jwt.sign("You are welcome", "Self-Dev-Art");
+}
+
 const _createResponseCollection = function () {
     return {
         status: Number(process.env.CREATE_STATUS_CODE),
@@ -274,7 +274,6 @@ const _setInternalError = function (responseCollection, error) {
 }
 
 const _sendResponse = function (response, responseCollection) {
-    console.log("I am call from here");
     response.status(responseCollection.status).json({
         ...responseCollection
     })
