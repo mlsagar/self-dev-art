@@ -105,7 +105,7 @@ const _createResponseCollection = function () {
 }
 
 const _setInternalError = function (responseCollection, error) {
-    responseCollection.status = Number(process.env.SERVER_ERROR_STATUS_CODE);
+    responseCollection.status = responseCollection.status === Number(process.env.CREATE_STATUS_CODE) ? Number(process.env.SERVER_ERROR_STATUS_CODE) : responseCollection.status;
     responseCollection.message = error;
 }
 
