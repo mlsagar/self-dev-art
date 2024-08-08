@@ -1,5 +1,5 @@
 const express = require("express");
-const { allComments, addComment, oneComment, fullUpdateOneComment, partialUpdateOneComment, removeComment } = require("./comments.controller");
+const { allComments, addComment, oneComment, fullUpdateOneComment, partialUpdateOneComment, removeComment } = require("./comments-controller");
 
 const router = express.Router({mergeParams: true});
 

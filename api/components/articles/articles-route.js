@@ -1,5 +1,5 @@
 const express = require("express");
-const { allArticles, addArticle, oneArticle, fullUpdateOneArticle, partialUpdateOneArticle, removeArticle } = require("./articles.controller");
+const { allArticles, addArticle, oneArticle, fullUpdateOneArticle, partialUpdateOneArticle, removeArticle } = require("./articles-controller");
 const router = express.Router();
 
 router.route("/")

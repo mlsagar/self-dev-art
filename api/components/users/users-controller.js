@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const User = mongoose.model(process.env.USER_MODEL_NAME);
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const allUsers = function (request, response) {
     let offset = parseInt(process.env.INITIAL_FIND_OFFSET, process.env.RADIX_VALUE);
@@ -46,19 +47,24 @@ const addUser = function (request, response) {
         .finally(_sendResponse.bind(null, response, responseCollection));
 }
 
-const _verifyPassword = function(request, responseCollection, databaseUser) {
-    if (!databaseUser) {
-        responseCollection.status = Number(process.env.UNAUTHORIZE_STATUS_CODE);
-        responseCollection.message = process.env.UNAUTHORIZE_USER_MESSAGE;
-        return;
-    }
-    return bcrypt.compare(request.body.password, databaseUser[0].password)
+const _verifyPassword = function(request, databaseUser) {
+    return new Promise((resolve, reject) => {
+        if (!databaseUser.length) {
+            reject(process.env.UNAUTHORIZE_USER_MESSAGE)
+            return;
+        }
+        resolve(bcrypt.compare(request.body.password, databaseUser[0].password));
+    })
 
+}
+
+const _setVerifyPasswordErrorStatusCode = function(responseCollection, error) {
+    responseCollection.status = Number(process.env.UNAUTHORIZE_STATUS_CODE);
+    throw error;
 }
 
 const _handleVerifyPassword = function(responseCollection, isVerified) {
         if (!isVerified) {
-            console.log("Not Verified");
             responseCollection.status = Number(process.env.UNAUTHORIZE_STATUS_CODE);
             responseCollection.message = process.env.UNAUTHORIZE_USER_MESSAGE;
             return;
@@ -66,13 +72,15 @@ const _handleVerifyPassword = function(responseCollection, isVerified) {
 
         responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
         responseCollection.message = process.env.LOGIN_SUCCESS_MESSAGE;
+        responseCollection.token = jwt.sign("You are welcome", "Self-Dev-Art");
 }
 
 const login = function (request, response) {
     const responseCollection = _createResponseCollection();
     if (request.body && request.body.username && request.body.password) {
         User.find({ username: request.body.username })
-            .then(_verifyPassword.bind(null, request, responseCollection))
+            .then(_verifyPassword.bind(null, request))
+            .catch(_setVerifyPasswordErrorStatusCode.bind(null, responseCollection))
             .then(_handleVerifyPassword.bind(null, responseCollection))
             .catch(_setInternalError.bind(null, responseCollection))
             .finally(_sendResponse.bind(null, response, responseCollection));
@@ -261,7 +269,6 @@ const _createResponseCollection = function () {
 }
 
 const _setInternalError = function (responseCollection, error) {
-    console.log("error", error);
     responseCollection.status = Number(process.env.SERVER_ERROR_STATUS_CODE);
     responseCollection.message = error;
 }
