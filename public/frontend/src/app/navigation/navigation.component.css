@@ -1,0 +1,7 @@
+.header {
+    @apply bg-white fixed top-0 left-0 w-full;
+}
+
+.header__wrapper {
+    @apply  py-3 flex justify-between;
+}
