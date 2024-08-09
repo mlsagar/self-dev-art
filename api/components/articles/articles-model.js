@@ -24,6 +24,7 @@ const articleSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    imageLink: String,
     comments: [commentSchema]
 })
 
