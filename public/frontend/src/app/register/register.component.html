@@ -1,19 +1,54 @@
-<form #registerForm="ngForm" (ngSumbit)="register()">
+<form #registerForm="ngForm" (ngSubmit)="register()" appComparePassword>
     <div>
         <label for="name">Name</label>
-        <input type="text" id="name" name="name" ngModel placeholder="Enter your name">
+        <input type="text" id="name" name="name" ngModel #name="ngModel" placeholder="Enter your name" required minlength="3">
+        <div *ngIf="name.invalid && (name.dirty || name.touched)">
+            <span *ngIf="name.hasError('required')">
+                Name is required.&nbsp;
+            </span>
+            <span *ngIf="name.hasError('minlength')">
+                Name must be at least of 3 letters.&nbsp;
+            </span>
+        </div>
     </div>
     <div>
         <label for="username">Username</label>
-        <input type="text" id="username" name="username" ngModel placeholder="Enter your username">
+        <input type="text" id="username" name="username" #username="ngModel" ngModel placeholder="Enter your username" required minlength="5">
+        <div *ngIf="username.invalid && (username.dirty || username.touched)">
+            <span *ngIf="username.hasError('required')">
+                Username is required.&nbsp;
+            </span>
+            <span *ngIf="name.hasError('minlength')">
+                Username must be at least of 5 letters.&nbsp;
+            </span>
+        </div>
     </div>
     <div>
         <label for="password">Password</label>
-        <input type="text" id="password" name="password" ngModel placeholder="Enter your password">
+        <input type="password" id="password" name="password" ngModel #password="ngModel" placeholder="Enter your password" minlength="8" required>
+        <div *ngIf="password.invalid && (password.dirty || password.touched)">
+            <span *ngIf="password.hasError('required')">
+                Password is required.&nbsp;
+            </span>
+            <span *ngIf="password.hasError('minlength')">
+                Password must be at least of 8 letters.&nbsp;
+            </span>
+        </div>
     </div>
     <div>
         <label for="confirm-password">Confirm Password</label>
-        <input type="text" id="confirm-password" name="confirm-password" ngModel placeholder="Enter your password">
+        <input type="password" id="confirm-password" name="confirmPassword" #confirmPassword="ngModel" ngModel minlength="8" placeholder="Enter your password" required>
+        <div *ngIf="confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched)">
+            <span *ngIf="confirmPassword.hasError('required')">
+                Confirm Password is required.&nbsp;
+            </span>
+            <span *ngIf="confirmPassword.hasError('minlength')">
+                Confirm Password must be at least of 8 letters.&nbsp;
+            </span>
+        </div>
+        <div *ngIf="registerForm.hasError('comparePassword') && (registerForm.touched || registerForm.dirty)">
+            Password and confirm password not matched.
+        </div>
     </div>
     <button type="submit">Register</button>
 </form>

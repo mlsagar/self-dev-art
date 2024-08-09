@@ -1,6 +1,10 @@
 export interface Response<T> {
-    status: String;
+    status: number;
     message: string;
     token?: string;
     data: T[]
+}
+
+export interface ErrorResponse<T> {
+    error: Response<T>
 }
