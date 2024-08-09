@@ -3,5 +3,5 @@
 }
 
 .login-form {
-    @apply mt-8  p-7 pb-0;
+    @apply p-7 pb-0;
 }

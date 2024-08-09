@@ -2,5 +2,5 @@
 /* block mb-2 text-sm font-medium text-green-700 dark:text-green-500 */
 
 .register-form {
-    @apply mt-8 mb-6 mx-auto max-w-xl p-7;
+    @apply mx-auto max-w-xl p-7;
 }
