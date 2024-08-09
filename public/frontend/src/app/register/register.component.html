@@ -1,8 +1,14 @@
-<form #registerForm="ngForm" (ngSubmit)="register()" appComparePassword>
-    <div>
-        <label for="name">Name</label>
-        <input type="text" id="name" name="name" ngModel #name="ngModel" placeholder="Enter your name" required minlength="3">
-        <div *ngIf="name.invalid && (name.dirty || name.touched)">
+<form #registerForm="ngForm" (ngSubmit)="register()" appComparePassword class="card register-form form">
+    <div class="pb-4 font-bold text-xl">
+        Create your account
+    </div>
+    <div class="form__group">
+        <label for="name" class="form__label">
+            Name
+            <span class="text-red-600">*</span>
+        </label>
+        <input type="text" id="name" name="name" ngModel #name="ngModel" placeholder="Enter your name" required minlength="3" class="form__control">
+        <div *ngIf="name.invalid && (name.dirty || name.touched)" class="form__validation-text">
             <span *ngIf="name.hasError('required')">
                 Name is required.&nbsp;
             </span>
@@ -11,10 +17,13 @@
             </span>
         </div>
     </div>
-    <div>
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" #username="ngModel" ngModel placeholder="Enter your username" required minlength="5">
-        <div *ngIf="username.invalid && (username.dirty || username.touched)">
+    <div class="form__group">
+        <label for="username" class="form__label">
+            Username
+            <span class="text-red-600">*</span>
+        </label>
+        <input type="text" id="username" name="username" #username="ngModel" ngModel placeholder="Enter your username" required minlength="5" class="form__control">
+        <div *ngIf="username.invalid && (username.dirty || username.touched)" class="form__validation-text">
             <span *ngIf="username.hasError('required')">
                 Username is required.&nbsp;
             </span>
@@ -23,10 +32,12 @@
             </span>
         </div>
     </div>
-    <div>
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" ngModel #password="ngModel" placeholder="Enter your password" minlength="8" required>
-        <div *ngIf="password.invalid && (password.dirty || password.touched)">
+    <div class="form__group">
+        <label for="password" class="form__label">
+            Password <span class="text-red-600">*</span>
+        </label>
+        <input type="password" id="password" name="password" ngModel #password="ngModel" class="form__control" placeholder="Enter your password" minlength="8" required>
+        <div *ngIf="password.invalid && (password.dirty || password.touched)" class="form__validation-text">
             <span *ngIf="password.hasError('required')">
                 Password is required.&nbsp;
             </span>
@@ -35,10 +46,13 @@
             </span>
         </div>
     </div>
-    <div>
-        <label for="confirm-password">Confirm Password</label>
-        <input type="password" id="confirm-password" name="confirmPassword" #confirmPassword="ngModel" ngModel minlength="8" placeholder="Enter your password" required>
-        <div *ngIf="confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched)">
+    <div class="form__group">
+        <label for="confirm-password" class="form__label">
+            Confirm Password
+            <span class="text-red-600">*</span>
+        </label>
+        <input type="password" id="confirm-password" class="form__control" name="confirmPassword" #confirmPassword="ngModel" ngModel minlength="8" placeholder="Enter your password" required>
+        <div *ngIf="confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched)" class="form__validation-text">
             <span *ngIf="confirmPassword.hasError('required')">
                 Confirm Password is required.&nbsp;
             </span>
@@ -46,9 +60,11 @@
                 Confirm Password must be at least of 8 letters.&nbsp;
             </span>
         </div>
-        <div *ngIf="registerForm.hasError('comparePassword') && (registerForm.touched || registerForm.dirty)">
+        <div *ngIf="registerForm.hasError('comparePassword') && (registerForm.touched || registerForm.dirty) && (confirmPassword.dirty || confirmPassword.touched) && (password.dirty || password.touched)" class="form__validation-text">
             Password and confirm password not matched.
         </div>
     </div>
-    <button type="submit">Register</button>
+    <div class="pt-3">
+        <button type="submit" class="button">Sign Up</button>
+    </div>
 </form>
