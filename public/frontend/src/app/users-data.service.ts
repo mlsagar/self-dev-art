@@ -5,12 +5,12 @@ import { Response } from './reponse';
 
 
 export interface User extends LoginUser {
-  name: String;  
+  name: string;  
 }
 
 export interface LoginUser {
-  username: String;
-  password: String;
+  username: string | null;
+  password: string | null;
 } 
 
 @Injectable({

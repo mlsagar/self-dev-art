@@ -29,7 +29,6 @@ export class RegisterComponent implements OnInit{
       this.registerForm.control.markAllAsTouched();
       return;
     }
-    console.log(this.registerForm.invalid);
     const {confirmPassword, ...userData} = this.registerForm.value;
     this._usersDataService.register(userData).subscribe({
       next: response => {
@@ -44,12 +43,7 @@ export class RegisterComponent implements OnInit{
 
    _resetRegistrationForm() {
     
-    this.registerForm.setValue({
-          name: null,
-          username: null,
-          password: null,
-          confirmPassword: null
-        })
+    this.registerForm.reset();
    }
 
 }

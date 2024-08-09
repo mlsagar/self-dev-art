@@ -1,1 +1,45 @@
-<p>login works!</p>
+<div class="login">
+    <form #loginForm="ngForm" (ngSubmit)="login(loginForm)"class="login-form form">
+        <div class="form__group">
+            <label for="username" class="form__label">
+                Username
+            </label>
+            <input type="text" id="username" name="username" #username="ngModel" [(ngModel)]="user.username" placeholder="Enter your username" required minlength="5" class="form__control">
+            <div *ngIf="username.invalid && (username.dirty || username.touched)" class="form__validation-text">
+                <span *ngIf="username.hasError('required')">
+                    Username is required.&nbsp;
+                </span>
+                <span *ngIf="username.hasError('minlength')">
+                    Username must be at least of 5 letters.&nbsp;
+                </span>
+            </div>
+        </div>
+        <div class="form__group">
+            <label for="password" class="form__label">
+                Password
+            </label>
+            <input type="password" id="password" name="password" [(ngModel)]="user.password" #password="ngModel" class="form__control" placeholder="Enter your password" minlength="8" required>
+            <div *ngIf="password.invalid && (password.dirty || password.touched)" class="form__validation-text">
+                <span *ngIf="password.hasError('required')">
+                    Password is required.&nbsp;
+                </span>
+                <span *ngIf="password.hasError('minlength')">
+                    Password must be at least of 8 letters.&nbsp;
+                </span>
+            </div>
+        </div>
+        <div class="pt-4">
+            <button type="submit" class="button button--primary button--full">Log in</button>
+        </div>
+    </form>
+
+    <div class="mt-6 text-center text-sm fw-normal italic px-0 sm:px-9 pb-7 text-gray-400">
+        By signing in, you are agreeing to our privacy policy, terms of use and code of conduct
+    </div>
+    <hr>
+
+    <p class="text-center mt-6">
+        New to Self-Dev-Art Community? <a routerLink="/register" class="text-blue-600 hover:text-blue-500">Create account.</a>
+    </p>
+</div>
+
