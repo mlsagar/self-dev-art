@@ -4,5 +4,5 @@
         "NODE_ENV": "development"
     },
     "verbose": true,
-    "ignore": ["public/*"]
+    "ignore": ["./public/*"]
 }

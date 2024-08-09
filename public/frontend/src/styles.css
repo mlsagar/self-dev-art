@@ -7,6 +7,10 @@ body {
     background-color: #f5f5f5;
 }
 
+.container {
+    @apply max-w-[1360px] mx-auto px-3;
+}
+
 .card {
     @apply bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700
 }
