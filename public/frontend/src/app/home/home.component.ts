@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -11,4 +11,12 @@ import { RouterLink } from '@angular/router';
 })
 export class HomeComponent {
   title = environment.APP_TITLE;
+
+  constructor(
+    private router: Router
+  ) {}
+
+  routeTo() {
+    this.router.navigateByUrl("register");
+  }
 }

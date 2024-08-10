@@ -1,8 +1,7 @@
 <div class="max-w-2xl mx-auto">
     <div class="card mb-5 overflow-hidden">
         <figure>
-            <!-- <img src="https://media.dev.to/cdn-cgi/image/width=775%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fp6srlcj45cz03yh4pwa2.png" alt=""> -->
-            <img src="https://images.unsplash.com/photo-1539768942893-daf53e448371?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="">
+            <img src="https://media.dev.to/cdn-cgi/image/width=775%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fp6srlcj45cz03yh4pwa2.png" alt="">
         </figure>
 
         <div class="p-5">
@@ -11,6 +10,113 @@
             </h3>
         </div>
     </div>
+
+    <!-- <article class="card mb-5 overflow-hidden relative cursor-pointer" (click)="routeTo()"> -->
+    <article class="card mb-5 overflow-hidden relative cursor-pointer">
+        <figure>
+            <!-- <img src="https://media.dev.to/cdn-cgi/image/width=775%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fp6srlcj45cz03yh4pwa2.png" alt=""> -->
+            <img src="https://images.unsplash.com/photo-1539768942893-daf53e448371?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="">
+        </figure>
+
+        <div class="p-5">
+            <h5 class="font-bold text-sm">
+                Jesse Williams's
+            </h5>
+            <h3 class="font-bold text-3xl mb-3">
+                <a routerLink="/register" id="link-1">Bring home the gold! 🥇</a>
+            </h3>
+            <a href="#comments" class="hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 font-light rounded-lg text-sm p-2 text-center inline-flex items-center">
+                <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon"><path d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"></path></svg>
+                0<span class="hidden sm:inline-block">&nbsp;Comments</span> Add comment
+            </a>
+            <div id="comments">
+                <h3 class="font-bold text-2xl mb-6">Comments</h3>
+                <form class="form ">
+                    <div class="flex gap-3 mt-3">
+                        <figure class="w-8 h-8 flex-none rounded-full overflow-hidden">
+                            <img src="assets/user.svg" alt="user icon">
+                        </figure>
+                        <div class="class flex-1">
+                            <div class="border border-gray-200 rounded-lg p-4">
+                                <div class="form__group">
+                                    <input type="text" class="form__control" placeholder="Enter Commenter's Name">
+                                </div>
+                                <div class="form__group">
+                                    <textarea name="" id="" placeholder="Enter Commenter's Comment" class="form__control"></textarea>                                
+                                </div>
+                                
+                                <!-- <h6 class="font-bold text-sm mb-2">Reiner Knudsen</h6>
+                                <p class="text-lg">
+                                    Isn‘t that exactly what one can read in the tailwind guides? Which added value does this post provide?
+                                </p> -->
+                            </div>
+                            <button type="submit" class="button button--primary mt-2">Submit</button>
+                        </div>
+                    </div>
+                    
+                </form>
+                <div class="flex gap-3 mt-3">
+                    <figure class="w-8 h-8 mt-5 flex-none rounded-full overflow-hidden">
+                        <img src="assets/user.svg" alt="user icon">
+                    </figure>
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <div class="flex justify-between items-center gap-2 mb-2">
+                            <h6 class="font-bold text-sm">Reiner Knudsen</h6>
+                            <!-- <button type="button" class="button button--more">...</button> -->
+                            <button id="dropdownMenuIconHorizontalButton" data-dropdown-toggle="dropdownDotsHorizontal" class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600" type="button"> 
+                                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 3">
+                                  <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"/>
+                                </svg>
+                              </button>
+                              
+                              <!-- Dropdown menu -->
+                              <div id="dropdownDotsHorizontal" class="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                                  <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconHorizontalButton">
+                                    <li>
+                                      <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a>
+                                    </li>
+                                    <li>
+                                      <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Settings</a>
+                                    </li>
+                                    <li>
+                                      <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Earnings</a>
+                                    </li>
+                                  </ul>
+                                  <div class="py-2">
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Separated link</a>
+                                  </div>
+                              </div>
+                        </div>
+                        <p class="text-lg">
+                            Isn‘t that exactly what one can read in the tailwind guides? Which added value does this post provide?
+                        </p>
+                    </div>
+                </div>
+                <div class="flex gap-3 mt-3">
+                    <figure class="w-8 h-8 flex-none rounded-full overflow-hidden">
+                        <img src="assets/user.svg" alt="user icon">
+                    </figure>
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <h6 class="font-bold text-sm mb-2">Reiner Knudsen</h6>
+                        <p class="text-lg">
+                            Isn‘t that exactly what one can read in the tailwind guides? Which added value does this post provide?
+                        </p>
+                    </div>
+                </div>
+                <div class="flex gap-3 mt-3">
+                    <figure class="w-8 h-8 flex-none rounded-full overflow-hidden">
+                        <img src="assets/user.svg" alt="user icon">
+                    </figure>
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <h6 class="font-bold text-sm mb-2">Reiner Knudsen</h6>
+                        <p class="text-lg">
+                            Isn‘t that exactly what one can read in the tailwind guides? Which added value does this post provide?
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
 
     <div class="card p-6">
         <h2 class="font-bold text-4xl mb-2">Join the Self-Dev-Art Community!</h2>
