@@ -1,0 +1,34 @@
+<form class="form add-comment" [formGroup]="addCommentForm" (ngSubmit)="addComment()">
+    <figure class="add-comment__figure">
+        <img src="assets/user.svg" alt="user icon">
+    </figure>
+    <div class="flex-1">
+        <div class="border border-gray-200 rounded-lg p-4">
+            <div class="form__group">
+                <input type="text" class="form__control" placeholder="Enter Commenter's Name" formControlName="name">
+                <div class="form__validation-text" *ngIf="name?.invalid && (name?.dirty || name?.touched)">
+                    <span *ngIf="name?.hasError('required')">
+                        Name is required
+                    </span>
+                    <span *ngIf="name?.hasError('minlength')">
+                        Name must be at least 3 letters.
+                    </span> 
+                </div>
+            </div>
+            <div class="form__group">
+                <textarea name="" id="" placeholder="Enter Commenter's Comment" class="form__control" formControlName="comment"></textarea>                                
+                <div class="form__validation-text" *ngIf="comment?.invalid && (comment?.dirty || comment?.touched)">
+                    <span *ngIf="comment?.hasError('required')">
+                        Comment is required
+                    </span>
+                    <span *ngIf="comment?.hasError('minlength')">
+                        Comment must be at least 5 letters.
+                    </span> 
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="button button--primary mt-2">Submit</button>
+    </div>
+</form>
+    
+

@@ -31,30 +31,7 @@
             </a>
             <div id="comments">
                 <h3 class="font-bold text-2xl mb-6">Comments</h3>
-                <form class="form ">
-                    <div class="flex gap-3 mt-3">
-                        <figure class="w-8 h-8 flex-none rounded-full overflow-hidden">
-                            <img src="assets/user.svg" alt="user icon">
-                        </figure>
-                        <div class="class flex-1">
-                            <div class="border border-gray-200 rounded-lg p-4">
-                                <div class="form__group">
-                                    <input type="text" class="form__control" placeholder="Enter Commenter's Name">
-                                </div>
-                                <div class="form__group">
-                                    <textarea name="" id="" placeholder="Enter Commenter's Comment" class="form__control"></textarea>                                
-                                </div>
-                                
-                                <!-- <h6 class="font-bold text-sm mb-2">Reiner Knudsen</h6>
-                                <p class="text-lg">
-                                    Isn‘t that exactly what one can read in the tailwind guides? Which added value does this post provide?
-                                </p> -->
-                            </div>
-                            <button type="submit" class="button button--primary mt-2">Submit</button>
-                        </div>
-                    </div>
-                    
-                </form>
+                <app-add-comment></app-add-comment>
                 <app-display-comment></app-display-comment>               
             </div>
         </div>

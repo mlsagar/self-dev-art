@@ -1,0 +1,7 @@
+.add-comment {
+    @apply flex gap-3 mt-3;
+}
+
+.add-comment__figure {
+    @apply w-8 h-8 flex-none rounded-full overflow-hidden
+}
