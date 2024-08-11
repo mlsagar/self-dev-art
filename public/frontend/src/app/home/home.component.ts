@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
-import { environment } from '../../environments/environment';
 import { Router, RouterLink } from '@angular/router';
+import { environment } from '../../environments/environment';
+import { DisplayCommentComponent } from '../display-comment/display-comment.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, DisplayCommentComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -18,5 +19,9 @@ export class HomeComponent {
 
   routeTo() {
     this.router.navigateByUrl("register");
+  }
+
+  test() {
+    console.log("hello")
   }
 }

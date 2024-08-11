@@ -1,0 +1,19 @@
+.display-comment {
+    @apply flex gap-3 mt-3;
+}
+
+.display-comment__figure {
+    @apply w-8 h-8 mt-5 flex-none rounded-full overflow-hidden;
+}
+
+.display-comment__body {
+    @apply border border-gray-200 rounded-lg p-4;
+}
+
+.display-comment__header {
+    @apply flex justify-between items-center gap-2 mb-2;
+}
+
+.display-comment__title {
+    @apply font-bold text-sm;
+}

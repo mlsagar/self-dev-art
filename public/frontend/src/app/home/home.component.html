@@ -1,6 +1,6 @@
 <div class="max-w-2xl mx-auto">
-    <div class="card mb-5 overflow-hidden">
-        <figure>
+    <div class="card mb-5">
+        <figure class="overflow-hidden rounded-t-lg">
             <img src="https://media.dev.to/cdn-cgi/image/width=775%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fp6srlcj45cz03yh4pwa2.png" alt="">
         </figure>
 
@@ -12,8 +12,8 @@
     </div>
 
     <!-- <article class="card mb-5 overflow-hidden relative cursor-pointer" (click)="routeTo()"> -->
-    <article class="card mb-5 overflow-hidden relative cursor-pointer">
-        <figure>
+    <article class="card mb-5 relative cursor-pointer">
+        <figure class="overflow-hidden rounded-t-lg">
             <!-- <img src="https://media.dev.to/cdn-cgi/image/width=775%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fp6srlcj45cz03yh4pwa2.png" alt=""> -->
             <img src="https://images.unsplash.com/photo-1539768942893-daf53e448371?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="">
         </figure>
@@ -55,65 +55,7 @@
                     </div>
                     
                 </form>
-                <div class="flex gap-3 mt-3">
-                    <figure class="w-8 h-8 mt-5 flex-none rounded-full overflow-hidden">
-                        <img src="assets/user.svg" alt="user icon">
-                    </figure>
-                    <div class="border border-gray-200 rounded-lg p-4">
-                        <div class="flex justify-between items-center gap-2 mb-2">
-                            <h6 class="font-bold text-sm">Reiner Knudsen</h6>
-                            <!-- <button type="button" class="button button--more">...</button> -->
-                            <button id="dropdownMenuIconHorizontalButton" data-dropdown-toggle="dropdownDotsHorizontal" class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600" type="button"> 
-                                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 3">
-                                  <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"/>
-                                </svg>
-                              </button>
-                              
-                              <!-- Dropdown menu -->
-                              <div id="dropdownDotsHorizontal" class="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
-                                  <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconHorizontalButton">
-                                    <li>
-                                      <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a>
-                                    </li>
-                                    <li>
-                                      <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Settings</a>
-                                    </li>
-                                    <li>
-                                      <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Earnings</a>
-                                    </li>
-                                  </ul>
-                                  <div class="py-2">
-                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Separated link</a>
-                                  </div>
-                              </div>
-                        </div>
-                        <p class="text-lg">
-                            Isn‘t that exactly what one can read in the tailwind guides? Which added value does this post provide?
-                        </p>
-                    </div>
-                </div>
-                <div class="flex gap-3 mt-3">
-                    <figure class="w-8 h-8 flex-none rounded-full overflow-hidden">
-                        <img src="assets/user.svg" alt="user icon">
-                    </figure>
-                    <div class="border border-gray-200 rounded-lg p-4">
-                        <h6 class="font-bold text-sm mb-2">Reiner Knudsen</h6>
-                        <p class="text-lg">
-                            Isn‘t that exactly what one can read in the tailwind guides? Which added value does this post provide?
-                        </p>
-                    </div>
-                </div>
-                <div class="flex gap-3 mt-3">
-                    <figure class="w-8 h-8 flex-none rounded-full overflow-hidden">
-                        <img src="assets/user.svg" alt="user icon">
-                    </figure>
-                    <div class="border border-gray-200 rounded-lg p-4">
-                        <h6 class="font-bold text-sm mb-2">Reiner Knudsen</h6>
-                        <p class="text-lg">
-                            Isn‘t that exactly what one can read in the tailwind guides? Which added value does this post provide?
-                        </p>
-                    </div>
-                </div>
+                <app-display-comment></app-display-comment>               
             </div>
         </div>
     </article>
