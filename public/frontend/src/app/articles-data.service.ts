@@ -26,6 +26,10 @@ export class ArticlesDataService {
     private _http: HttpClient
   ) { }
 
+  get allArticles() {
+    return this._http.get<Response<Article>>(this.baseUrl + this.routes.ARTICLES);
+  }
+
   addArticle(articleRequest: ArticleRequest) {
     return this._http.post<Response<[]>>(this.baseUrl + this.routes.ARTICLES, articleRequest);
   }

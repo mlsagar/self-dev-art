@@ -12,7 +12,8 @@
     </div>
 
     <!-- <article class="card mb-5 overflow-hidden relative cursor-pointer" (click)="routeTo()"> -->
-    <app-article></app-article>
+    
+    <app-article *ngFor="let article of articles" [article]="article"></app-article>
 
     <div class="card p-6">
         <h2 class="font-bold text-4xl mb-2">Join the Self-Dev-Art Community!</h2>
