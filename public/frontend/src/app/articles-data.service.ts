@@ -31,6 +31,18 @@ export class ArticlesDataService {
   }
 
   addArticle(articleRequest: ArticleRequest) {
-    return this._http.post<Response<[]>>(this.baseUrl + this.routes.ARTICLES, articleRequest);
+    return this._http.post<Response<any>>(this.baseUrl + this.routes.ARTICLES, articleRequest);
+  }
+
+  fullUpdate(postId: string, updateRequest: ArticleRequest) {
+    return this._http.put<Response<any>>(this.baseUrl + this.routes.ARTICLES + "/" + postId, updateRequest);
+  }
+
+  partialUpdate(postId: string, updateRequest: ArticleRequest) {
+    return this._http.patch<Response<any>>(this.baseUrl + this.routes.ARTICLES + "/" + postId, updateRequest);
+  }
+
+  deleteArticle(postId: string) {
+    return this._http.delete<Response<any>>(this.baseUrl + this.routes.ARTICLES + "/" + postId);
   }
 }

@@ -12,7 +12,7 @@
     <div  [ngClass]="showMenu ? '' : 'hidden'" class="dropdown-menu__lists">
         <ul class="dropdown-menu__wrapper">
             <li *ngFor="let config of dropdownConfig.config">
-                <a [routerLink]="config.routeLink"
+                <a [routerLink]="config.routeLink" [state]="config.state"
                     class="dropdown-menu__link">{{config.name}}</a>
             </li>
         </ul>

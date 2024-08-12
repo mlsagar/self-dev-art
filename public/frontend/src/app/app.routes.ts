@@ -5,6 +5,8 @@ import { ArticlesComponent } from './articles/articles.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { CreatePostComponent } from './create-post/create-post.component';
+import { EditPostComponent } from './edit-post/edit-post.component';
+import { PostComponent } from './post/post.component';
 
 export const routes: Routes = [
     {
@@ -31,6 +33,14 @@ export const routes: Routes = [
     {
         path: "create-post",
         component: CreatePostComponent
+    },
+    {
+        path: "edit-post",
+        component: EditPostComponent
+    },
+    {
+        path: "post/:postId",
+        component: PostComponent
     },
     {
         path: "**",

@@ -6,6 +6,7 @@ import { RouterLink } from '@angular/router';
 export interface Dropdown {
   name: string;
   routeLink: string;
+  state?: any;
 }
 
 export interface DropdownConfig {
