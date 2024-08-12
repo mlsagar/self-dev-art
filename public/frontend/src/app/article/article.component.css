@@ -1,0 +1,19 @@
+.article {
+    @apply mb-5 relative cursor-pointer;
+}
+
+.article__figure {
+    @apply mb-5 relative cursor-pointer;
+}
+
+.article__image {
+    @apply w-full object-cover;
+}
+
+.article__sub-title {
+    @apply font-bold text-sm;
+}
+
+.article__title {
+    @apply font-bold text-3xl mb-3;
+}
