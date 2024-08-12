@@ -39,6 +39,7 @@ const addArticle = function (request, response) {
         title: request.body.title,
         author: request.body.author,
         link: request.body.link,
+        imageLink: request.body.imageLink,
         comments: []
     }
 
