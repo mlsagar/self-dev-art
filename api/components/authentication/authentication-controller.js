@@ -1,13 +1,22 @@
 const jwt = require("jsonwebtoken");
+const { allArticles } = require("../articles/articles-controller");
 
 const authenticate = function(request, response, next) {
     const authorizationToken = request.headers["authorization"];
     const responseCollection = _createResponseCollection();
 
     if (!authorizationToken) {
-        responseCollection.status = Number(process.env.UNAUTHORIZE_STATUS_CODE);
-        responseCollection.message = process.env.ACCESS_DENIED_MESSAGE
-        _sendResponse(response, responseCollection);
+        // responseCollection.status = Number(process.env.UNAUTHORIZE_STATUS_CODE);
+        // responseCollection.message = process.env.ACCESS_DENIED_MESSAGE
+        // _sendResponse(response, responseCollection);
+
+        const newRequest = {
+            ...request,
+            query: {
+                count: 1
+            }
+        }
+        allArticles(newRequest, response);
         return
     }
 
