@@ -1,13 +1,14 @@
 <form [formGroup]="createPostForm" (ngSubmit)="createPost()" class="card create-post-form form">
-    <div class="pb-4 font-bold text-xl">
+    <h4 class="pb-4 font-bold text-xl">
         Create the post
-    </div>
+    </h4>
     <div class="form__group">
         <label for="title" class="form__label">
             Title
             <span class="text-red-600">*</span>
         </label>
-        <input type="text" id="title" name="title" formControlName="title" placeholder="Enter post title" class="form__control">
+        <input type="text" id="title" name="title" formControlName="title" placeholder="Enter post title"
+            class="form__control">
         <div *ngIf="title?.invalid && (title?.dirty || title?.touched)" class="form__validation-text">
             <span *ngIf="title?.hasError('required')">
                 Title is required.&nbsp;
@@ -22,7 +23,8 @@
             Author
             <span class="text-red-600">*</span>
         </label>
-        <input type="text" id="author" name="author" formControlName="author" placeholder="Enter post author" class="form__control">
+        <input type="text" id="author" name="author" formControlName="author" placeholder="Enter post author"
+            class="form__control">
         <div *ngIf="author?.invalid && (author?.dirty || author?.touched)" class="form__validation-text">
             <span *ngIf="author?.hasError('required')">
                 Author is required.&nbsp;
@@ -37,7 +39,8 @@
             Link
             <span class="text-red-600">*</span>
         </label>
-        <input type="text" id="link" name="link" formControlName="link" placeholder="Enter post link" class="form__control">
+        <input type="text" id="link" name="link" formControlName="link" placeholder="Enter post link"
+            class="form__control">
         <div *ngIf="link?.invalid && (link?.dirty || link?.touched)" class="form__validation-text">
             <span *ngIf="link?.hasError('required')">
                 Link is required.&nbsp;
@@ -49,15 +52,39 @@
             Image Link
             <span class="text-red-600">*</span>
         </label>
-        <input type="text" id="imageLink" name="imageLink" formControlName="imageLink" placeholder="Enter post Image Link" class="form__control">
+        <input type="text" id="imageLink" name="imageLink" formControlName="imageLink"
+            placeholder="Enter post Image Link" class="form__control">
         <div *ngIf="imageLink?.invalid && (imageLink?.dirty || imageLink?.touched)" class="form__validation-text">
             <span *ngIf="imageLink?.hasError('required')">
                 Image Link is required.&nbsp;
             </span>
         </div>
     </div>
+    <div class="card p-3 mt-3"  *ngFor="let alias of comments.controls; let i=index">
+        <h5 class="font-bold text-base">
+            Comments
+        </h5>
+        <!-- The repeated alias template -->
+         <div [formGroupName]="i">
+             <div class="form__group">
+                 <label for="name-{{ i }}" class="form__label">
+                     Name:
+                     <span class="text-red-600">*</span>
+                 </label>
+                 <input id="name-{{ i }}" type="text" formControlName="name" class="form__control">
+             </div>
+             <div class="form__group">
+                 <label for="commnet-{{ i }}" class="form__label">
+                     Comment:
+                     <span class="text-red-600">*</span>
+                 </label>
+                 <textarea id="comment-{{ i }}" type="text" formControlName="comment" class="form__control"></textarea>
+             </div>        
+         </div>
+    </div>
+
     <div class="pt-3">
+        <button type="button" class="button button--outline mr-3" (click)="addCommentField()"> Add comments</button>
         <button type="submit" class="button button--primary">Publish</button>
     </div>
 </form>
-

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from "rxjs";
 import { ArticlesDataService } from '../articles-data.service';
 
@@ -30,6 +30,20 @@ export class CreatePostComponent implements OnInit{
     return this.createPostForm.get("imageLink");
   }
 
+  get comments() {
+    return this.createPostForm.get("comments") as FormArray;
+  } 
+
+  addCommentField() {
+    const commentGroup  = this.formBuilder.group({
+      name: [null, [Validators.required, Validators.minLength(3)]],
+      comment:  [null, [Validators.required, Validators.minLength(3)]]
+    })
+    this.comments.push({
+      commentGroup
+    })
+  }
+
   constructor(
     private formBuilder: FormBuilder,
     private _articlesDataService: ArticlesDataService
@@ -41,7 +55,8 @@ export class CreatePostComponent implements OnInit{
       title: [null, [Validators.required, Validators.minLength(3)]],
       author: [null, [Validators.required, Validators.minLength(3)]],
       link: [null, [Validators.required]],
-      imageLink: [null, [Validators.required]]
+      imageLink: [null, [Validators.required]],
+      comments: this.formBuilder.array([])
     })
   }
 
