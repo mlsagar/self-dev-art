@@ -3,6 +3,7 @@ export const environment = {
     APP_TITLE: "Self Dev Art",
     ROUTES: {
         USERS: "/users",
-        LOGIN: "/login"
+        LOGIN: "/login",
+        ARTICLES: "/articles"
     }
 };

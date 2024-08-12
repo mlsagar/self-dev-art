@@ -3,6 +3,7 @@ export const environment = {
     APP_TITLE: "Set Dev Art",
     ROUTES: {
         USERS: "/users",
-        LOGIN: "/login"
+        LOGIN: "/login",
+        ARTICLES: "/articles"
     }
 };

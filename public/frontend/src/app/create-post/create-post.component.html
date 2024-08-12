@@ -1,0 +1,63 @@
+<form [formGroup]="createPostForm" (ngSubmit)="createPost()" class="card create-post-form form">
+    <div class="pb-4 font-bold text-xl">
+        Create the post
+    </div>
+    <div class="form__group">
+        <label for="title" class="form__label">
+            Title
+            <span class="text-red-600">*</span>
+        </label>
+        <input type="text" id="title" name="title" formControlName="title" placeholder="Enter post title" class="form__control">
+        <div *ngIf="title?.invalid && (title?.dirty || title?.touched)" class="form__validation-text">
+            <span *ngIf="title?.hasError('required')">
+                Title is required.&nbsp;
+            </span>
+            <span *ngIf="title?.hasError('minlength')">
+                Title must be at least of 3 letters.&nbsp;
+            </span>
+        </div>
+    </div>
+    <div class="form__group">
+        <label for="author" class="form__label">
+            Author
+            <span class="text-red-600">*</span>
+        </label>
+        <input type="text" id="author" name="author" formControlName="author" placeholder="Enter post author" class="form__control">
+        <div *ngIf="author?.invalid && (author?.dirty || author?.touched)" class="form__validation-text">
+            <span *ngIf="author?.hasError('required')">
+                Author is required.&nbsp;
+            </span>
+            <span *ngIf="author?.hasError('minlength')">
+                Author must be at least of 3 letters.&nbsp;
+            </span>
+        </div>
+    </div>
+    <div class="form__group">
+        <label for="link" class="form__label">
+            Link
+            <span class="text-red-600">*</span>
+        </label>
+        <input type="text" id="link" name="link" formControlName="link" placeholder="Enter post link" class="form__control">
+        <div *ngIf="link?.invalid && (link?.dirty || link?.touched)" class="form__validation-text">
+            <span *ngIf="link?.hasError('required')">
+                Link is required.&nbsp;
+            </span>
+        </div>
+    </div>
+    <div class="form__group">
+        <label for="imageLink" class="form__label">
+            Image Link
+            <span class="text-red-600">*</span>
+        </label>
+        <input type="text" id="imageLink" name="imageLink" formControlName="imageLink" placeholder="Enter post Image Link" class="form__control">
+        <div *ngIf="imageLink?.invalid && (imageLink?.dirty || imageLink?.touched)" class="form__validation-text">
+            <span *ngIf="imageLink?.hasError('required')">
+                Image Link is required.&nbsp;
+            </span>
+        </div>
+    </div>
+    <div class="pt-3">
+        <button type="submit" class="button button--primary">Publish</button>
+    </div>
+</form>
+

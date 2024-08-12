@@ -4,6 +4,7 @@ export const environment = {
     APP_TITLE: "Title of the application",
     ROUTES: {
         USERS: "url constant for users",
-        LOGIN: "url constant for login"
+        LOGIN: "url constant for login",
+        ARTICLES: "url constant for articles"
     }
 };

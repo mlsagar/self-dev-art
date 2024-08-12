@@ -1,13 +1,12 @@
 import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { environment } from '../../environments/environment';
-import { DisplayCommentComponent } from '../display-comment/display-comment.component';
-import { AddCommentComponent } from '../add-comment/add-comment.component';
+import { ArticleComponent } from '../article/article.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, DisplayCommentComponent, AddCommentComponent],
+  imports: [RouterLink, ArticleComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
