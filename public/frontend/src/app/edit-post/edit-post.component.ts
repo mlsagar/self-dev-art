@@ -8,7 +8,8 @@ import { Response } from '../reponse';
 
 export enum CRUD_ACTION {
   "PUT" = 'put',
-  "PATCH" = "patch"
+  "PATCH" = "patch",
+  "DELETE" = "delete"
 }
 
 @Component({
@@ -24,6 +25,7 @@ export class EditPostComponent {
   isButtonDisabled = false;
   article!: Article;
   crudAction!: CRUD_ACTION;
+  publicCrudAction = CRUD_ACTION
 
   get title() {
     return this.editPostForm.get("title");
@@ -49,7 +51,7 @@ export class EditPostComponent {
     
 
     if (!this.article) {  
-      this._location.back();
+      this.back();
       return;
     }
   }
@@ -73,6 +75,19 @@ export class EditPostComponent {
     this._fullUpdate();    
   }
 
+  deletePost() {
+    this._articlesDataService.deleteArticle(this.article._id)
+    .pipe(finalize(this._enablingButton))
+    .subscribe({
+      next: this._handlingSuccess.bind(this),
+      error: this._handlingError
+    })
+  }
+
+  back() {
+    this._location.back();
+  }
+
   get _createEditForm() {
     return this.formBuilder.group({
       title: [this.article.title, [Validators.required, Validators.minLength(3)]],
@@ -86,7 +101,7 @@ export class EditPostComponent {
     this._articlesDataService.fullUpdate(this.article._id, this.editPostForm.value)
     .pipe(finalize(this._enablingButton))
     .subscribe({
-      next: this._handlingUpdateSuccess.bind(this),
+      next: this._handlingSuccess.bind(this),
       error: this._handlingError
     })
   }
@@ -114,12 +129,12 @@ export class EditPostComponent {
     this._articlesDataService.partialUpdate(this.article._id, newRequestObject)
     .pipe(finalize(this._enablingButton))
     .subscribe({
-      next: this._handlingUpdateSuccess.bind(this),
+      next: this._handlingSuccess.bind(this),
       error: this._handlingError
     })
   }
 
-  _handlingUpdateSuccess(response: Response<any>) {
+  _handlingSuccess(response: Response<any>) {
     this.editPostForm.reset();
     this._router.navigateByUrl("home");
     console.log(response.message);

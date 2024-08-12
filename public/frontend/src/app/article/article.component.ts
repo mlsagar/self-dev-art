@@ -34,7 +34,8 @@ export class ArticleComponent {
         },
         {
           name: "Delete",
-          routeLink: "/"
+          routeLink: "/edit-post",
+          state: {action: CRUD_ACTION.DELETE, article: articleValue}
         },
       ]
     }
