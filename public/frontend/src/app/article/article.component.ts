@@ -5,6 +5,7 @@ import { AddCommentComponent } from '../add-comment/add-comment.component';
 import { Article } from '../articles-data.service';
 import { RouterLink } from '@angular/router';
 import { DropdownConfig, DropdownMenuComponent } from '../shared/dropdown-menu/dropdown-menu.component';
+import { CRUD_ACTION } from '../edit-post/edit-post.component';
 
 @Component({
   selector: 'app-article',
@@ -22,25 +23,14 @@ export class ArticleComponent {
     this.articleDropdownConfig = {
       config: [
         {
-          name: "Edit",
+          name: "Fully Edit Post",
           routeLink: "/edit-post",
-          state: articleValue
+          state: {action: CRUD_ACTION.PUT, article:articleValue}
         },
         {
-          name: "Edit Title Only",
-          routeLink: "/"
-        },
-        {
-          name: "Edit Author Only",
-          routeLink: "/"
-        },
-        {
-          name: "Edit Link Only",
-          routeLink: "/"
-        },
-        {
-          name: "Edit Image Link Only",
-          routeLink: "/"
+          name: "Partially Edit Post",
+          routeLink: "/edit-post",
+          state: {action: CRUD_ACTION.PATCH, article: articleValue}
         },
         {
           name: "Delete",

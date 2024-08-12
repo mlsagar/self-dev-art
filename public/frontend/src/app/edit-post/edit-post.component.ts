@@ -3,8 +3,13 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
-import { Article, ArticlesDataService } from '../articles-data.service';
+import { Article, ArticleRequest, ArticlesDataService } from '../articles-data.service';
 import { Response } from '../reponse';
+
+export enum CRUD_ACTION {
+  "PUT" = 'put',
+  "PATCH" = "patch"
+}
 
 @Component({
   selector: 'app-edit-post',
@@ -18,6 +23,7 @@ export class EditPostComponent {
 
   isButtonDisabled = false;
   article!: Article;
+  crudAction!: CRUD_ACTION;
 
   get title() {
     return this.editPostForm.get("title");
@@ -38,8 +44,11 @@ export class EditPostComponent {
     private _router: Router,
     private _location: Location
   ){
-    this.article = this._router.getCurrentNavigation()?.extras.state as Article;    
-    if (!this.article) {
+    this.article = this._router.getCurrentNavigation()?.extras.state?.["article"] as Article;
+    this.crudAction = this._router.getCurrentNavigation()?.extras.state?.["action"] as CRUD_ACTION;
+    
+
+    if (!this.article) {  
       this._location.back();
       return;
     }
@@ -55,6 +64,12 @@ export class EditPostComponent {
       return;
     }
     this.isButtonDisabled = true;
+
+    if (this.crudAction === CRUD_ACTION.PATCH) {
+      this._partialUpdate();
+      return;
+    }
+
     this._fullUpdate();    
   }
 
@@ -71,18 +86,47 @@ export class EditPostComponent {
     this._articlesDataService.fullUpdate(this.article._id, this.editPostForm.value)
     .pipe(finalize(this._enablingButton))
     .subscribe({
-      next: this._handlingFullUpdateSuccess,
+      next: this._handlingUpdateSuccess.bind(this),
       error: this._handlingError
     })
   }
 
-  _handlingFullUpdateSuccess(response: Response<any>) {
+  _partialUpdate() {
+    const newRequestObject: any = {};
+    if (this.title?.value !== this.article.title) {
+      newRequestObject.title = this.title?.value;
+    }
+    if (this.author?.value !== this.article.author) {
+      newRequestObject.author = this.author?.value;
+    }
+    if (this.link?.value !== this.article.link) {
+      newRequestObject.link = this.link?.value;
+    }
+    if (this.imageLink?.value !== this.article.imageLink) {
+      newRequestObject.imageLink = this.imageLink?.value;
+    }
+
+    if (!Object.keys(newRequestObject).length) {
+      alert("No changes! Please change");
+      return;
+    }
+
+    this._articlesDataService.partialUpdate(this.article._id, newRequestObject)
+    .pipe(finalize(this._enablingButton))
+    .subscribe({
+      next: this._handlingUpdateSuccess.bind(this),
+      error: this._handlingError
+    })
+  }
+
+  _handlingUpdateSuccess(response: Response<any>) {
     this.editPostForm.reset();
-    console.log(response);
+    this._router.navigateByUrl("home");
+    console.log(response.message);
   }
 
   _handlingError(error: Response<any>) {
-    console.log(error)
+    console.log(error.message)
   }
 
   _enablingButton() {

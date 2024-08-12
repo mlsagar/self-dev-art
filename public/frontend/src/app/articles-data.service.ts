@@ -38,7 +38,7 @@ export class ArticlesDataService {
     return this._http.put<Response<any>>(this.baseUrl + this.routes.ARTICLES + "/" + postId, updateRequest);
   }
 
-  partialUpdate(postId: string, updateRequest: ArticleRequest) {
+  partialUpdate(postId: string, updateRequest: Partial<ArticleRequest>) {
     return this._http.patch<Response<any>>(this.baseUrl + this.routes.ARTICLES + "/" + postId, updateRequest);
   }
 
