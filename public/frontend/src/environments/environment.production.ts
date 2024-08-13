@@ -4,6 +4,7 @@ export const environment = {
     ROUTES: {
         USERS: "/users",
         LOGIN: "/login",
-        ARTICLES: "/articles"
+        ARTICLES: "/articles",
+        COMMENTS: "/comments"
     }
 };

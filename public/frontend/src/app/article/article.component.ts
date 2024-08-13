@@ -65,8 +65,6 @@ export class ArticleComponent implements AfterViewInit{
     if(this.fragmentValue) {
       this._jumpToSection(this.fragmentValue);
     }
-
-    console.log(this.comments)
   }
 
   routeTo() {

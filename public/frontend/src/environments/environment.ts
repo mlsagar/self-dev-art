@@ -5,6 +5,7 @@ export const environment = {
     ROUTES: {
         USERS: "url constant for users",
         LOGIN: "url constant for login",
-        ARTICLES: "url constant for articles"
+        ARTICLES: "url constant for articles",
+        COMMENTS: "url constant for comments"
     }
 };
