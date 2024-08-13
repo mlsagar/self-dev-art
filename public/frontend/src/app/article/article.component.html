@@ -23,7 +23,7 @@
             <h3 class="font-bold text-2xl mb-6">Comments</h3>
             <app-add-comment (onAddComment)="handleOnAddComment()"></app-add-comment>
             <ng-container *ngIf="articlePost.comments.length">
-                <app-display-comment *ngFor="let comment of articlePost.comments.slice().reverse()" [comment]="comment"></app-display-comment>
+                <app-display-comment *ngFor="let comment of articlePost.comments.slice().reverse()" [comment]="commentWithArticleId(comment)"></app-display-comment>
             </ng-container>
         </div>
     </main>

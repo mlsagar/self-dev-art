@@ -6,6 +6,7 @@ import { Article } from '../articles-data.service';
 import { Router, RouterLink } from '@angular/router';
 import { DropdownConfig, DropdownMenuComponent } from '../shared/dropdown-menu/dropdown-menu.component';
 import { CRUD_ACTION } from '../edit-post/edit-post.component';
+import { Comment, CommentWithArticleId } from '../comments-data.service';
 
 @Component({
   selector: 'app-article',
@@ -18,6 +19,10 @@ export class ArticleComponent implements AfterViewInit{
   articleDropdownConfig!: DropdownConfig;
   articlePost !: Article;
   fragmentValue!: string;
+
+  public commentWithArticleId(comment: Comment): CommentWithArticleId {
+    return {articleId: this.articlePost._id, ...comment}
+  }
 
   @ViewChild("comments") comments!: ElementRef;
 

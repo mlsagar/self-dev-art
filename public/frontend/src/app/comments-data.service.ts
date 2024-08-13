@@ -12,6 +12,10 @@ export interface Comment extends CommentRequest{
   _id: string;  
 }
 
+export interface CommentWithArticleId extends Comment {
+  articleId: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -28,5 +32,17 @@ export class CommentsDataService {
 
   addComment(postId: string, commentRequest: CommentRequest) {
     return this._http.post<Response<any>>(this.baseUrl + this.routes.ARTICLES + "/" + postId + this.routes.COMMENTS, commentRequest);
+  }
+
+  fullUpdate(postId: string, commentId: string, commentRequest: CommentRequest) {
+    return this._http.put<Response<any>>(this.baseUrl + this.routes.ARTICLES + "/" + postId + this.routes.COMMENTS + "/" + commentId, commentRequest);
+  }
+
+  partialUpdate(postId: string, commentId: string, commentRequest: Partial<CommentRequest>) {
+    return this._http.patch<Response<any>>(this.baseUrl + this.routes.ARTICLES + "/" + postId + this.routes.COMMENTS + "/" + commentId, commentRequest);
+  }
+
+  deleteComment(postId: string, commentId: string) {
+    return this._http.delete<Response<any>>(this.baseUrl + this.routes.ARTICLES + "/" + postId + this.routes.COMMENTS + "/" + commentId);
   }
 }
