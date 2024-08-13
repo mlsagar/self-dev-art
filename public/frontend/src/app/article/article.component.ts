@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { DisplayCommentComponent } from '../display-comment/display-comment.component';
 import { AddCommentComponent } from '../add-comment/add-comment.component';
 import { Article } from '../articles-data.service';
@@ -57,6 +57,9 @@ export class ArticleComponent implements AfterViewInit{
     return this.fragmentValue;
   }
 
+  @Output()
+    onAddComment = new EventEmitter()
+
   constructor(
     private _router: Router
   ) {}
@@ -71,6 +74,10 @@ export class ArticleComponent implements AfterViewInit{
     if (!this.showCommentsSection) {
       this._router.navigateByUrl(`post/${this.articlePost._id}`);
     }
+  }
+
+  handleOnAddComment() {
+    this.onAddComment.emit()
   }
 
   _jumpToSection(section: string | null) {

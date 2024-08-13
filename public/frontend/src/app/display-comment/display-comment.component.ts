@@ -16,15 +16,11 @@ export class DisplayCommentComponent {
   commentDropdownConfig: DropdownConfig = {
     config: [
       {
-        name: "Edit",
+        name: "Fully Edit",
         routeLink: "/"
       },
       {
-        name: "Edit Name Only",
-        routeLink: "/"
-      },
-      {
-        name: "Edit Comment Only",
+        name: "Partially Update",
         routeLink: "/"
       },
       {

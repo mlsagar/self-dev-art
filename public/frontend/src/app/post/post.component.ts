@@ -25,14 +25,14 @@ export class PostComponent implements OnInit{
     this.postId = this._route.snapshot.params["postId"];
   }
   ngOnInit(): void {
-    this._getOneArticle();
+    this.getOneArticle();
   }
 
   back() {
     this._location.back();
   }
 
-  _getOneArticle() {
+  getOneArticle() {
     this._articleDataService.oneArticle(this.postId)
     .subscribe({
       next: this._handlingAllArticlseSuccess.bind(this),

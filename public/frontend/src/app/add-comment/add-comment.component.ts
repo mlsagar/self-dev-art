@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { CommentsDataService } from '../comments-data.service';
@@ -26,6 +26,9 @@ export class AddCommentComponent implements OnInit{
   get comment() {
     return this.addCommentForm.get("comment");
   }
+
+  @Output()
+    onAddComment = new EventEmitter;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -66,6 +69,7 @@ export class AddCommentComponent implements OnInit{
 
   _handleAddCommentApiSuccess(response: Response<any>) {
     this.addCommentForm.reset();
+    this.onAddComment.emit();
     console.log(response.message);
   }
 
