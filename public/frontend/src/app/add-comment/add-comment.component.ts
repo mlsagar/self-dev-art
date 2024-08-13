@@ -53,7 +53,7 @@ export class AddCommentComponent implements OnInit{
 
   _addCommentApiCall() {
     this._commentsDataService.addComment(this.postId, this.addCommentForm.value)
-    .pipe(finalize(this._enableButtonDisabled))
+    .pipe(finalize(this._enablingButton))
     .subscribe({
       next: this._handleAddCommentApiSuccess.bind(this),
       error: this._handleError
@@ -77,7 +77,7 @@ export class AddCommentComponent implements OnInit{
     console.log(error.message)
   }
 
-  _enableButtonDisabled() {
+  _enablingButton() {
     this.isButtonDisabled = false;
   }
 }
