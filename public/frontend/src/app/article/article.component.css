@@ -1,5 +1,5 @@
 .article {
-    @apply mb-5 relative cursor-pointer;
+    @apply mb-5 relative;
 }
 
 .article__figure {

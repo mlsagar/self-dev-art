@@ -29,9 +29,13 @@ export class ArticlesDataService {
   get allArticles() {
     return this._http.get<Response<Article>>(this.baseUrl + this.routes.ARTICLES);
   }
-
+  
   addArticle(articleRequest: ArticleRequest) {
     return this._http.post<Response<any>>(this.baseUrl + this.routes.ARTICLES, articleRequest);
+  }
+
+  oneArticle(postId: string) {
+    return this._http.get<Response<Article>>(this.baseUrl + this.routes.ARTICLES + "/" + postId);
   }
 
   fullUpdate(postId: string, updateRequest: ArticleRequest) {
