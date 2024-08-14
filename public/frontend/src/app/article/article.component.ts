@@ -62,6 +62,8 @@ export class ArticleComponent implements AfterViewInit{
     return this.fragmentValue;
   }
 
+  @Input() showImage = false;
+
   @Output()
     onAddComment = new EventEmitter()
 

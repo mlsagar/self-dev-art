@@ -1,6 +1,6 @@
 
 <article class="card article" *ngIf="articlePost" (click)="routeTo()" [ngClass]="!showCommentsSection ? 'cursor-pointer': ''">
-    <figure class="article__figure">
+    <figure class="article__figure" *ngIf="showImage">
         <img [src]="articlePost.imageLink" [alt]="'image for ' + articlePost.title" class="article__image">
     </figure>
 
