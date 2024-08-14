@@ -30,7 +30,11 @@ export class LoginComponent implements OnInit{
     private _authService: AuthService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if(this._authService.isLoggedIn()) {
+      this._router.navigate(["/home"]);
+    }
+  }
 
   login(loginForm: NgForm) {
     if(loginForm.invalid) {

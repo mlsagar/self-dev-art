@@ -4,6 +4,8 @@ import { FormsModule, NgForm } from "@angular/forms";
 import { ComparePasswordDirective } from '../compare-password.directive';
 import { UsersDataService } from '../users-data.service';
 import { ErrorResponse } from '../reponse';
+import { AuthService } from '../auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -17,10 +19,15 @@ export class RegisterComponent implements OnInit{
     registerForm!: NgForm;
 
   constructor(
-    private _usersDataService: UsersDataService
+    private _usersDataService: UsersDataService,
+    private _authService: AuthService,
+    private _router: Router
   ) {}
 
   ngOnInit(): void {
+    if(this._authService.isLoggedIn()) {
+      this._router.navigate(["/home"]);
+    }
     setTimeout(() => {this._resetRegistrationForm()}, 0)
   }
 

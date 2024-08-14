@@ -27,7 +27,6 @@ export class HomeComponent implements OnInit{
 
 
   ngOnInit(): void {
-    console.log("Logging from home");
     this._articlesDataService.allArticles.subscribe({
       next: (response) => {
         this.articles = response.data;
