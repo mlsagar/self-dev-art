@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavigationComponent } from './navigation/navigation.component';
 import { FooterComponent } from './footer/footer.component';
 import { ToastComponent } from './shared/toast/toast.component';
+import { AuthService } from './auth.service';
 
 @Component({
   selector: 'app-root',
@@ -11,6 +12,19 @@ import { ToastComponent } from './shared/toast/toast.component';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
+export class AppComponent implements OnInit{  
   title = 'frontend';
+
+  constructor(
+    private _authService: AuthService
+  ) {}
+
+  ngOnInit(): void {
+    const isTokenPresent = localStorage.getItem("user");
+    if (isTokenPresent) {
+      this._authService.isLoggedIn.set(true);
+    } else {
+      this._authService.isLoggedIn.set(false);
+    }
+  }
 }

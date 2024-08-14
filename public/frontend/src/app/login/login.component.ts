@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { LoginUser, UsersDataService } from '../users-data.service';
 import { finalize } from 'rxjs';
 import { ErrorResponse, Response } from '../reponse';
 import { MESSAGE_TYPE, ToastService } from '../shared/toast/toast.service';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-login',
@@ -24,7 +25,9 @@ export class LoginComponent implements OnInit{
 
   constructor(
     private _usersDataService: UsersDataService,
-    private _toastService: ToastService
+    private _toastService: ToastService,
+    private _router: Router,
+    private _authService: AuthService
   ) {}
 
   ngOnInit(): void {}
@@ -49,6 +52,9 @@ export class LoginComponent implements OnInit{
 
   _handleLoginSuccessResponse(loginForm: NgForm, response: Response<any>) {
     loginForm.reset();
+    this._authService.isLoggedIn.set(true);
+    this._router.navigateByUrl("/");
+    localStorage.setItem("user", JSON.stringify({token: response.token}))
     this._toastService.open({type: MESSAGE_TYPE.SUCCESS, message: response.message});
   } 
 

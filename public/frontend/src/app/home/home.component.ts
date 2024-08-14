@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { ArticleComponent } from '../article/article.component';
 import { Article, ArticlesDataService } from '../articles-data.service';
 import { response } from 'express';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-home',
@@ -19,11 +20,14 @@ export class HomeComponent implements OnInit{
 
   constructor(
     private router: Router,
-    private _articlesDataService: ArticlesDataService
-  ) {}
+    private _articlesDataService: ArticlesDataService,
+    public authService: AuthService
+  ) {
+  }
 
 
   ngOnInit(): void {
+    console.log("Logging from home");
     this._articlesDataService.allArticles.subscribe({
       next: (response) => {
         this.articles = response.data;

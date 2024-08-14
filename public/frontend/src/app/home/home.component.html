@@ -5,8 +5,8 @@
     <!-- <article class="card mb-5 overflow-hidden relative cursor-pointer" (click)="routeTo()"> -->
     
     <app-article *ngFor="let article of articles" [article]="article"></app-article>
-
-    <div class="card p-6">
+    
+    <div class="card p-6" *ngIf="!authService.isLoggedIn()">
         <h2 class="font-bold text-4xl mb-2">Join the Self-Dev-Art Community!</h2>
         <h3 class="font-bold text-2xl mb-6">Self-Dev-Art is Community of positive people spreading positivity!</h3>
         <p class="font-light text-xl mb-8">

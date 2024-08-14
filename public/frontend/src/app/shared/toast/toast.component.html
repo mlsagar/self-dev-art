@@ -1,5 +1,5 @@
 <div id="toast-success" *ngIf="toast.toastMessage$ | async as toastr"
-    class="flex absolute bottom-[30px] left-[50%] -translate-x-[50%] transition-all items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
+    class="flex fixed bottom-[30px] left-[50%] -translate-x-[50%] transition-all items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
     role="alert">
 
     <div *ngIf="toastr.type === messageType.SUCCESS"
