@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CRUD_ACTION } from '../edit-post/edit-post.component';
-import { CommentsDataService, CommentWithArticleId } from '../comments-data.service';
 import { CommonModule, Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
-import { Response } from '../reponse';
+import { CommentsDataService, CommentWithArticleId } from '../../comments-data.service';
+import { CRUD_ACTION } from '../../edit-post/edit-post.component';
+import { Response } from '../../reponse';
 
 @Component({
   selector: 'app-edit-comment',
