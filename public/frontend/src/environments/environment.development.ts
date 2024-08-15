@@ -6,5 +6,8 @@ export const environment = {
         LOGIN: "/login",
         ARTICLES: "/articles",
         COMMENTS: "/comments"
+    },
+    LOCAL_STORAGE: {
+        USER: "user"
     }
 };

@@ -7,5 +7,8 @@ export const environment = {
         LOGIN: "url constant for login",
         ARTICLES: "url constant for articles",
         COMMENTS: "url constant for comments"
+    },
+    LOCAL_STORAGE: {
+        USER: "user constant key to store in localstorage"
     }
 };
