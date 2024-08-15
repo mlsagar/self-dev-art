@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const User = mongoose.model(process.env.USER_MODEL_NAME);
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { response } = require("express");
 
 const addUser = function (request, response) {
     const responseCollection = _createResponseCollection();
@@ -18,7 +19,7 @@ const login = function (request, response) {
     const responseCollection = _createResponseCollection();
     if (request.body && request.body.username && request.body.password) {
         User.find({ username: request.body.username })
-            .then(_verifyPassword.bind(null, request))
+            .then(_verifyPassword.bind(null, request, responseCollection))
             .catch(_setVerifyPasswordErrorStatusCode.bind(null, responseCollection))
             .then(_handleVerifyPassword.bind(null, responseCollection))
             .catch(_setInternalError.bind(null, responseCollection))
@@ -30,7 +31,6 @@ const login = function (request, response) {
     responseCollection.message = process.env.BAD_REQUEST_MESSAGE;
     _sendResponse(response, responseCollection);
 }
-
 
 const _handleAddUser = function (responseCollection, response) {
     if (!response) {
@@ -59,7 +59,7 @@ const _createNewUser = function (request, hashPassword) {
             return;
         }
 
-        reject("Not able to create new user");
+        reject(process.env.NOT_ABLE_TO_CREATE_USER_MESSAGE);
 
     })
 }
@@ -68,12 +68,16 @@ const _userCreate = function (newUser) {
     return User.create(newUser)
 }
 
-const _verifyPassword = function(request, databaseUser) {
+const _verifyPassword = function(request, responseCollection, databaseUser) {
     return new Promise((resolve, reject) => {
         if (!databaseUser.length) {
             reject(process.env.UNAUTHORIZE_USER_MESSAGE)
             return;
         }
+        responseCollection.data = [{
+            name:databaseUser[0].name,
+            username: databaseUser[0].username 
+        }];
         resolve(bcrypt.compare(request.body.password, databaseUser[0].password));
     })
 
@@ -88,12 +92,14 @@ const _handleVerifyPassword = function(responseCollection, isVerified) {
         if (!isVerified) {
             responseCollection.status = Number(process.env.UNAUTHORIZE_STATUS_CODE);
             responseCollection.message = process.env.UNAUTHORIZE_USER_MESSAGE;
+            responseCollection.data = [];
             return;
         }
 
         responseCollection.status = Number(process.env.SUCCESS_STATUS_CODE);
         responseCollection.message = process.env.LOGIN_SUCCESS_MESSAGE;
-        responseCollection.token = jwt.sign("You are welcome", "Self-Dev-Art");
+        responseCollection.token = jwt.sign(responseCollection.data[0], process.env.JWT_PRIVATE_KEY);
+        responseCollection.data = [];
 }
 
 const _createResponseCollection = function () {
