@@ -28,8 +28,8 @@ export class ArticlesDataService {
     private _http: HttpClient
   ) { }
 
-  get allArticles():Observable<Response<Article>> {
-      return this._http.get<Response<Article>>(this.articlesUrl);
+  allArticles(count: number):Observable<Response<Article>> {
+      return this._http.get<Response<Article>>(this.articlesUrl + "?count=" + count);
   }
   
   addArticle(articleRequest: ArticleRequest) {

@@ -8,6 +8,7 @@ export const environment = {
         ARTICLES: "/articles",
         COMMENTS: "/comments",
         POST: "/post",
+        REGISTER: "/register",
         EDIT_POST: "/edit-post",
         EDIT_COMMENT: "/edit-comment"
     },
@@ -46,5 +47,6 @@ export const environment = {
         FULLY_EDIT: "Fully Edit",
         PARTIAL_EDIT: "Partial Edit",
         DELETE: "Delete"
-    }
+    },
+    INITIAL_ARTICLE_COUNT: 5
 };

@@ -9,6 +9,7 @@ export const environment = {
         ARTICLES: "url constant for articles",
         COMMENTS: "url constant for comments",
         POST: "url constant for post",
+        REGISTER: "url constant for register",
         EDIT_POST: "url constant for edit post",
         EDIT_COMMENT: "url constant for edit comment"
     },
@@ -47,5 +48,6 @@ export const environment = {
         FULLY_EDIT: "constant value for fully edit",
         PARTIAL_EDIT: "constant value for partial edit",
         DELETE: "constant value for delete"
-    }
+    },
+    INITIAL_ARTICLE_COUNT: 0, //"initial value for articles count"
 };

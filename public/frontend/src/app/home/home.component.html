@@ -1,20 +1,28 @@
-<div class="max-w-2xl mx-auto">
-    <!-- <img src="https://media.dev.to/cdn-cgi/image/width=775%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2Fp6srlcj45cz03yh4pwa2.png" alt=""> -->
-
-
-    <!-- <article class="card mb-5 overflow-hidden relative cursor-pointer" (click)="routeTo()"> -->
-    
-    <app-article *ngFor="let article of articles; let i = index;" [article]="article" [showImage]="i === 0"></app-article>
-    
-    <div class="card p-6" *ngIf="!isLoggedIn">
-        <h2 class="font-bold text-4xl mb-2">Join the Self-Dev-Art Community!</h2>
-        <h3 class="font-bold text-2xl mb-6">Self-Dev-Art is Community of positive people spreading positivity!</h3>
-        <p class="font-light text-xl mb-8">
-            We're a place where positive people share there love self development article which have help them and spreading the positivity to the world!!! With concept of change start from you!!! ❤️❤️❤️❤️❤️
-        </p>
-        <div class="text-center">
-            <button class="button button--outline mr-2" routerLink="/register">Create account</button>
-            <button class="button" routerLink="/login">Log in</button>
+<div infiniteScroll
+[infiniteScrollDistance]="2"
+[infiniteScrollThrottle]="50"
+(scrolled)="onScroll()">
+    <div class="max-w-2xl mx-auto">
+        
+        <app-article *ngFor="let article of articles; let i = index;" [article]="article" [showImage]="i === 0"></app-article>
+        
+        <div class="card p-6" *ngIf="!isLoggedIn || (isLoggedIn && !this.articles.length)">
+            <h2 class="font-bold text-4xl mb-2">Join the Self-Dev-Art Community!</h2>
+            <h3 class="font-bold text-2xl mb-6">Self-Dev-Art is Community of positive people spreading positivity!</h3>
+            <p class="font-light text-xl mb-8">
+                We're a place where positive people share there love self development article which have help them and spreading the positivity to the world!!! With concept of change start from you!!! ❤️❤️❤️❤️❤️
+            </p>
+            <div class="text-center">
+                <ng-container *ngIf="!isLoggedIn; else createPostButton">
+                    <button class="button button--outline mr-2" routerLink="/register">Create account</button>
+                    <button class="button" routerLink="/login">Log in</button>
+                </ng-container>
+            </div>
         </div>
     </div>
+
 </div>
+
+<ng-template #createPostButton>
+    <button class="button button--outline" routerLink="/create-post">Create post</button>
+</ng-template>

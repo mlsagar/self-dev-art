@@ -1,16 +1,18 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
+import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { environment } from '../../environments/environment';
 import { Article, ArticlesDataService } from '../articles-data.service';
-import { response } from 'express';
-import { CommonModule } from '@angular/common';
 import { AuthService } from '../auth.service';
+import { ErrorResponse, Response } from '../reponse';
 import { ArticleComponent } from '../shared/article/article.component';
+import { MESSAGE_TYPE, ToastService } from '../shared/toast/toast.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, ArticleComponent, CommonModule],
+  imports: [RouterLink, ArticleComponent, CommonModule, InfiniteScrollDirective],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -22,30 +24,42 @@ export class HomeComponent implements OnInit{
     return this._authService.isLoggedIn;
   }
 
+  count = environment.INITIAL_ARTICLE_COUNT;
+
   constructor(
-    private router: Router,
     private _articlesDataService: ArticlesDataService,
-    private _authService: AuthService
+    private _authService: AuthService,
+    private _toast: ToastService
   ) {
   }
 
 
   ngOnInit(): void {
-    this._articlesDataService.allArticles.subscribe({
-      next: (response) => {
-        this.articles = response.data;
-      },
-      error: (error) => {
-        console.log(error);
-      }
+    this._getAllArticles();
+  }
+
+  _getAllArticles(count = environment.INITIAL_ARTICLE_COUNT) {
+    this._articlesDataService.allArticles(count).subscribe({
+      next: this._onGetArticlesSuccess.bind(this),
+      error: this._onGetArticlesError.bind(this)
     })
   }
 
-  routeTo() {
-    this.router.navigateByUrl("register");
+  _onGetArticlesSuccess(response: Response<any>) {
+    this.articles = response.data;
   }
 
-  test() {
-    console.log("hello")
+  _onGetArticlesError(error: ErrorResponse<any>) {
+    this._toast.open({type: MESSAGE_TYPE.ERROR, message: error.error.message});
+  }
+  
+  onScroll() {
+    if (this.isLoggedIn) {      
+      if(this.articles.length < this.count){
+        return;
+      }
+      this.count += environment.INITIAL_ARTICLE_COUNT;
+      this._getAllArticles(this.count);
+    }
   }
 }
