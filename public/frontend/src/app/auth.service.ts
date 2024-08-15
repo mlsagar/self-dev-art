@@ -1,6 +1,14 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
 import { environment } from '../environments/environment';
 
+export enum CRUD_ACTION {
+  PUT = 'PUT',
+  PATCH = "PATCH",
+  DELETE = "DELETE",
+  GET = "GET",
+  POST = "POST"
+}
+
 @Injectable({
   providedIn: 'root'
 })

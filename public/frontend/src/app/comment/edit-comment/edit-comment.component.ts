@@ -4,8 +4,10 @@ import { CommonModule, Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { CommentsDataService, CommentWithArticleId } from '../../comments-data.service';
-import { CRUD_ACTION } from '../../edit-post/edit-post.component';
-import { Response } from '../../reponse';
+import { ErrorResponse, Response } from '../../reponse';
+import { CRUD_ACTION } from '../../auth.service';
+import { MESSAGE_TYPE, ToastService } from '../../shared/toast/toast.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-edit-comment',
@@ -16,6 +18,10 @@ import { Response } from '../../reponse';
 })
 export class EditCommentComponent {
   editCommentForm!: FormGroup;
+  routerStates = environment.ROUTER_STATES;
+  messages = environment.MESSAGES;
+  commentForm = environment.COMMENT_FORM;
+  validators = environment.VALIDATORS;
 
   isButtonDisabled = false;
   commentValue!: CommentWithArticleId;
@@ -23,24 +29,26 @@ export class EditCommentComponent {
   publicCrudAction = CRUD_ACTION
 
   get name() {
-    return this.editCommentForm.get("name");
+    return this.editCommentForm.get(this.commentForm.NAME);
   }
   get comment() {
-    return this.editCommentForm.get("comment");
+    return this.editCommentForm.get(this.commentForm.COMMENT);
   }
 
   constructor(
     private formBuilder: FormBuilder,
     private _commentsDataService: CommentsDataService,
     private _router: Router,
-    private _location: Location
+    private _location: Location,
+    private _toast: ToastService
   ){
-    this.commentValue = this._router.getCurrentNavigation()?.extras.state?.["comment"] as CommentWithArticleId;
-    this.crudAction = this._router.getCurrentNavigation()?.extras.state?.["action"] as CRUD_ACTION;
+    this.commentValue = this._router.getCurrentNavigation()?.extras.state?.[this.routerStates.COMMENT] as CommentWithArticleId;
+    this.crudAction = this._router.getCurrentNavigation()?.extras.state?.[this.routerStates.ACTION] as CRUD_ACTION;
     
 
     if (!this.commentValue) {  
       this.back();
+      this._toast.open({type: MESSAGE_TYPE.WARNING, message: this.messages.SOMETHING_WENT_WRONG});
       return;
     }
   }
@@ -55,12 +63,10 @@ export class EditCommentComponent {
       return;
     }
     this.isButtonDisabled = true;
-
     if (this.crudAction === CRUD_ACTION.PATCH) {
       this._partialUpdate();
       return;
     }
-
     this._fullUpdate();    
   }
 
@@ -79,8 +85,8 @@ export class EditCommentComponent {
 
   get _createEditForm() {
     return this.formBuilder.group({
-      name: [this.commentValue.name, [Validators.required, Validators.minLength(3)]],
-      comment: [this.commentValue.comment, [Validators.required, Validators.minLength(5)]]
+      [this.commentForm.NAME]: [this.commentValue.name, [Validators.required, Validators.minLength(this.validators.MIN_LENGTH_3)]],
+      [this.commentForm.COMMENT]: [this.commentValue.comment, [Validators.required, Validators.minLength(this.validators.MIN_LENGTH_5)]]
     })
   }
 
@@ -99,15 +105,17 @@ export class EditCommentComponent {
       newRequestObject.name = this.name?.value;
     }
     if (this.comment?.value !== this.commentValue.comment) {
-      newRequestObject.comment = this.comment?.value;
-    }
+      newRequestObject.comment = this.comment?.value;    }
 
     if (!Object.keys(newRequestObject).length) {
-      alert("No changes! Please change");
+      this._toast.open({type: MESSAGE_TYPE.WARNING, message: this.messages.NO_CHANGES_MADE});
       return;
     }
+    this._partialUpdateComment(this.commentValue.articleId, this.commentValue._id, newRequestObject)
+  }
 
-    this._commentsDataService.partialUpdate(this.commentValue.articleId, this.commentValue._id, newRequestObject)
+  _partialUpdateComment(articleId: string, commentId: string, newRequestObject: any) {
+    this._commentsDataService.partialUpdate(articleId, commentId, newRequestObject)
     .pipe(finalize(this._enablingButton))
     .subscribe({
       next: this._handlingSuccess.bind(this),
@@ -118,11 +126,11 @@ export class EditCommentComponent {
   _handlingSuccess(response: Response<any>) {
     this.editCommentForm.reset();
     this.back();
-    console.log(response.message);
+    this._toast.open({type: MESSAGE_TYPE.SUCCESS, message: response.message});
   }
 
-  _handlingError(error: Response<any>) {
-    console.log(error.message)
+  _handlingError(error: ErrorResponse<any>) {
+    this._toast.open({type: MESSAGE_TYPE.SUCCESS, message: error.error.message});
   }
 
   _enablingButton() {

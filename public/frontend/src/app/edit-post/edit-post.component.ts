@@ -3,14 +3,11 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
-import { Article, ArticleRequest, ArticlesDataService } from '../articles-data.service';
-import { Response } from '../reponse';
-
-export enum CRUD_ACTION {
-  "PUT" = 'put',
-  "PATCH" = "patch",
-  "DELETE" = "delete"
-}
+import { Article, ArticlesDataService } from '../articles-data.service';
+import { CRUD_ACTION } from '../auth.service';
+import { ErrorResponse, Response } from '../reponse';
+import { environment } from '../../environments/environment';
+import { MESSAGE_TYPE, ToastService } from '../shared/toast/toast.service';
 
 @Component({
   selector: 'app-edit-post',
@@ -21,6 +18,11 @@ export enum CRUD_ACTION {
 })
 export class EditPostComponent {
   editPostForm!: FormGroup;
+  routerStates = environment.ROUTER_STATES;
+  articleForm = environment.ARTICLE_FORM;
+  validators = environment.VALIDATORS;
+  messages = environment.MESSAGES;
+  routes = environment.ROUTES
 
   isButtonDisabled = false;
   article!: Article;
@@ -28,26 +30,27 @@ export class EditPostComponent {
   publicCrudAction = CRUD_ACTION
 
   get title() {
-    return this.editPostForm.get("title");
+    return this.editPostForm.get(this.articleForm.TITLE);
   }
   get author() {
-    return this.editPostForm.get("author");
+    return this.editPostForm.get(this.articleForm.AUTHOR);
   }
   get link() {
-    return this.editPostForm.get("link");
+    return this.editPostForm.get(this.articleForm.LINK);
   }
   get imageLink() {
-    return this.editPostForm.get("imageLink");
+    return this.editPostForm.get(this.articleForm.IMAGE_LINK);
   }
 
   constructor(
     private formBuilder: FormBuilder,
     private _articlesDataService: ArticlesDataService,
     private _router: Router,
-    private _location: Location
+    private _location: Location,
+    private _toast: ToastService
   ){
-    this.article = this._router.getCurrentNavigation()?.extras.state?.["article"] as Article;
-    this.crudAction = this._router.getCurrentNavigation()?.extras.state?.["action"] as CRUD_ACTION;
+    this.article = this._router.getCurrentNavigation()?.extras.state?.[this.routerStates.ARTICLE] as Article;
+    this.crudAction = this._router.getCurrentNavigation()?.extras.state?.[this.routerStates.ACTION] as CRUD_ACTION;
     
 
     if (!this.article) {  
@@ -90,10 +93,10 @@ export class EditPostComponent {
 
   get _createEditForm() {
     return this.formBuilder.group({
-      title: [this.article.title, [Validators.required, Validators.minLength(3)]],
-      author: [this.article.author, [Validators.required, Validators.minLength(3)]],
-      link: [this.article.link, [Validators.required]],
-      imageLink: [this.article.imageLink, [Validators.required]]
+      [this.articleForm.TITLE]: [this.article.title, [Validators.required, Validators.minLength(this.validators.MIN_LENGTH_3)]],
+      [this.articleForm.AUTHOR]: [this.article.author, [Validators.required, Validators.minLength(this.validators.MIN_LENGTH_3)]],
+      [this.articleForm.LINK]: [this.article.link, Validators.required],
+      [this.articleForm.IMAGE_LINK]: [this.article.imageLink, Validators.required]
     })
   }
 
@@ -122,11 +125,15 @@ export class EditPostComponent {
     }
 
     if (!Object.keys(newRequestObject).length) {
-      alert("No changes! Please change");
+      this._toast.open({type: MESSAGE_TYPE.WARNING, message: this.messages.NO_CHANGES_MADE});
       return;
     }
 
-    this._articlesDataService.partialUpdate(this.article._id, newRequestObject)
+    this._partialUpdateArticle(this.article._id, newRequestObject);
+  }
+
+  _partialUpdateArticle(articleId: string, newRequestObject: any) {
+    this._articlesDataService.partialUpdate(articleId, newRequestObject)
     .pipe(finalize(this._enablingButton))
     .subscribe({
       next: this._handlingSuccess.bind(this),
@@ -136,12 +143,13 @@ export class EditPostComponent {
 
   _handlingSuccess(response: Response<any>) {
     this.editPostForm.reset();
-    this._router.navigateByUrl("home");
-    console.log(response.message);
+    this._toast.open({type: MESSAGE_TYPE.SUCCESS, message: response.message});
+    this._router.navigate([this.routes.HOME]);
+    
   }
 
-  _handlingError(error: Response<any>) {
-    console.log(error.message)
+  _handlingError(error: ErrorResponse<any>) {
+    this._toast.open({type: MESSAGE_TYPE.ERROR, message: error.error.message});
   }
 
   _enablingButton() {

@@ -58,7 +58,7 @@
             </div>
         </div>
         <div class="pt-3">
-            <button type="submit" class="button button--primary">Edit post</button>
+            <button type="submit" class="button button--primary" [ngClass]="isButtonDisabled ? 'cursor-not-allowed': ''" [disabled]="isButtonDisabled">Edit post</button>
         </div>
     </form>
     
@@ -69,7 +69,7 @@
 
         <div class="mt-5">
             <button type="button" class="button button--outline mr-3" (click)="back()">Back</button>
-            <button type="button" class="button button--danger" (click)="deletePost()">Delete</button>
+            <button type="button" class="button button--danger" (click)="deletePost()" [ngClass]="isButtonDisabled ? 'cursor-not-allowed': ''" [disabled]="isButtonDisabled">Delete</button>
         </div>
     </div>
 </div>

@@ -34,7 +34,7 @@
             </div>
         </div>
         <div class="pt-3">
-            <button type="submit" class="button button--primary">Edit comment</button>
+            <button type="submit" class="button button--primary" [ngClass]="isButtonDisabled ? 'cursor-not-allowed': ''" [disabled]="isButtonDisabled">Edit comment</button>
         </div>
     </form>
     
@@ -45,7 +45,7 @@
 
         <div class="mt-5">
             <button type="button" class="button button--outline mr-3" (click)="back()">Back</button>
-            <button type="button" class="button button--danger" (click)="deleteComment()">Delete</button>
+            <button type="button" class="button button--danger" (click)="deleteComment()" [ngClass]="isButtonDisabled ? 'cursor-not-allowed': ''" [disabled]="isButtonDisabled">Delete</button>
         </div>
     </div>
 </div>
