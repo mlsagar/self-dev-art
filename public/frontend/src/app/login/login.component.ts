@@ -7,6 +7,7 @@ import { finalize } from 'rxjs';
 import { ErrorResponse, Response } from '../reponse';
 import { MESSAGE_TYPE, ToastService } from '../shared/toast/toast.service';
 import { AuthService } from '../auth.service';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -20,6 +21,8 @@ export class LoginComponent implements OnInit{
     username: null,
     password: null
   }
+  routes = environment.ROUTES;
+  messages = environment.MESSAGES;
 
   isButtonDisabled = false;
 
@@ -32,7 +35,9 @@ export class LoginComponent implements OnInit{
 
   ngOnInit(): void {
     if(this._authService.isLoggedIn) {
-      this._router.navigate(["/home"]);
+      this._router.navigate([this.routes.HOME]);
+      this._toastService.open({type: MESSAGE_TYPE.WARNING, message: this.messages.CANNOT_ACCESS_THE_PAGE_LOGIN});
+      return;
     }
   }
 
@@ -57,7 +62,7 @@ export class LoginComponent implements OnInit{
   _handleLoginSuccessResponse(loginForm: NgForm, response: Response<any>) {
     loginForm.reset();
     this._authService.isLoggedIn = true;
-    this._router.navigateByUrl("/");
+    this._router.navigate([this.routes.HOME]);
     this._authService.userToken = response.token || null;
     this._toastService.open({type: MESSAGE_TYPE.SUCCESS, message: response.message});
   } 

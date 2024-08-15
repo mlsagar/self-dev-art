@@ -25,6 +25,7 @@ export const environment = {
     },
     MESSAGES : {
         SOMETHING_WENT_WRONG: "Something went wrong.",
+        CANNOT_ACCESS_THE_PAGE_LOGIN: "Cannot access this page while your are logged in.",
         NO_CHANGES_MADE: "You need to make some changes before submitting the form."        
     },
     COMMENT_FORM: {
