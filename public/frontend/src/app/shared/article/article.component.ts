@@ -4,7 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AddCommentComponent } from '../../comment/add-comment/add-comment.component';
 import { Article } from '../../articles-data.service';
 import { Comment, CommentWithArticleId } from '../../comments-data.service';
-import { DisplayCommentComponent } from '../../display-comment/display-comment.component';
+import { DisplayCommentComponent } from '../../comment/display-comment/display-comment.component';
 import { CRUD_ACTION } from '../../edit-post/edit-post.component';
 import { DropdownConfig, DropdownMenuComponent } from '../dropdown-menu/dropdown-menu.component';
 
