@@ -28,7 +28,7 @@ const allArticles = function (request, response) {
         return;
     }    
 
-    Article.find().skip(offset).limit(count).exec()
+    Article.find().sort({ _id: -1 }).skip(offset).limit(count).exec()
         .then(_handleAllArticles.bind(null, responseCollection))
         .catch(_setInternalError.bind(null, responseCollection))
         .finally(_sendResponse.bind(null, response, responseCollection));
