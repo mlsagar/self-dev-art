@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
-import { CommentsDataService } from '../comments-data.service';
-import { Response } from '../reponse';
+import { CommentsDataService } from '../../comments-data.service';
+import { Response } from '../../reponse';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
