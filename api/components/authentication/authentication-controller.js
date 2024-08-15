@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const { allArticles } = require("../articles/articles-controller");
 
 const authenticate = function(request, response, next) {
-    const authorizationToken = request.headers["authorization"];
+    const authorizationToken = request.headers[process.env.AUTHORIZATION];
     const responseCollection = _createResponseCollection();
 
     if (!authorizationToken) {
@@ -13,7 +13,7 @@ const authenticate = function(request, response, next) {
         const newRequest = {
             ...request,
             query: {
-                count: 1
+                count: parseInt(process.env.INITIAL_COUNT_OF_ARTICLE_WITHOUT_AUTHORIZATION, process.env.RADIX_VALUE)
             }
         }
         allArticles(newRequest, response);
@@ -22,7 +22,7 @@ const authenticate = function(request, response, next) {
 
     const token = authorizationToken.split(" ")[1];
     try {
-        isJwtVerified = jwt.verify(token, "Self-Dev-Art")
+        isJwtVerified = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
 
     } catch(error) {
        _setInternalError(responseCollection, error)

@@ -15,11 +15,11 @@ const handleError = function(error) {
     console.log(`${process.env.MONGOOSE_ERROR_MESSAGE} ${error}`);
 }
 
-mongoose.connection.on("connected", handleConnected);
+mongoose.connection.on(process.env.MONGOOSE_CONNECTED, handleConnected);
 
-mongoose.connection.on("disconnected", handleDisconnected);
+mongoose.connection.on(process.env.MONGOOSE_DISCONNECTED, handleDisconnected);
 
-mongoose.connection.on("error", handleError);
+mongoose.connection.on(process.env.MONGOOSE_ERROR, handleError);
 
 
 const handleSIGINT = function() {
