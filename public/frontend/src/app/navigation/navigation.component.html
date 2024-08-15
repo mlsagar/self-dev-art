@@ -8,10 +8,10 @@
         <nav>
             <!-- <button [routerLink]="'home'">Home</button>
             <button [routerLink]="'articles'">Articles</button> -->
-            <a [routerLink]="'create-post'" class="button button--outline mr-3" *ngIf="authService.isLoggedIn()">Create post</a>
-            <a [routerLink]="'login'" class="button mr-3" *ngIf="!authService.isLoggedIn()">Login</a>
-            <a [routerLink]="'register'" class="button button--outline" *ngIf="!authService.isLoggedIn()">Create account</a>
-            <button (click)="logout()" class="button button--primary" *ngIf="authService.isLoggedIn()">Logout</button>
+            <a [routerLink]="'create-post'" class="button button--outline mr-3" *ngIf="isLoggedIn">Create post</a>
+            <a [routerLink]="'login'" class="button mr-3" *ngIf="!isLoggedIn">Login</a>
+            <a [routerLink]="'register'" class="button button--outline" *ngIf="!isLoggedIn">Create account</a>
+            <button (click)="logout()" class="button button--primary" *ngIf="isLoggedIn">Logout</button>
         </nav>
     </div>
 </header>

@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit{
   ) {}
 
   ngOnInit(): void {
-    if(this._authService.isLoggedIn()) {
+    if(this._authService.isLoggedIn) {
       this._router.navigate(["/home"]);
     }
   }
@@ -56,7 +56,7 @@ export class LoginComponent implements OnInit{
 
   _handleLoginSuccessResponse(loginForm: NgForm, response: Response<any>) {
     loginForm.reset();
-    this._authService.isLoggedIn.set(true);
+    this._authService.isLoggedIn = true;
     this._router.navigateByUrl("/");
     localStorage.setItem("user", JSON.stringify({token: response.token}))
     this._toastService.open({type: MESSAGE_TYPE.SUCCESS, message: response.message});

@@ -25,7 +25,7 @@ export class RegisterComponent implements OnInit{
   ) {}
 
   ngOnInit(): void {
-    if(this._authService.isLoggedIn()) {
+    if(this._authService.isLoggedIn) {
       this._router.navigate(["/home"]);
     }
     setTimeout(() => {this._resetRegistrationForm()}, 0)

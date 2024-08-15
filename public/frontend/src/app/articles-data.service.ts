@@ -30,7 +30,7 @@ export class ArticlesDataService {
   ) { }
 
   get allArticles():Observable<Response<Article>> {
-    if (this._authService.isLoggedIn()) {
+    if (this._authService.isLoggedIn) {
       const token = JSON.parse(localStorage.getItem("user") as string).token;
       return this._http.get<Response<Article>>(this.baseUrl + this.routes.ARTICLES, {
         headers: new HttpHeaders().set("Authorization", `Bearer ${token}`)

@@ -22,9 +22,9 @@ export class AppComponent implements OnInit{
   ngOnInit(): void {
     const isTokenPresent = localStorage.getItem("user");
     if (isTokenPresent) {
-      this._authService.isLoggedIn.set(true);
+      this._authService.isLoggedIn = true;
     } else {
-      this._authService.isLoggedIn.set(false);
+      this._authService.isLoggedIn = false;
     }
   }
 }

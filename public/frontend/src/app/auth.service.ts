@@ -5,7 +5,16 @@ import { UsersDataService } from './users-data.service';
   providedIn: 'root'
 })
 export class AuthService {
-  isLoggedIn: WritableSignal<boolean> = signal(false)
+  #isLoggedIn: WritableSignal<boolean> = signal(false);
+
+  set isLoggedIn(isLogin: boolean) {
+    this.#isLoggedIn.set(isLogin);
+  }
+
+  get isLoggedIn() {
+    return this.#isLoggedIn();
+  }
+
   constructor(
     private _usersDataService: UsersDataService
   ) { }

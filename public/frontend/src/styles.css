@@ -32,7 +32,7 @@ body {
 }
 
 .button {
-    @apply font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center hover:bg-blue-200 focus:ring-4 focus:outline-none focus:ring-blue-200  dark:hover:bg-blue-200 dark:focus:ring-blue-200 hover:text-blue-800
+    @apply inline-block font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center hover:bg-blue-200 focus:ring-4 focus:outline-none focus:ring-blue-200  dark:hover:bg-blue-200 dark:focus:ring-blue-200 hover:text-blue-800
 }
 
 /* .button {

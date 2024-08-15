@@ -20,14 +20,19 @@ export class NavigationComponent {
       }
     ]
   }
+
+  get isLoggedIn() {
+    return this._authService.isLoggedIn;
+  }
+
   constructor(
-    public authService: AuthService,
+    private _authService: AuthService,
     private _router: Router
   ) {}
 
   logout() {
     localStorage.clear();
-    this.authService.isLoggedIn.set(false);
+    this._authService.isLoggedIn = false;
     this._router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;
   }

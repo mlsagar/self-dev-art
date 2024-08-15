@@ -18,10 +18,14 @@ export class HomeComponent implements OnInit{
   title = environment.APP_TITLE;
   articles: Article[] = [];
 
+  get isLoggedIn() {
+    return this._authService.isLoggedIn;
+  }
+
   constructor(
     private router: Router,
     private _articlesDataService: ArticlesDataService,
-    public authService: AuthService
+    private _authService: AuthService
   ) {
   }
 
