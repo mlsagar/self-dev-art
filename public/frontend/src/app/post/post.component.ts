@@ -1,9 +1,9 @@
 import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ArticleComponent } from '../article/article.component';
 import { Article, ArticlesDataService } from '../articles-data.service';
 import { Response } from '../reponse';
+import { ArticleComponent } from '../shared/article/article.component';
 
 @Component({
   selector: 'app-post',

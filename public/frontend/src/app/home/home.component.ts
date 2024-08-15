@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { environment } from '../../environments/environment';
-import { ArticleComponent } from '../article/article.component';
 import { Article, ArticlesDataService } from '../articles-data.service';
 import { response } from 'express';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../auth.service';
+import { ArticleComponent } from '../shared/article/article.component';
 
 @Component({
   selector: 'app-home',
