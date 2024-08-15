@@ -58,7 +58,7 @@ export class LoginComponent implements OnInit{
     loginForm.reset();
     this._authService.isLoggedIn = true;
     this._router.navigateByUrl("/");
-    localStorage.setItem("user", JSON.stringify({token: response.token}))
+    this._authService.userToken = response.token || null;
     this._toastService.open({type: MESSAGE_TYPE.SUCCESS, message: response.message});
   } 
 

@@ -1,5 +1,4 @@
-import { Injectable, signal, Signal, WritableSignal } from '@angular/core';
-import { UsersDataService } from './users-data.service';
+import { Injectable, signal, WritableSignal } from '@angular/core';
 import { environment } from '../environments/environment';
 
 @Injectable({
@@ -17,11 +16,21 @@ export class AuthService {
     return this.#isLoggedIn();
   }
 
+  set userToken(token: string | null) {
+    if (token) {
+      localStorage.setItem(this.userLocalStorageKey, JSON.stringify({token}));
+    }
+  }
+
   get userToken() {
-    return JSON.parse(localStorage.getItem(this.userLocalStorageKey) as string).token
+    const userValue = localStorage.getItem(this.userLocalStorageKey);
+
+    if (userValue) {
+      return JSON.parse(userValue).token;
+    }
+    return null;
   }
 
   constructor(
-    private _usersDataService: UsersDataService
   ) { }
 }

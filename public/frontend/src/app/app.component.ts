@@ -13,18 +13,20 @@ import { AuthService } from './auth.service';
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit{  
-  title = 'frontend';
-
   constructor(
     private _authService: AuthService
   ) {}
 
   ngOnInit(): void {
-    const isTokenPresent = localStorage.getItem("user");
+    const isTokenPresent = this._authService.userToken;
+    this._setAuthServiceIsLoggedIn(isTokenPresent); 
+  }
+
+  _setAuthServiceIsLoggedIn(isTokenPresent: string | null) {
     if (isTokenPresent) {
       this._authService.isLoggedIn = true;
-    } else {
-      this._authService.isLoggedIn = false;
+      return;
     }
+    this._authService.isLoggedIn = false;
   }
 }
