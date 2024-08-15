@@ -7,7 +7,7 @@
 }
 
 .display-comment__body {
-    @apply border border-gray-200 rounded-lg p-4;
+    @apply border border-gray-200 rounded-lg p-4 flex-1;
 }
 
 .display-comment__header {
