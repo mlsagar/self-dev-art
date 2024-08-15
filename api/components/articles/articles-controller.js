@@ -22,7 +22,7 @@ const allArticles = function (request, response) {
     }
 
     if (count > maxCount) {
-        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
+        responseCollection.status = Number(process.env.MAX_COUNT_ERROR_STATUS_CODE);
         responseCollection.message = `${process.env.MAX_LIMIT_MESSAGE} ${maxCount}`;
         _sendResponse(response, responseCollection);
         return;
