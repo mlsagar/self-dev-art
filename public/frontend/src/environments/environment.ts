@@ -10,6 +10,7 @@ export const environment = {
         COMMENTS: "url constant for comments",
         POST: "url constant for post",
         REGISTER: "url constant for register",
+        CREATE_POST: "url constant for create post",
         EDIT_POST: "url constant for edit post",
         EDIT_COMMENT: "url constant for edit comment"
     },

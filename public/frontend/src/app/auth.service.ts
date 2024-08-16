@@ -1,4 +1,5 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
+import { jwtDecode } from 'jwt-decode';
 import { environment } from '../environments/environment';
 
 export enum CRUD_ACTION {
@@ -9,11 +10,18 @@ export enum CRUD_ACTION {
   POST = "POST"
 }
 
+export interface UserCredentials {
+  iat: number;
+  name: string;
+  username: string
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   #isLoggedIn: WritableSignal<boolean> = signal(false);
+  #userCredentials!: UserCredentials;
   userLocalStorageKey = environment.LOCAL_STORAGE.USER;
 
   set isLoggedIn(isLogin: boolean) {
@@ -26,6 +34,7 @@ export class AuthService {
 
   set userToken(token: string | null) {
     if (token) {
+      this.#userCredentials = jwtDecode(token);
       localStorage.setItem(this.userLocalStorageKey, JSON.stringify({token}));
     }
   }
@@ -38,6 +47,14 @@ export class AuthService {
     }
     return null;
   }
+
+ set userCredentials(user: UserCredentials) {
+  this.#userCredentials = user;
+ }
+
+ get userCredentials() {
+  return this.#userCredentials;
+ }
 
   constructor(
   ) { }

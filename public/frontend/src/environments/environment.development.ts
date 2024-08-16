@@ -9,6 +9,7 @@ export const environment = {
         COMMENTS: "/comments",
         POST: "/post",
         REGISTER: "/register",
+        CREATE_POST: "/create post",
         EDIT_POST: "/edit-post",
         EDIT_COMMENT: "/edit-comment"
     },

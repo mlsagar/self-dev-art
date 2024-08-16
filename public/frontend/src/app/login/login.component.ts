@@ -61,9 +61,9 @@ export class LoginComponent implements OnInit{
 
   _handleLoginSuccessResponse(loginForm: NgForm, response: Response<any>) {
     loginForm.reset();
+    this._authService.userToken = response.token || null;
     this._authService.isLoggedIn = true;
     this._router.navigate([this.routes.HOME]);
-    this._authService.userToken = response.token || null;
     this._toastService.open({type: MESSAGE_TYPE.SUCCESS, message: response.message});
   } 
 

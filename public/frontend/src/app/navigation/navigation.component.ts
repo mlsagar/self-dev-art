@@ -1,8 +1,9 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../auth.service';
-import { CommonModule } from '@angular/common';
-import { DropdownConfig, DropdownMenuComponent } from '../shared/dropdown-menu/dropdown-menu.component';
+import { DropdownMenuComponent } from '../shared/dropdown-menu/dropdown-menu.component';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-navigation',
@@ -12,17 +13,14 @@ import { DropdownConfig, DropdownMenuComponent } from '../shared/dropdown-menu/d
   styleUrl: './navigation.component.css'
 })
 export class NavigationComponent {
-  logoutConfig: DropdownConfig = {
-    config: [
-      {
-        name: "Logout",
-        routeLink: "/"
-      }
-    ]
-  }
-
+  public routes = environment.ROUTES;
+  
   get isLoggedIn() {
     return this._authService.isLoggedIn;
+  }
+
+  get userCredetials() {
+    return this._authService.userCredentials;
   }
 
   constructor(
@@ -36,6 +34,6 @@ export class NavigationComponent {
     this._router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;
   }
-    this._router.navigateByUrl("home");
+    this._router.navigate([this.routes.HOME]);
   }
 }

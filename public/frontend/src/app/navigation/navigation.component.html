@@ -1,17 +1,15 @@
 <header class="header">
     <div class="container header__wrapper">
         <h1 class="w-12">
-            <a [routerLink]="'/'">
-                <img src="assets/logo.png" alt="">
+            <a [routerLink]="routes.HOME">
+                <img src="assets/logo.png" alt="self dev art logo">
             </a>
         </h1>
-        <nav>
-            <!-- <button [routerLink]="'home'">Home</button>
-            <button [routerLink]="'articles'">Articles</button> -->
-            <a [routerLink]="'create-post'" class="button button--outline mr-3" *ngIf="isLoggedIn">Create post</a>
-            <a [routerLink]="'login'" class="button mr-3" *ngIf="!isLoggedIn">Login</a>
-            <a [routerLink]="'register'" class="button button--outline" *ngIf="!isLoggedIn">Create account</a>
-            <button (click)="logout()" class="button button--primary" *ngIf="isLoggedIn">Logout</button>
+        <nav class="flex items-center">
+            <a [routerLink]="routes.CREATE_POST" class="button button--outline mr-3" *ngIf="isLoggedIn">Create post</a>
+            <a [routerLink]="routes.LOGIN" class="button mr-3" *ngIf="!isLoggedIn">Login</a>
+            <a [routerLink]="routes.REGISTER" class="button button--outline" *ngIf="!isLoggedIn">Create account</a>
+            <app-dropdown-menu (onLogout)="logout()" *ngIf="isLoggedIn" [user]="userCredetials"></app-dropdown-menu>
         </nav>
     </div>
 </header>
