@@ -8,47 +8,50 @@ import { LoginComponent } from './login/login.component';
 import { PostComponent } from './post/post.component';
 import { RegisterComponent } from './register/register.component';
 import { EditCommentComponent } from './comment/edit-comment/edit-comment.component';
+import { environment } from '../environments/environment';
+
+const routePaths = environment.ROUTE_PATHS;
 
 export const routes: Routes = [
     {
         path: "",
-        redirectTo: "home",
+        redirectTo: routePaths.HOME,
         pathMatch: "full"
     },
     {
-        path: "home",
+        path: routePaths.HOME,
         component: HomeComponent
     },
     {
-        path: "register",
+        path: routePaths.REGISTER,
         component: RegisterComponent
     },
     {
-        path: "login",
+        path: routePaths.LOGIN,
         component: LoginComponent
     },
     {
-        path: "create-post",
+        path: routePaths.CREATE_POST,
         component: CreatePostComponent,
         canActivate: [authGuard]
     },
     {
-        path: "edit-post",
+        path: routePaths.EDIT_POST,
         component: EditPostComponent,
         canActivate: [authGuard]
     },
     {
-        path: "post/:postId",
+        path: routePaths.SINGLE_POST,
         component: PostComponent,
         canActivate: [authGuard]
     },
     {
-        path: "edit-comment",
+        path: routePaths.EDIT_COMMENT,
         component: EditCommentComponent,
         canActivate: [authGuard]
     },
     {
-        path: "**",
+        path: routePaths.ERROR_PAGE,
         component: ErrorPageComponent
     },
 ];

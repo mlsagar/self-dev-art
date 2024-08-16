@@ -14,6 +14,16 @@ export const environment = {
         EDIT_POST: "url constant for edit post",
         EDIT_COMMENT: "url constant for edit comment"
     },
+    ROUTE_PATHS: {
+        HOME: "route path constant for home",
+        REGISTER: "route path constant for register",
+        LOGIN: "route path constant for login",
+        CREATE_POST: "route path constant for create post",
+        EDIT_POST: "route path constant for edit post",
+        SINGLE_POST: "route path constant for single post",
+        EDIT_COMMENT: "route path constant for edit comment",
+        ERROR_PAGE: "route path constan for error page"
+    },
     LOCAL_STORAGE: {
         USER: "user constant key to store in localstorage"
     },

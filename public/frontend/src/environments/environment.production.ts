@@ -13,6 +13,16 @@ export const environment = {
         EDIT_POST: "/edit-post",
         EDIT_COMMENT: "/edit-comment"
     },
+    ROUTE_PATHS: {
+        HOME: "home",
+        REGISTER: "register",
+        LOGIN: "login",
+        CREATE_POST: "create-post",
+        EDIT_POST: "edit-post",
+        SINGLE_POST: "post/:postId",
+        EDIT_COMMENT: "edit-comment",
+        ERROR_PAGE: "**"
+    },
     LOCAL_STORAGE: {
         USER: "user"
     },
