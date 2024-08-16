@@ -50,5 +50,8 @@ export const environment = {
         PARTIAL_EDIT: "constant value for partial edit",
         DELETE: "constant value for delete"
     },
+    PARAMS: {
+        POST_ID: "postId"
+    },
     INITIAL_ARTICLE_COUNT: 0, //"initial value for articles count"
 };

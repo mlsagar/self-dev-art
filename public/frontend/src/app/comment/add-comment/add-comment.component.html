@@ -27,7 +27,7 @@
                 </div>
             </div>
         </div>
-        <button type="submit" class="button button--primary mt-2">Submit</button>
+        <button type="submit" class="button button--primary mt-2" [ngClass]="isButtonDisabled ? 'cursor-not-allowed': ''" [disabled]="isButtonDisabled">Submit</button>
     </div>
 </form>
     

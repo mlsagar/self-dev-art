@@ -3,8 +3,10 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { CommentsDataService } from '../../comments-data.service';
-import { Response } from '../../reponse';
+import { ErrorResponse, Response } from '../../reponse';
 import { ActivatedRoute } from '@angular/router';
+import { environment } from '../../../environments/environment';
+import { MESSAGE_TYPE, ToastService } from '../../shared/toast/toast.service';
 
 @Component({
   selector: 'app-add-comment',
@@ -17,25 +19,29 @@ export class AddCommentComponent implements OnInit{
   addCommentForm!: FormGroup;
   isButtonDisabled = false;
   postId!: string;
-  // @Input() postId!: string;
 
-  get name() {
-    return this.addCommentForm.get("name");
-  }
-
-  get comment() {
-    return this.addCommentForm.get("comment");
-  }
+  commentForm = environment.COMMENT_FORM;
+  params = environment.PARAMS;
+  validators = environment.VALIDATORS;
 
   @Output()
     onAddComment = new EventEmitter;
 
+  get name() {
+    return this.addCommentForm.get(this.commentForm.NAME);
+  }
+
+  get comment() {
+    return this.addCommentForm.get(this.commentForm.COMMENT);
+  }  
+
   constructor(
     private formBuilder: FormBuilder,
     private _commentsDataService: CommentsDataService,
-    private _activatedRoute: ActivatedRoute
+    private _activatedRoute: ActivatedRoute,
+    private _toast: ToastService
   ) { 
-    this.postId = this._activatedRoute.snapshot.params["postId"];
+    this.postId = this._activatedRoute.snapshot.params[this.params.POST_ID];
   }
 
   ngOnInit(): void {
@@ -53,7 +59,7 @@ export class AddCommentComponent implements OnInit{
 
   _addCommentApiCall() {
     this._commentsDataService.addComment(this.postId, this.addCommentForm.value)
-    .pipe(finalize(this._enablingButton))
+    .pipe(finalize(this._enablingButton.bind(this)))
     .subscribe({
       next: this._handleAddCommentApiSuccess.bind(this),
       error: this._handleError
@@ -62,19 +68,19 @@ export class AddCommentComponent implements OnInit{
 
   get _createAddCommentForm() {
     return this.formBuilder.group({
-      name: [null, [Validators.required, Validators.minLength(3)]],
-      comment: [null, [Validators.required, Validators.minLength(5)]]
+      [this.commentForm.NAME]: [null, [Validators.required, Validators.minLength(this.validators.MIN_LENGTH_3)]],
+      [this.commentForm.COMMENT]: [null, [Validators.required, Validators.minLength(this.validators.MIN_LENGTH_5)]]
     })
   }
 
   _handleAddCommentApiSuccess(response: Response<any>) {
     this.addCommentForm.reset();
     this.onAddComment.emit();
-    console.log(response.message);
+    this._toast.open({type: MESSAGE_TYPE.SUCCESS, message: response.message})
   }
 
-  _handleError(error: Response<any>) {
-    console.log(error.message)
+  _handleError(error: ErrorResponse<any>) {
+    this._toast.open({type: MESSAGE_TYPE.SUCCESS, message: error.error.message})
   }
 
   _enablingButton() {

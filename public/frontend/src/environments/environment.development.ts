@@ -49,5 +49,8 @@ export const environment = {
         PARTIAL_EDIT: "Partial Edit",
         DELETE: "Delete"
     },
+    PARAMS: {
+        POST_ID: "postId"
+    },
     INITIAL_ARTICLE_COUNT: 5
 };
