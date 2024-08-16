@@ -2,8 +2,10 @@ import { CommonModule, Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Article, ArticlesDataService } from '../articles-data.service';
-import { Response } from '../reponse';
+import { ErrorResponse, Response } from '../reponse';
 import { ArticleComponent } from '../shared/article/article.component';
+import { environment } from '../../environments/environment';
+import { MESSAGE_TYPE, ToastService } from '../shared/toast/toast.service';
 
 @Component({
   selector: 'app-post',
@@ -17,12 +19,15 @@ export class PostComponent implements OnInit{
   article!: Article;
   fragment!: string;
 
+  params = environment.PARAMS
+
   constructor(
     private _articleDataService: ArticlesDataService,
     private _route: ActivatedRoute,
-    private _location: Location
+    private _location: Location,
+    private _toast: ToastService
   ) {
-    this.postId = this._route.snapshot.params["postId"];
+    this.postId = this._route.snapshot.params[this.params.POST_ID];
   }
   ngOnInit(): void {
     this.getOneArticle();
@@ -36,7 +41,7 @@ export class PostComponent implements OnInit{
     this._articleDataService.oneArticle(this.postId)
     .subscribe({
       next: this._handlingAllArticlseSuccess.bind(this),
-      error: this._handlingError
+      error: this._handlingError.bind(this)
     });
   }
 
@@ -44,8 +49,8 @@ export class PostComponent implements OnInit{
     this.article =  response.data[0];
   }
 
-  _handlingError(error: Response<any>) {
-    console.log(error.message)
+  _handlingError(error: ErrorResponse<any>) {
+    this._toast.open({type: MESSAGE_TYPE.ERROR, message: error.error.message})
   }
 
   
