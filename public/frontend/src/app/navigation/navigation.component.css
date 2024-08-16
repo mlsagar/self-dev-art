@@ -3,5 +3,5 @@
 }
 
 .header__wrapper {
-    @apply  py-3 flex justify-between;
+    @apply  py-3 flex justify-between items-center;
 }
