@@ -39,7 +39,8 @@ export const environment = {
     MESSAGES : {
         SOMETHING_WENT_WRONG: "message for something went wrong",
         CANNOT_ACCESS_THE_PAGE_LOGIN: "message for cannot access page while login",
-        NO_CHANGES_MADE: "message for no changes mage in the form"
+        NO_CHANGES_MADE: "message for no changes mage in the form",
+        ACCESS_DENIED: "message for access denied"
     },
     COMMENT_FORM: {
         NAME: "constant value for comment form name's property",
