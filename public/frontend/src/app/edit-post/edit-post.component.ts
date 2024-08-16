@@ -83,7 +83,7 @@ export class EditPostComponent {
     .pipe(finalize(this._enablingButton))
     .subscribe({
       next: this._handlingSuccess.bind(this),
-      error: this._handlingError
+      error: this._handlingError.bind(this)
     })
   }
 
@@ -105,7 +105,7 @@ export class EditPostComponent {
     .pipe(finalize(this._enablingButton))
     .subscribe({
       next: this._handlingSuccess.bind(this),
-      error: this._handlingError
+      error: this._handlingError.bind(this)
     })
   }
 
@@ -137,7 +137,7 @@ export class EditPostComponent {
     .pipe(finalize(this._enablingButton))
     .subscribe({
       next: this._handlingSuccess.bind(this),
-      error: this._handlingError
+      error: this._handlingError.bind(this)
     })
   }
 

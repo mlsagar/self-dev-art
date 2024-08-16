@@ -68,7 +68,7 @@ export class CreatePostComponent implements OnInit{
     .pipe(finalize(this._enablingButton.bind(this)))
     .subscribe({
       next: this._onAddArticleSuccess.bind(this),
-      error: this._onAddArticleError
+      error: this._onAddArticleError.bind(this)
     })
   }
 

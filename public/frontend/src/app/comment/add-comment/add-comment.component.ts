@@ -62,7 +62,7 @@ export class AddCommentComponent implements OnInit{
     .pipe(finalize(this._enablingButton.bind(this)))
     .subscribe({
       next: this._handleAddCommentApiSuccess.bind(this),
-      error: this._handleError
+      error: this._handleError.bind(this)
     })
   }
 

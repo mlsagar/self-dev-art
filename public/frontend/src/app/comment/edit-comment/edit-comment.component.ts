@@ -75,7 +75,7 @@ export class EditCommentComponent {
     .pipe(finalize(this._enablingButton))
     .subscribe({
       next: this._handlingSuccess.bind(this),
-      error: this._handlingError
+      error: this._handlingError.bind(this)
     })
   }
 
@@ -95,7 +95,7 @@ export class EditCommentComponent {
     .pipe(finalize(this._enablingButton.bind(this)))
     .subscribe({
       next: this._handlingSuccess.bind(this),
-      error: this._handlingError
+      error: this._handlingError.bind(this)
     })
   }
 
@@ -119,7 +119,7 @@ export class EditCommentComponent {
     .pipe(finalize(this._enablingButton))
     .subscribe({
       next: this._handlingSuccess.bind(this),
-      error: this._handlingError
+      error: this._handlingError.bind(this)
     })
   }
 
@@ -130,7 +130,7 @@ export class EditCommentComponent {
   }
 
   _handlingError(error: ErrorResponse<any>) {
-    this._toast.open({type: MESSAGE_TYPE.SUCCESS, message: error.error.message});
+    this._toast.open({type: MESSAGE_TYPE.ERROR, message: error.error.message});
   }
 
   _enablingButton() {
