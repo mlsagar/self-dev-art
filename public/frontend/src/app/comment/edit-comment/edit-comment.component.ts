@@ -92,7 +92,7 @@ export class EditCommentComponent {
 
   _fullUpdate() {
     this._commentsDataService.fullUpdate(this.commentValue.articleId, this.commentValue._id, this.editCommentForm.value)
-    .pipe(finalize(this._enablingButton))
+    .pipe(finalize(this._enablingButton.bind(this)))
     .subscribe({
       next: this._handlingSuccess.bind(this),
       error: this._handlingError

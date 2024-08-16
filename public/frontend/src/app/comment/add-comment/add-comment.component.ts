@@ -80,7 +80,7 @@ export class AddCommentComponent implements OnInit{
   }
 
   _handleError(error: ErrorResponse<any>) {
-    this._toast.open({type: MESSAGE_TYPE.SUCCESS, message: error.error.message})
+    this._toast.open({type: MESSAGE_TYPE.ERROR, message: error.error.message})
   }
 
   _enablingButton() {

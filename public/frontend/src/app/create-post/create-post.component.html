@@ -57,7 +57,7 @@
         </div>
     </div>
     <div class="pt-3">
-        <button type="submit" class="button button--primary">Publish</button>
+        <button type="submit" class="button button--primary" [ngClass]="isButtonDisabled ? 'cursor-not-allowed': ''" [disabled]="isButtonDisabled">Publish</button>
     </div>
 </form>
 
