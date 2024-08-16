@@ -80,7 +80,7 @@ export class EditPostComponent {
 
   deletePost() {
     this._articlesDataService.deleteArticle(this.article._id)
-    .pipe(finalize(this._enablingButton))
+    .pipe(finalize(this._enablingButton.bind(this)))
     .subscribe({
       next: this._handlingSuccess.bind(this),
       error: this._handlingError.bind(this)
@@ -102,7 +102,7 @@ export class EditPostComponent {
 
   _fullUpdate() {
     this._articlesDataService.fullUpdate(this.article._id, this.editPostForm.value)
-    .pipe(finalize(this._enablingButton))
+    .pipe(finalize(this._enablingButton.bind(this)))
     .subscribe({
       next: this._handlingSuccess.bind(this),
       error: this._handlingError.bind(this)
@@ -134,7 +134,7 @@ export class EditPostComponent {
 
   _partialUpdateArticle(articleId: string, newRequestObject: any) {
     this._articlesDataService.partialUpdate(articleId, newRequestObject)
-    .pipe(finalize(this._enablingButton))
+    .pipe(finalize(this._enablingButton.bind(this)))
     .subscribe({
       next: this._handlingSuccess.bind(this),
       error: this._handlingError.bind(this)

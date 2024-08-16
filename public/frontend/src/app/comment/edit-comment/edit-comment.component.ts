@@ -72,7 +72,7 @@ export class EditCommentComponent {
 
   deleteComment() {
     this._commentsDataService.deleteComment(this.commentValue.articleId, this.commentValue._id)
-    .pipe(finalize(this._enablingButton))
+    .pipe(finalize(this._enablingButton.bind(this)))
     .subscribe({
       next: this._handlingSuccess.bind(this),
       error: this._handlingError.bind(this)
@@ -116,7 +116,7 @@ export class EditCommentComponent {
 
   _partialUpdateComment(articleId: string, commentId: string, newRequestObject: any) {
     this._commentsDataService.partialUpdate(articleId, commentId, newRequestObject)
-    .pipe(finalize(this._enablingButton))
+    .pipe(finalize(this._enablingButton.bind(this)))
     .subscribe({
       next: this._handlingSuccess.bind(this),
       error: this._handlingError.bind(this)
