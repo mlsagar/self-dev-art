@@ -25,6 +25,9 @@ export class AuthService {
   userLocalStorageKey = environment.LOCAL_STORAGE.USER;
 
   set isLoggedIn(isLogin: boolean) {
+    if (isLogin) {
+      this.userToken = this.userToken;
+    }
     this.#isLoggedIn.set(isLogin);
   }
 
