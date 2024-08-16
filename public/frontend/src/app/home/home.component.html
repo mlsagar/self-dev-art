@@ -14,8 +14,8 @@
             </p>
             <div class="text-center">
                 <ng-container *ngIf="!isLoggedIn; else createPostButton">
-                    <button class="button button--outline mr-2" routerLink="/register">Create account</button>
-                    <button class="button" routerLink="/login">Log in</button>
+                    <button class="button button--outline mr-2" [routerLink]="routes.REGISTER">Create account</button>
+                    <button class="button" [routerLink]="routes.LOGIN">Log in</button>
                 </ng-container>
             </div>
         </div>
@@ -24,5 +24,5 @@
 </div>
 
 <ng-template #createPostButton>
-    <button class="button button--outline" routerLink="/create-post">Create post</button>
+    <button class="button button--outline" [routerLink]="routes.CREATE_POST">Create post</button>
 </ng-template>

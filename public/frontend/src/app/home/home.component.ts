@@ -20,6 +20,8 @@ export class HomeComponent implements OnInit{
   title = environment.APP_TITLE;
   articles: Article[] = [];
 
+  routes = environment.ROUTES;
+
   get isLoggedIn() {
     return this._authService.isLoggedIn;
   }
