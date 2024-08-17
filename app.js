@@ -11,9 +11,9 @@ const port = process.env.PORT;
 const application = express();
 
 const _setHeaderOfRoute = function(request, response, next) {
-    response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
-    response.setHeader("Access-Control-Allow-Methods", "PUT, PATCH, DELETE");
-    response.setHeader("Access-Control-Allow-Headers", "content-type");
+    response.setHeader(process.env.ACCESS_CONTROL_ALLOW_ORIGIN, process.env.ACCESS_CONTROL_ALLOW_ORIGIN_VALUE);
+    response.setHeader(process.env.ACCESS_CONTROL_ALLOW_METHODS, process.env.ACCESS_CONTROL_ALLOW_METHODS_VALUE);
+    response.setHeader(process.env.ACCESS_CONTROL_ALLOW_HEADERS, process.env.ACCESS_CONTROL_ALLOW_HEADERS_VALUE);
     next()
 }
 

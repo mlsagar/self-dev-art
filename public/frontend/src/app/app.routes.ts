@@ -1,39 +1,57 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './auth.guard';
+import { CreatePostComponent } from './create-post/create-post.component';
+import { EditPostComponent } from './edit-post/edit-post.component';
 import { ErrorPageComponent } from './error-page/error-page.component';
 import { HomeComponent } from './home/home.component';
-import { ArticlesComponent } from './articles/articles.component';
-import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
-import { CreatePostComponent } from './create-post/create-post.component';
+import { PostComponent } from './post/post.component';
+import { RegisterComponent } from './register/register.component';
+import { EditCommentComponent } from './comment/edit-comment/edit-comment.component';
+import { environment } from '../environments/environment';
+
+const routePaths = environment.ROUTE_PATHS;
 
 export const routes: Routes = [
     {
         path: "",
-        redirectTo: "home",
+        redirectTo: routePaths.HOME,
         pathMatch: "full"
     },
     {
-        path: "home",
+        path: routePaths.HOME,
         component: HomeComponent
     },
     {
-        path: "register",
+        path: routePaths.REGISTER,
         component: RegisterComponent
     },
     {
-        path: "login",
+        path: routePaths.LOGIN,
         component: LoginComponent
     },
     {
-        path: "articles",
-        component: ArticlesComponent
+        path: routePaths.CREATE_POST,
+        component: CreatePostComponent,
+        canActivate: [authGuard]
     },
     {
-        path: "create-post",
-        component: CreatePostComponent
+        path: routePaths.EDIT_POST,
+        component: EditPostComponent,
+        canActivate: [authGuard]
     },
     {
-        path: "**",
+        path: routePaths.SINGLE_POST,
+        component: PostComponent,
+        canActivate: [authGuard]
+    },
+    {
+        path: routePaths.EDIT_COMMENT,
+        component: EditCommentComponent,
+        canActivate: [authGuard]
+    },
+    {
+        path: routePaths.ERROR_PAGE,
         component: ErrorPageComponent
     },
 ];

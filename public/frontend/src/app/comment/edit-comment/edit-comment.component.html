@@ -1,0 +1,51 @@
+<div class="edit-comment">
+    <form *ngIf="crudAction !== publicCrudAction.DELETE" [formGroup]="editCommentForm" (ngSubmit)="editComment()" class="card p-7 form">
+        <div class="pb-4 font-bold text-xl">
+            Edit the comment
+        </div>
+        <div class="form__group">
+            <label for="Name" class="form__label">
+                Name
+                <span class="text-red-600">*</span>
+            </label>
+            <input type="text" id="name" name="name" formControlName="name" placeholder="Enter commenter's name" class="form__control">
+            <div *ngIf="name?.invalid && (name?.dirty || name?.touched)" class="form__validation-text">
+                <span *ngIf="name?.hasError('required')">
+                    Name is required.&nbsp;
+                </span>
+                <span *ngIf="name?.hasError('minlength')">
+                    Name must be at least of 3 letters.&nbsp;
+                </span>
+            </div>
+        </div>
+        <div class="form__group">
+            <label for="comment" class="form__label">
+                Comment
+                <span class="text-red-600">*</span>
+            </label>
+            <textarea type="text" id="comment" name="comment" formControlName="comment" placeholder="Enter your comment" class="form__control"></textarea>
+            <div *ngIf="comment?.invalid && (comment?.dirty || comment?.touched)" class="form__validation-text">
+                <span *ngIf="comment?.hasError('required')">
+                    Comment is required.&nbsp;
+                </span>
+                <span *ngIf="comment?.hasError('minlength')">
+                    Comment must be at least of 5 letters.&nbsp;
+                </span>
+            </div>
+        </div>
+        <div class="pt-3">
+            <button type="submit" class="button button--primary" [ngClass]="isButtonDisabled ? 'cursor-not-allowed': ''" [disabled]="isButtonDisabled">Edit comment</button>
+        </div>
+    </form>
+    
+    <div *ngIf="crudAction === publicCrudAction.DELETE" class="card p-7 text-center">
+        <h3 class="font-bold text-lg">
+            Are you sure do you want to delete the comment?
+        </h3>
+
+        <div class="mt-5">
+            <button type="button" class="button button--outline mr-3" (click)="back()">Back</button>
+            <button type="button" class="button button--danger" (click)="deleteComment()" [ngClass]="isButtonDisabled ? 'cursor-not-allowed': ''" [disabled]="isButtonDisabled">Delete</button>
+        </div>
+    </div>
+</div>

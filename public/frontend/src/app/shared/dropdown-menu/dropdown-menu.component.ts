@@ -1,11 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ClickOutsideDirective } from '../../click-outside.directive';
 import { RouterLink } from '@angular/router';
+import { UserCredentials } from '../../auth.service';
 
 export interface Dropdown {
   name: string;
   routeLink: string;
+  state?: any;
 }
 
 export interface DropdownConfig {
@@ -25,6 +27,10 @@ export class DropdownMenuComponent {
   @Input()
   dropdownConfig!: DropdownConfig;
 
+  @Input() user!: UserCredentials;
+
+  @Output() onLogout = new EventEmitter();
+
 
   toggleMenu() {
     this.showMenu = !this.showMenu;
@@ -34,5 +40,9 @@ export class DropdownMenuComponent {
     if(this.showMenu) {
       this.showMenu = false;      
     }
+  }
+
+  logout() {
+    this.onLogout.emit();
   }
 }

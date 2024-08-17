@@ -1,9 +1,9 @@
 .article {
-    @apply mb-5 relative cursor-pointer;
+    @apply mb-5 relative;
 }
 
 .article__figure {
-    @apply mb-5 relative cursor-pointer;
+    @apply overflow-hidden rounded-t-lg;
 }
 
 .article__image {

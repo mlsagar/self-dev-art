@@ -3,6 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from "rxjs";
 import { ArticlesDataService } from '../articles-data.service';
+import { environment } from '../../environments/environment';
+import { ErrorResponse, Response } from '../reponse';
+import { MESSAGE_TYPE, ToastService } from '../shared/toast/toast.service';
 
 
 @Component({
@@ -17,17 +20,20 @@ export class CreatePostComponent implements OnInit{
 
   isButtonDisabled = false;
 
+  articleForm = environment.ARTICLE_FORM;
+  validators = environment.VALIDATORS;
+
   get title() {
-    return this.createPostForm.get("title");
+    return this.createPostForm.get(this.articleForm.TITLE);
   }
   get author() {
-    return this.createPostForm.get("author");
+    return this.createPostForm.get(this.articleForm.AUTHOR);
   }
   get link() {
-    return this.createPostForm.get("link");
+    return this.createPostForm.get(this.articleForm.LINK);
   }
   get imageLink() {
-    return this.createPostForm.get("imageLink");
+    return this.createPostForm.get(this.articleForm.IMAGE_LINK);
   }
 
   get comments() {
@@ -46,16 +52,17 @@ export class CreatePostComponent implements OnInit{
 
   constructor(
     private formBuilder: FormBuilder,
-    private _articlesDataService: ArticlesDataService
+    private _articlesDataService: ArticlesDataService,
+    private _toast: ToastService
   ) {}
 
 
   ngOnInit(): void {
     this.createPostForm = this.formBuilder.group({
-      title: [null, [Validators.required, Validators.minLength(3)]],
-      author: [null, [Validators.required, Validators.minLength(3)]],
-      link: [null, [Validators.required]],
-      imageLink: [null, [Validators.required]],
+      [this.articleForm.TITLE]: [null, [Validators.required, Validators.minLength(this.validators.MIN_LENGTH_3)]],
+      [this.articleForm.AUTHOR]: [null, [Validators.required, Validators.minLength(this.validators.MIN_LENGTH_3)]],
+      [this.articleForm.LINK]: [null, Validators.required],
+      [this.articleForm.IMAGE_LINK]: [null, Validators.required],
       comments: this.formBuilder.array([])
     })
   }
@@ -67,17 +74,29 @@ export class CreatePostComponent implements OnInit{
     }
 
     this.isButtonDisabled = true;
+    this._callAddArticleService();
+    
+  }
 
+  _callAddArticleService() {
     this._articlesDataService.addArticle(this.createPostForm.value)
-    .pipe(finalize(() => this.isButtonDisabled = false))
+    .pipe(finalize(this._enablingButton.bind(this)))
     .subscribe({
-      next: (response) => {
-        this.createPostForm.reset();
-        console.log(response);
-      },
-      error: (error) => {
-        console.log(error);
-      }
+      next: this._onAddArticleSuccess.bind(this),
+      error: this._onAddArticleError.bind(this)
     })
+  }
+
+  _onAddArticleSuccess(response: Response<any>) {
+    this.createPostForm.reset();
+    this._toast.open({type: MESSAGE_TYPE.SUCCESS, message: response.message});
+  }
+
+  _onAddArticleError(error: ErrorResponse<any>) {
+    this._toast.open({type: MESSAGE_TYPE.ERROR, message: error.error.message});
+  }
+
+  _enablingButton() {
+    this.isButtonDisabled = false
   }
 }

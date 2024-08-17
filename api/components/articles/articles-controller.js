@@ -21,14 +21,14 @@ const allArticles = function (request, response) {
         return;
     }
 
-    if (count > maxCount) {
-        responseCollection.status = Number(process.env.BAD_REQUEST_STATUS_CODE);
-        responseCollection.message = `${process.env.MAX_LIMIT_MESSAGE} ${maxCount}`;
-        _sendResponse(response, responseCollection);
-        return;
-    }    
+    // if (count > maxCount) {
+    //     responseCollection.status = Number(process.env.MAX_COUNT_ERROR_STATUS_CODE );
+    //     responseCollection.message = `${process.env.MAX_LIMIT_MESSAGE} ${maxCount}`;
+    //     _sendResponse(response, responseCollection);
+    //     return;
+    // }    
 
-    Article.find().skip(offset).limit(count).exec()
+    Article.find().sort({ _id: -1 }).skip(offset).limit(count).exec()
         .then(_handleAllArticles.bind(null, responseCollection))
         .catch(_setInternalError.bind(null, responseCollection))
         .finally(_sendResponse.bind(null, response, responseCollection));

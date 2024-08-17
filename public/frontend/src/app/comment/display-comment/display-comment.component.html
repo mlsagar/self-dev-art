@@ -1,0 +1,14 @@
+<div class="display-comment" *ngIf="comment">
+    <figure  class="display-comment__figure">
+        <img src="assets/user.svg" alt="user icon">
+    </figure>
+    <div class="display-comment__body">
+        <div class="display-comment__header">
+            <h6 class="display-comment__title">{{comment.name}}</h6>
+            <app-dropdown-menu [dropdownConfig]="commentDropdownConfig"></app-dropdown-menu>
+        </div>
+        <p class="text-lg">
+            {{comment.comment}}
+        </p>
+    </div>
+</div>

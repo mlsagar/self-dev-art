@@ -1,0 +1,30 @@
+
+<article class="card article" *ngIf="articlePost" (click)="routeTo()" [ngClass]="!showCommentsSection ? 'cursor-pointer': ''">
+    <figure class="article__figure" *ngIf="showImage">
+        <img [src]="articlePost.imageLink" [alt]="'image for ' + articlePost.title" class="article__image">
+    </figure>
+
+    <main class="p-5">
+        <div class="flex justify-between items-center">
+            <h5 class="article__sub-title">
+                {{articlePost.author}}'s
+            </h5>
+            <app-dropdown-menu *ngIf="showCommentsSection" [dropdownConfig]="articleDropdownConfig"></app-dropdown-menu>
+        </div>
+        <h3 class="article__title">
+            <a routerLink="/post/{{articlePost._id}}" *ngIf="!showCommentsSection">{{articlePost.title}}</a>
+            <a href="{{articlePost.link}}" target="_blank" *ngIf="showCommentsSection">{{articlePost.title}}</a>
+        </h3>
+        <a *ngIf="!showCommentsSection" routerLink="/post/{{articlePost._id}}" fragment="comments" class="hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 font-light rounded-lg text-sm p-2 text-center inline-flex items-center">
+            <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon"><path d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"></path></svg>
+            <span class="hidden sm:inline-block">&nbsp; {{articlePost.comments.length ? articlePost.comments.length + " Comments" : "Add comment"}}</span>
+        </a>
+        <div id="comments" *ngIf="showCommentsSection">
+            <h3 class="font-bold text-2xl mb-6">Comments</h3>
+            <app-add-comment (onAddComment)="handleOnAddComment()"></app-add-comment>
+            <ng-container *ngIf="articlePost.comments.length">
+                <app-display-comment *ngFor="let comment of articlePost.comments.slice().reverse()" [comment]="commentWithArticleId(comment)"></app-display-comment>
+            </ng-container>
+        </div>
+    </main>
+</article>

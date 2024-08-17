@@ -85,6 +85,6 @@
 
     <div class="pt-3">
         <button type="button" class="button button--outline mr-3" (click)="addCommentField()"> Add comments</button>
-        <button type="submit" class="button button--primary">Publish</button>
+        <button type="submit" class="button button--primary" [ngClass]="isButtonDisabled ? 'cursor-not-allowed': ''" [disabled]="isButtonDisabled">Publish</button>
     </div>
 </form>
