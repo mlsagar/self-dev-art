@@ -45,9 +45,7 @@ export class CreatePostComponent implements OnInit{
       name: [null, [Validators.required, Validators.minLength(3)]],
       comment:  [null, [Validators.required, Validators.minLength(3)]]
     })
-    this.comments.push({
-      commentGroup
-    })
+    this.comments.push(commentGroup)
   }
 
   constructor(

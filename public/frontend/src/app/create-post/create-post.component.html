@@ -65,22 +65,24 @@
             Comments
         </h5>
         <!-- The repeated alias template -->
-         <div [formGroupName]="i">
-             <div class="form__group">
-                 <label for="name-{{ i }}" class="form__label">
-                     Name:
-                     <span class="text-red-600">*</span>
-                 </label>
-                 <input id="name-{{ i }}" type="text" formControlName="name" class="form__control">
+         <ng-container formArrayName="comments">
+             <div [formGroupName]="i">
+                 <div class="form__group">
+                     <label for="name-{{ i }}" class="form__label">
+                         Name:
+                         <span class="text-red-600">*</span>
+                     </label>
+                     <input id="name-{{ i }}" type="text" formControlName="name" class="form__control">
+                 </div>
+                 <div class="form__group">
+                     <label for="commnet-{{ i }}" class="form__label">
+                         Comment:
+                         <span class="text-red-600">*</span>
+                     </label>
+                     <textarea id="comment-{{ i }}" type="text" formControlName="comment" class="form__control"></textarea>
+                 </div>        
              </div>
-             <div class="form__group">
-                 <label for="commnet-{{ i }}" class="form__label">
-                     Comment:
-                     <span class="text-red-600">*</span>
-                 </label>
-                 <textarea id="comment-{{ i }}" type="text" formControlName="comment" class="form__control"></textarea>
-             </div>        
-         </div>
+         </ng-container>
     </div>
 
     <div class="pt-3">
