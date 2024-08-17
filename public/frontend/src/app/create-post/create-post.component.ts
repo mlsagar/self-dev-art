@@ -87,6 +87,7 @@ export class CreatePostComponent implements OnInit{
 
   _onAddArticleSuccess(response: Response<any>) {
     this.createPostForm.reset();
+    this.comments.clear();
     this._toast.open({type: MESSAGE_TYPE.SUCCESS, message: response.message});
   }
 
