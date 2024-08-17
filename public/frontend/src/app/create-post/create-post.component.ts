@@ -76,6 +76,10 @@ export class CreatePostComponent implements OnInit{
     this.comments.push(commentGroup)
   }
 
+  removeCommentField(index: number) {
+    this.comments.removeAt(index)
+  }
+
   _callAddArticleService() {
     this._articlesDataService.addArticle(this.createPostForm.value)
     .pipe(finalize(this._enablingButton.bind(this)))
