@@ -40,7 +40,7 @@ const addArticle = function (request, response) {
         author: request.body.author,
         link: request.body.link,
         imageLink: request.body.imageLink,
-        comments: []
+        comments: request.body.comments
     }
 
     const responseCollection = _createResponseCollection();
