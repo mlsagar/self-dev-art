@@ -38,15 +38,7 @@ export class CreatePostComponent implements OnInit{
 
   get comments() {
     return this.createPostForm.get("comments") as FormArray;
-  } 
-
-  addCommentField() {
-    const commentGroup  = this.formBuilder.group({
-      name: [null, [Validators.required, Validators.minLength(3)]],
-      comment:  [null, [Validators.required, Validators.minLength(3)]]
-    })
-    this.comments.push(commentGroup)
-  }
+  }  
 
   constructor(
     private formBuilder: FormBuilder,
@@ -69,11 +61,19 @@ export class CreatePostComponent implements OnInit{
     if (this.createPostForm.invalid) {
       this.createPostForm.markAllAsTouched();
       return;
-    }
+    }  
 
     this.isButtonDisabled = true;
     this._callAddArticleService();
     
+  }
+
+  addCommentField() {
+    const commentGroup  = this.formBuilder.group({
+      name: [null, [Validators.required, Validators.minLength(3)]],
+      comment:  [null, [Validators.required, Validators.minLength(5)]]
+    })
+    this.comments.push(commentGroup)
   }
 
   _callAddArticleService() {
