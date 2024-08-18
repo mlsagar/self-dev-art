@@ -8,6 +8,7 @@ import { CRUD_ACTION } from '../auth.service';
 import { ErrorResponse, Response } from '../reponse';
 import { environment } from '../../environments/environment';
 import { MESSAGE_TYPE, ToastService } from '../shared/toast/toast.service';
+import { Comment } from '../comments-data.service';
 
 @Component({
   selector: 'app-edit-post',
@@ -154,9 +155,21 @@ export class EditPostComponent {
     if (this.imageLink?.value !== this.article.imageLink) {
       newRequestObject.imageLink = this.imageLink?.value;
     }
+    
+    if (this.comments.value.length !== this.article.comments.length) {
+      newRequestObject.comments = this.comments.value;
+    } else {
+      this.comments.value.forEach((comment: Comment, index: number) => {
+        if (comment.name !== this.article.comments[index].name || comment.comment !== this.article.comments[index].comment) {
+          newRequestObject.comments = this.comments.value;
+          return;
+        }
+      })
+    }
 
     if (!Object.keys(newRequestObject).length) {
       this._toast.open({type: MESSAGE_TYPE.WARNING, message: this.messages.NO_CHANGES_MADE});
+      this.isButtonDisabled = false;
       return;
     }
 
