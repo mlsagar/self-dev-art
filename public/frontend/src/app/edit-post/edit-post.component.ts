@@ -1,6 +1,6 @@
 import { CommonModule, Location } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { Article, ArticlesDataService } from '../articles-data.service';
@@ -42,6 +42,10 @@ export class EditPostComponent {
     return this.editPostForm.get(this.articleForm.IMAGE_LINK);
   }
 
+  get comments() {
+    return this.editPostForm.get("comments") as FormArray;
+  }
+
   constructor(
     private formBuilder: FormBuilder,
     private _articlesDataService: ArticlesDataService,
@@ -61,6 +65,7 @@ export class EditPostComponent {
 
   ngOnInit(): void {
     this.editPostForm = this._createEditForm;
+    this._setValueOfCommentsArray();
   }
 
   editPost() {
@@ -87,6 +92,14 @@ export class EditPostComponent {
     })
   }
 
+  addCommentField() {
+    this.comments.push(this._createCommentGroup);
+  }
+
+  removeCommentField(index: number) {
+   this.comments.removeAt(index)
+  }
+
   back() {
     this._location.back();
   }
@@ -96,7 +109,25 @@ export class EditPostComponent {
       [this.articleForm.TITLE]: [this.article.title, [Validators.required, Validators.minLength(this.validators.MIN_LENGTH_3)]],
       [this.articleForm.AUTHOR]: [this.article.author, [Validators.required, Validators.minLength(this.validators.MIN_LENGTH_3)]],
       [this.articleForm.LINK]: [this.article.link, Validators.required],
-      [this.articleForm.IMAGE_LINK]: [this.article.imageLink, Validators.required]
+      [this.articleForm.IMAGE_LINK]: [this.article.imageLink, Validators.required],
+      comments: this.formBuilder.array([])
+    })
+  }
+
+  get _createCommentGroup() {
+    const commentGroup  = this.formBuilder.group({
+      name: [null, [Validators.required, Validators.minLength(3)]],
+      comment:  [null, [Validators.required, Validators.minLength(5)]]
+    });
+
+    return commentGroup;
+  }
+
+  _setValueOfCommentsArray() {
+    this.article.comments.forEach((comment, index) => {      
+      this.comments.push(this._createCommentGroup);
+      const {_id, ...rest} = comment
+      this.comments.at(index).setValue(rest);
     })
   }
 

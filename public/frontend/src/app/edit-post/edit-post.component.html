@@ -57,7 +57,56 @@
                 </span>
             </div>
         </div>
+        <ng-container formArrayName="comments">
+            <div class="card p-3 mt-3"  *ngFor="let comment of comments.controls; let i=index">
+                <div class="flex items-center justify-center">
+                    <h5 class="font-bold text-base">
+                        Comments
+                    </h5>
+                    <button (click)="removeCommentField(i)" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <!-- The repeated alias template -->
+                <div [formGroupName]="i">
+                    <div class="form__group">
+                        <label for="name-{{ i }}" class="form__label">
+                            Name:
+                            <span class="text-red-600">*</span>
+                        </label>
+                        <input id="name-{{ i }}" type="text" formControlName="name" class="form__control">
+                        <div *ngIf="comment.get('name')?.invalid && (comment.get('name')?.dirty || comment.get('name')?.touched)" class="form__validation-text">
+                        <span *ngIf="comment.get('name')?.hasError('required')">
+                            Name is required.&nbsp;
+                        </span>
+                        <span *ngIf="comment.get('name')?.hasError('minlength')">
+                            Name must be at least of 3 letters.&nbsp;
+                        </span>
+                    </div>
+                    </div>
+                    <div class="form__group">
+                        <label for="comment-{{ i }}" class="form__label">
+                            Comment:
+                            <span class="text-red-600">*</span>
+                        </label>
+                        <textarea id="comment-{{ i }}" type="text" formControlName="comment" class="form__control"></textarea>
+                        <div *ngIf="comment.get('comment')?.invalid && (comment.get('comment')?.dirty || comment.get('comment')?.touched)" class="form__validation-text">
+                            <span *ngIf="comment.get('comment')?.hasError('required')">
+                                Comment is required.&nbsp;
+                            </span>
+                            <span *ngIf="comment.get('comment')?.hasError('minlength')">
+                                Comment must be at least of 5 letters.&nbsp;
+                            </span>
+                        </div>
+                    </div>        
+                </div>
+            </div>
+        </ng-container>
         <div class="pt-3">
+            <button type="button" class="button button--outline mr-3" (click)="addCommentField()"> Add comments</button>
             <button type="submit" class="button button--primary" [ngClass]="isButtonDisabled ? 'cursor-not-allowed': ''" [disabled]="isButtonDisabled">Edit post</button>
         </div>
     </form>

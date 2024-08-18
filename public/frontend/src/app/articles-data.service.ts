@@ -10,11 +10,11 @@ export interface ArticleRequest {
   link: string;
   imageLink: string;
   author: string;
+  comments: Comment[];
 }
 
 export interface Article extends ArticleRequest{
   _id: string; 
-  comments: Comment[]
 }
 
 @Injectable({
