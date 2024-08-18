@@ -179,7 +179,8 @@ const _partialUpdateArticle = function (request, article) {
     if (request.body && request.body.title) { article.title = request.body.title }
     if (request.body && request.body.link) { article.link = request.body.link }
     if (request.body && request.body.author) { article.author = request.body.author }
-    if (request.body && request.body.comments) { article.title = request.body.comments }
+    if (request.body && request.body.imageLink) { article.imageLink = request.body.imageLink }
+    if (request.body && request.body.comments) { article.comments = request.body.comments }
 }
 
 const _handleRemoveArticle = function (responseCollection, deletedArticle) {
