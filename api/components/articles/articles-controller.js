@@ -171,6 +171,8 @@ const _fullUpdateArticle = function (request, article) {
     article.title = request.body.title;
     article.author = request.body.author;
     article.link = request.body.link;
+    article.imageLink = request.body.imageLink;
+    article.comments = request.body.comments
 }
 
 const _partialUpdateArticle = function (request, article) {
