@@ -142,16 +142,32 @@ export class EditPostComponent {
   }
 
   _partialUpdate() {
+    const newRequestObject = this._createNewRequestObject; 
+
+    if (!Object.keys(newRequestObject).length) {
+      this._toast.open({type: MESSAGE_TYPE.WARNING, message: this.messages.NO_CHANGES_MADE});
+      this.isButtonDisabled = false;
+      return;
+    }
+
+    this._partialUpdateArticle(this.article._id, newRequestObject);
+  }
+
+  get _createNewRequestObject() {
     const newRequestObject: any = {};
+
     if (this.title?.value !== this.article.title) {
       newRequestObject.title = this.title?.value;
     }
+
     if (this.author?.value !== this.article.author) {
       newRequestObject.author = this.author?.value;
     }
+
     if (this.link?.value !== this.article.link) {
       newRequestObject.link = this.link?.value;
     }
+    
     if (this.imageLink?.value !== this.article.imageLink) {
       newRequestObject.imageLink = this.imageLink?.value;
     }
@@ -166,14 +182,7 @@ export class EditPostComponent {
         }
       })
     }
-
-    if (!Object.keys(newRequestObject).length) {
-      this._toast.open({type: MESSAGE_TYPE.WARNING, message: this.messages.NO_CHANGES_MADE});
-      this.isButtonDisabled = false;
-      return;
-    }
-
-    this._partialUpdateArticle(this.article._id, newRequestObject);
+    return newRequestObject;
   }
 
   _partialUpdateArticle(articleId: string, newRequestObject: any) {
