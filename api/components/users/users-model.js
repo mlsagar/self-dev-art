@@ -5,6 +5,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    image: {
+        data: Buffer,
+        contentType: String
+    },
     username: {
         type: String,
         required: true,
