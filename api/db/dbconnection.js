@@ -3,7 +3,11 @@ require("../components/users/users-model");
 const mongoose = require("mongoose");
 mongoose.connect(process.env.DATABASE_URL);
 
+let bucket;
 const handleConnected = function() {
+   bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+    bucketName: process.env.IMAGE_BUCKET
+   })
     console.log( `${process.env.MONGOOSE_CONNECTED_MESSAGE} ${process.env.DATABASE_NAME}`);
 }
 
