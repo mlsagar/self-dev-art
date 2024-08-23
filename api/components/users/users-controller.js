@@ -52,6 +52,7 @@ const _createNewUser = function (request, hashPassword) {
         if (hashPassword) {
             const newUser = {
                 name: request.body.name,
+                image: request.body.image,
                 username: request.body.username,
                 password: hashPassword
             }
