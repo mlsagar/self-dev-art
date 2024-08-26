@@ -8,7 +8,7 @@ import { CRUD_ACTION } from '../auth.service';
 import { ErrorResponse, Response } from '../reponse';
 import { environment } from '../../environments/environment';
 import { MESSAGE_TYPE, ToastService } from '../shared/toast/toast.service';
-import { Comment } from '../comments-data.service';
+import { Comment } from '../../services/comments-data.service';
 
 @Component({
   selector: 'app-edit-post',

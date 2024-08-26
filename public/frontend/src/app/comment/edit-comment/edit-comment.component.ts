@@ -1,13 +1,13 @@
+import { CommonModule, Location } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CommonModule, Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
-import { CommentsDataService, CommentWithArticleId } from '../../comments-data.service';
-import { ErrorResponse, Response } from '../../reponse';
-import { CRUD_ACTION } from '../../auth.service';
-import { MESSAGE_TYPE, ToastService } from '../../shared/toast/toast.service';
 import { environment } from '../../../environments/environment';
+import { CommentsDataService, CommentWithArticleId } from '../../../services/comments-data.service';
+import { CRUD_ACTION } from '../../auth.service';
+import { ErrorResponse, Response } from '../../reponse';
+import { MESSAGE_TYPE, ToastService } from '../../shared/toast/toast.service';
 
 @Component({
   selector: 'app-edit-comment',

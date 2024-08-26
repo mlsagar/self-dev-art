@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { CRUD_ACTION } from '../../auth.service';
-import { CommentWithArticleId } from '../../comments-data.service';
-import { DropdownConfig, DropdownMenuComponent } from '../../shared/dropdown-menu/dropdown-menu.component';
 import { environment } from '../../../environments/environment';
+import { CommentWithArticleId } from '../../../services/comments-data.service';
+import { CRUD_ACTION } from '../../auth.service';
+import { DropdownConfig, DropdownMenuComponent } from '../../shared/dropdown-menu/dropdown-menu.component';
 
 @Component({
   selector: 'app-display-comment',

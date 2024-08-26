@@ -2,11 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { Comment, CommentWithArticleId } from '../../../services/comments-data.service';
 import { Article } from '../../articles-data.service';
 import { CRUD_ACTION } from '../../auth.service';
 import { AddCommentComponent } from '../../comment/add-comment/add-comment.component';
 import { DisplayCommentComponent } from '../../comment/display-comment/display-comment.component';
-import { Comment, CommentWithArticleId } from '../../comments-data.service';
 import { DropdownConfig, DropdownMenuComponent } from '../dropdown-menu/dropdown-menu.component';
 
 @Component({

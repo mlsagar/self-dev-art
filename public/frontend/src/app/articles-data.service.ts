@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../environments/environment';
-import { Comment } from './comments-data.service';
+import { Comment } from '../services/comments-data.service';
 import { Response } from './reponse';
 
 export interface ArticleRequest {

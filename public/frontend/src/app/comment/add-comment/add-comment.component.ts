@@ -2,11 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
-import { CommentsDataService } from '../../comments-data.service';
 import { ErrorResponse, Response } from '../../reponse';
 import { ActivatedRoute } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { MESSAGE_TYPE, ToastService } from '../../shared/toast/toast.service';
+import { CommentsDataService } from '../../../services/comments-data.service';
 
 @Component({
   selector: 'app-add-comment',

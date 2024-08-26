@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../environments/environment';
-import { Response } from './reponse';
+import { Response } from '../app/reponse';
 
 export interface CommentRequest {
   name: string;
