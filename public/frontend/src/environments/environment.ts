@@ -12,7 +12,9 @@ export const environment = {
         REGISTER: "url constant for register",
         CREATE_POST: "url constant for create post",
         EDIT_POST: "url constant for edit post",
-        EDIT_COMMENT: "url constant for edit comment"
+        EDIT_COMMENT: "url constant for edit comment",
+        UPLOAD: "url constant for upload",
+        IMAGE: "url constant for image"
     },
     ROUTE_PATHS: {
         HOME: "route path constant for home",

@@ -11,7 +11,9 @@ export const environment = {
         REGISTER: "/register",
         CREATE_POST: "/create-post",
         EDIT_POST: "/edit-post",
-        EDIT_COMMENT: "/edit-comment"
+        EDIT_COMMENT: "/edit-comment",
+        UPLOAD: "/upload",
+        IMAGE: "/image"
     }, 
     ROUTE_PATHS: {
         HOME: "home",
