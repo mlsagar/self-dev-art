@@ -4,7 +4,8 @@ const fs = require("fs");
 const path = require("path")
 
 const singleImage = function (request, response) {
-    const imageUrl = `${request.protocol}://${request.get('host')}/uploads/${request.file.filename}`;
+    // const imageUrl = `${request.protocol}://${request.get('host')}/uploads/${request.file.filename}`;
+    const imageUrl = `/uploads/${request.file.filename}`;
     const newRequest = {
         url: imageUrl,
         filename: request.file.filename,
