@@ -23,7 +23,7 @@
 
 <ng-template #logoutDropdown>
     <button (click)="toggleMenu()" class="inline-block w-10 border-4 border-opacity-5 rounded-full overflow-hidden">
-        <img src="assets/user.svg" alt="">
+        <img [src]="user.image" alt="">
     </button>
     <div  [ngClass]="showMenu ? '' : 'hidden'" class="dropdown-menu__lists">
         <ul class="dropdown-menu__wrapper" *ngIf="user">

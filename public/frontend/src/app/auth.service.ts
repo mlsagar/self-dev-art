@@ -13,13 +13,15 @@ export enum CRUD_ACTION {
 export interface UserCredentials {
   iat: number;
   name: string;
-  username: string
+  username: string;
+  image: string
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  baseUrl = environment.BASE_URL;
   #isLoggedIn: WritableSignal<boolean> = signal(false);
   #userCredentials!: UserCredentials;
   userLocalStorageKey = environment.LOCAL_STORAGE.USER;
@@ -37,7 +39,9 @@ export class AuthService {
 
   set userToken(token: string | null) {
     if (token) {
-      this.#userCredentials = jwtDecode(token);
+      const jwtDecodeCode: UserCredentials = jwtDecode(token);
+      jwtDecodeCode.image = this.baseUrl + jwtDecodeCode.image;
+      this.#userCredentials = jwtDecodeCode;
       localStorage.setItem(this.userLocalStorageKey, JSON.stringify({token}));
     }
   }

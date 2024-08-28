@@ -19,7 +19,7 @@ export class NavigationComponent {
     return this._authService.isLoggedIn;
   }
 
-  get userCredetials() {
+  get userCredentials() {
     return this._authService.userCredentials;
   }
 

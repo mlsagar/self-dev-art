@@ -9,7 +9,7 @@
             <a [routerLink]="routes.CREATE_POST" class="button button--outline mr-3" *ngIf="isLoggedIn">Create post</a>
             <a [routerLink]="routes.LOGIN" class="button mr-3" *ngIf="!isLoggedIn">Login</a>
             <a [routerLink]="routes.REGISTER" class="button button--outline" *ngIf="!isLoggedIn">Create account</a>
-            <app-dropdown-menu (onLogout)="logout()" *ngIf="isLoggedIn" [user]="userCredetials"></app-dropdown-menu>
+            <app-dropdown-menu (onLogout)="logout()" *ngIf="isLoggedIn" [user]="userCredentials"></app-dropdown-menu>
         </nav>
     </div>
 </header>

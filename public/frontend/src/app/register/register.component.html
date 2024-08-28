@@ -2,6 +2,19 @@
     <div class="pb-4 font-bold text-xl">
         Create your account
     </div>
+    <input type="text" class="hidden" name="image" ngModel />
+    <div class="form__group">
+        <label for="image" class="form__label">
+            Upload Image
+            <span class="text-red-600">*</span>
+        </label>
+        <input (change)="uploadImage($event)" accept="image/*" type="file" id="image" name="fileImage" ngModel #image="ngModel" placeholder="Upload your picture" required class="form__control">
+        <div *ngIf="image.invalid && (image.dirty || image.touched)" class="form__validation-text">
+            <span *ngIf="image.hasError('required')">
+                Image is required.&nbsp;
+            </span> 
+        </div>
+    </div>
     <div class="form__group">
         <label for="name" class="form__label">
             Name

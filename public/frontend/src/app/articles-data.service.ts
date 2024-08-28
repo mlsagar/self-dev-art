@@ -22,7 +22,7 @@ export interface Article extends ArticleRequest{
 })
 export class ArticlesDataService {
   routes = environment.ROUTES;
-  articlesUrl = environment.BASE_URL + this.routes.ARTICLES;
+  articlesUrl = environment.BASE_API_URL + this.routes.ARTICLES;
   
   constructor(
     private _http: HttpClient

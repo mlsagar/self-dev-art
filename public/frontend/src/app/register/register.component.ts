@@ -1,14 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormsModule, NgForm } from "@angular/forms";
-import { ComparePasswordDirective } from '../compare-password.directive';
-import { User, UsersDataService } from '../users-data.service';
-import { ErrorResponse, Response } from '../reponse';
-import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
-import { environment } from '../../environments/environment';
 import { finalize } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { ImageUploadService } from '../../services/image-upload.service';
+import { AuthService } from '../auth.service';
+import { ComparePasswordDirective } from '../compare-password.directive';
+import { ErrorResponse, Response } from '../reponse';
 import { MESSAGE_TYPE, ToastService } from '../shared/toast/toast.service';
+import { User, UsersDataService } from '../users-data.service';
 
 @Component({
   selector: 'app-register',
@@ -28,7 +29,8 @@ export class RegisterComponent implements OnInit{
     private _usersDataService: UsersDataService,
     private _authService: AuthService,
     private _router: Router,
-    private _toast: ToastService
+    private _toast: ToastService,
+	private _imageUploadService: ImageUploadService
   ) {}
 
   ngOnInit(): void {
@@ -44,10 +46,29 @@ export class RegisterComponent implements OnInit{
       return;
     }
     this.isButtonDisabled = true;
-    const {confirmPassword, ...userData} = this.registerForm.value;
+    const {confirmPassword, fileImage, ...userData} = this.registerForm.value;
     this._callRegisterApi(userData);
    }
 
+   uploadImage(event: Event) {
+    const file = (event.target as HTMLInputElement).files;
+	if (file) {
+		const formData = new FormData();
+		formData.append("image", file[0])
+		this._imageUploadService.uploadSingleImage(formData).subscribe({
+			next: (response) => {
+				this.registerForm.form.patchValue({
+          image: response.data[0].url
+        });
+        console.log(this.registerForm.value);
+			},
+			error: (error) => {
+				console.log(error);
+			}
+		})
+	}
+   }
+ 
    _callRegisterApi(userData: User) {
     this._usersDataService.register(userData)
     .pipe(finalize(this._enablingButton.bind(this)))

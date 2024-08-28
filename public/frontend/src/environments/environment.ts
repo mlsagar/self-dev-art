@@ -1,6 +1,7 @@
 
 export const environment = {
-    BASE_URL: "To place the base url of the backend api",
+    BASE_URL: "To place the base url of the application",
+    BASE_API_URL: "To place the base url of the backend api",
     APP_TITLE: "Title of the application",
     ROUTES: {
         HOME: "url constant for home",

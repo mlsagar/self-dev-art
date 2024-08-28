@@ -21,7 +21,7 @@ export interface CommentWithArticleId extends Comment {
 })
 export class CommentsDataService {
   routes = environment.ROUTES;
-  baseUrl = environment.BASE_URL;
+  baseUrl = environment.BASE_API_URL;
   constructor(
     private _http: HttpClient
   ) { }

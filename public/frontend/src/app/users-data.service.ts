@@ -6,6 +6,7 @@ import { Response } from './reponse';
 
 export interface User extends LoginUser {
   name: string;  
+  image: string;
 }
 
 export interface LoginUser {
@@ -16,10 +17,9 @@ export interface LoginUser {
 @Injectable({
   providedIn: 'root'
 })
-export class UsersDataService {
-  
+export class UsersDataService { 
 
-  baseUrl = environment.BASE_URL;
+  baseUrl = environment.BASE_API_URL;
   routes = environment.ROUTES;
   constructor(
     private _http: HttpClient
