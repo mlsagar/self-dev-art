@@ -77,7 +77,8 @@ const _verifyPassword = function(request, responseCollection, databaseUser) {
         }
         responseCollection.data = [{
             name:databaseUser[0].name,
-            username: databaseUser[0].username 
+            username: databaseUser[0].username,
+            image: databaseUser[0].image 
         }];
         resolve(bcrypt.compare(request.body.password, databaseUser[0].password));
     })
