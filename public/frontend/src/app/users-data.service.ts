@@ -6,7 +6,7 @@ import { Response } from './reponse';
 
 export interface User extends LoginUser {
   name: string;  
-  image: string;
+  // image: string;
 }
 
 export interface LoginUser {

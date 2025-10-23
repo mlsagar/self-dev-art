@@ -4,7 +4,6 @@ import { FormsModule, NgForm } from "@angular/forms";
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { ImageUploadService, ImageUrl } from '../../services/image-upload.service';
 import { AuthService } from '../auth.service';
 import { ComparePasswordDirective } from '../compare-password.directive';
 import { ErrorResponse, Response } from '../reponse';
@@ -29,8 +28,7 @@ export class RegisterComponent implements OnInit {
     private _usersDataService: UsersDataService,
     private _authService: AuthService,
     private _router: Router,
-    private _toast: ToastService,
-    private _imageUploadService: ImageUploadService
+    private _toast: ToastService
   ) { }
 
   ngOnInit(): void {
@@ -46,26 +44,8 @@ export class RegisterComponent implements OnInit {
       return;
     }
     this.isButtonDisabled = true;
-    const { confirmPassword, fileImage, ...userData } = this.registerForm.value;
+    const { confirmPassword, ...userData } = this.registerForm.value;
     this._callRegisterApi(userData);
-  }
-
-  uploadImage(event: Event) {
-    const file = (event.target as HTMLInputElement).files;
-    if (file) {
-      const formData = new FormData();
-      formData.append("image", file[0]);
-      this._imageUploadService.uploadSingleImage(formData).subscribe({
-        next: this._handleUploadSingleImageSuccess.bind(this),
-        error: this._handleApiError.bind(this)
-      })
-    }
-  }
-
-  _handleUploadSingleImageSuccess(response: Response<ImageUrl>) {
-    this.registerForm.form.patchValue({
-      image: response.data[0].url
-    });
   }
 
   _callRegisterApi(userData: User) {
